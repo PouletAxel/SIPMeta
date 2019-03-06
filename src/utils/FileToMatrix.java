@@ -1,3 +1,4 @@
+package utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -5,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import gui.Progress;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
@@ -38,7 +40,8 @@ public class FileToMatrix {
 	private int _min = 1000000000;
 	/** */
 	private int _max = -100000000;
-	
+	/** */
+	private Progress _plopi;	
 	
 	/**
 	 * 
@@ -76,13 +79,18 @@ public class FileToMatrix {
 	 * @return
 	 * @throws IOException
 	 */
-	public String creatMatrix(int step, int ratio) throws IOException{
+	public String creatMatrix(int step, int ratio,boolean gui, int nbloop) throws IOException{
+		int prout = 0; 
+		if(gui){
+			_plopi = new Progress("loops file processing",nbloop);
+			_plopi.bar.setValue(prout);
+		}
 		BufferedReader br = new BufferedReader(new FileReader(_loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
 		String resu = "";
 		int nbLine = 0;
-		int prout = 0;  
+		
 		while (line != null){
 			sb.append(line);
 			if(prout>0){
@@ -113,6 +121,8 @@ public class FileToMatrix {
 				}
 			}
 			prout++;
+			if(gui)
+				_plopi.bar.setValue(prout);
 			sb.append(System.lineSeparator());
 			line = br.readLine();
 		}
@@ -127,13 +137,17 @@ public class FileToMatrix {
 	 * @return
 	 * @throws IOException
 	 */
-	public String creatMatrixSubstarction(int step, int ratio) throws IOException{
+	public String creatMatrixSubstarction(int step, int ratio, boolean gui, int nbLoops) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(_loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
 		String resu = "";
 		int nbLine = 0;
 		int prout = 0;  
+		if(gui){
+			_plopi = new Progress("loops file processing",nbLoops);
+			_plopi.bar.setValue(prout);
+		}
 		while (line != null){
 			sb.append(line);
 			if(prout > 0){
@@ -144,9 +158,11 @@ public class FileToMatrix {
 				File folder = new File(dir);
 				File[] listOfFiles = folder.listFiles();
 				for (int i = 0; i < listOfFiles.length; ++i){
+				//	System.out.println(listOfFiles[i].toString());
 					if(listOfFiles[i].toString().contains(ratio+"_N.tif")){
 						String[] testTable = listOfFiles[i].toString().split("/");
 						String fileName2 = dir2+File.separator+testTable[testTable.length-1];
+						//System.out.println(listOfFiles[i].toString()+"\t"+fileName2);
 						String [] plop = listOfFiles[i].toString().split("/");
 						String coord = plop[plop.length-1].replaceAll("_"+ratio+"_N.tif", "");
 						String [] tcoord = coord.split("_");
@@ -161,6 +177,7 @@ public class FileToMatrix {
 								img = IJ.openImage(listOfFiles[i].toString());
 								img2 = IJ.openImage(fileName2);
 								_loopsStrength = _loopsStrength+"\n"+nbLine+"\t"+line+"\t";
+								
 								runImage((int)j,(int)k, img, img2);
 								nbLine++;
 								img.close();
@@ -170,6 +187,8 @@ public class FileToMatrix {
 				}
 			}
 			prout++;
+			if(gui)
+				_plopi.bar.setValue(prout);
 			sb.append(System.lineSeparator());
 			line = br.readLine();
 		}
@@ -220,8 +239,14 @@ public class FileToMatrix {
 	public double getAPA() throws IOException{
 		double avg = (process3By3Square(1,1)+process3By3Square(1,_metaSize-2)+process3By3Square(_metaSize-2,1)+process3By3Square(_metaSize-2,_metaSize-2))/4; 
 		double val = _resu[_metaSize/2][_metaSize/2];
+		String pathFile = _loopsFile;
+		pathFile = pathFile.replace(".bedpe", "_APA.txt");
 		_scoreAPA = val/avg;
-		System.out.println("valueCenter\tcorner avg\tAPA\n"+val+"\t"+avg+"\t"+_scoreAPA);
+		String line = "valueCenter\tcorner avg\tAPA\n"+val+"\t"+avg+"\t"+_scoreAPA;
+		System.out.println(line);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathFile)));
+		writer.write(line);
+		writer.close();
 		return _scoreAPA;
 	}
 	

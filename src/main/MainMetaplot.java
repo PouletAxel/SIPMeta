@@ -1,3 +1,4 @@
+package main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -5,9 +6,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gui.MetaplotGUI;
+import gui.Progress;
+import utils.FileToMatrix;
+import utils.ProcessTuplesFile;
+import utils.Rscript;
+
 /**
  * 
  * @author axel poulet
+ *
+ * metaplot Version 0.0.1 run with java
+ * Usage:
+ *	 simple <loopsFile> <RawData> <Rscript> <sMetaPlot> <sImg> [option]
+ *   substraction <loopsFile> <RawData1> <RawData2> <Rscript> <sMetaPlot> <sImg> [option]
+ *   		
+ *   sMetaPlot: size of the metaplot (default 20 bins)
+ *   sImg: size of the image analysed by SIP (default 2000 bins)
+ *   -resMax: default true, if false take the samller resolution
+ *   -min: default min value detected in the matrix results
+ *   -max: default max value detected in the matrix results
+ *   -h, --help print help
+ *
  *
  */
 public class MainMetaplot{
@@ -38,10 +58,13 @@ public class MainMetaplot{
 	/** */
 	static boolean _resMax = true;
 	/** */
-	static int _min = -1;
+	static double _min = -1;
 	/** */
-	static int _max = -1;
+	static double _max = -1;
 	/** */
+	static String _type = "simple";
+	/** */
+	static boolean _gui = false;
 	private static String _doc = ("metaplot Version 0.0.1 run with java 8\n"
 			+"Usage:\n"
 			+"\tsimple <loopsFile> <RawData> <Rscript> <sMetaPlot> <sImg> [option]\n"
@@ -62,80 +85,114 @@ public class MainMetaplot{
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException{
-		if (args.length == 0 || args[0].matches("-h") || args[0].matches("-help")){
+		if((args.length >= 1 && args.length < 5)){
 			System.out.println(_doc);
 			System.exit(0);
-		}
-		else if(args[0].matches("simple")){
-			if(args.length < 5){
-				System.out.println(_doc);
-				System.exit(0);
-			}else{
-				_loopsFile = args[1];
-				_input = args[2];
-				_script = args[3];
-				try{_metaSize =Integer.parseInt(args[4]);}
-				catch(NumberFormatException e){ returnError("sMetaPlot",args[4],"int");} 
-				try{_imageSize =Integer.parseInt(args[5]);}
-				catch(NumberFormatException e){ returnError("sImg",args[5],"int");}
-				readOption(args,6);
-				_step = _imageSize/2;
-				
-				String pathFileMatrix = _loopsFile.replace(".bedpe", "_matrix.tab");
-				String output = pathFileMatrix.replace("_matrix.tab", ".pdf");
-				makeTif(_input,_minRes,_imageSize);
-				
-				FileToMatrix ftm = new FileToMatrix(_input, _loopsFile, _resolution, _metaSize);		
-				int step = (_imageSize/_ratio)/2;
-				ftm.creatMatrix(step, _ratio);
-				ftm.getAPA();
-				ftm.writeStrengthFile();
-				if(_min == -1)
-					_min = ftm.getMinMatrix();
-				if(_max == -1)
-					_max = ftm.getMaxMatrix();
-				if(ftm.isTest()){
-					Rscript r = new Rscript(_script, pathFileMatrix,output,"false",_min,_max); 
-					r.runRscript();
-					System.out.println(output);
+		}else if(args.length >= 5){
+			_type =args[0];
+			if(_type.matches("simple")){
+				if(args.length < 5){
+					System.out.println(_doc);
+					System.exit(0);
+				}else{
+					_loopsFile = args[1];
+					_input = args[2];
+					_script = args[3];
+					try{_metaSize =Integer.parseInt(args[4]);}
+					catch(NumberFormatException e){ returnError("sMetaPlot",args[4],"int");} 
+					try{_imageSize =Integer.parseInt(args[5]);}
+					catch(NumberFormatException e){ returnError("sImg",args[5],"int");}
+					readOption(args,6);
+					
+				}
+			}else if(_type.matches("substraction")){
+				if(args.length < 6){
+					System.out.println(_doc);
+					System.exit(0);
+				}else{
+					_loopsFile = args[1];
+					_input = args[2];
+					_input2 = args[3];
+					_script = args[4];
+					try{_metaSize =Integer.parseInt(args[5]);}
+					catch(NumberFormatException e){ returnError("sMetaPlot",args[5],"int");} 
+					try{_imageSize =Integer.parseInt(args[6]);}
+					catch(NumberFormatException e){ returnError("sImg",args[6],"int");}
+					readOption(args,7);
 				}
 			}
-		}
-		else if(args[0].matches("substraction")){
-			if(args.length < 6){
-				System.out.println(_doc);
-				System.exit(0);
-			}else{
-				_loopsFile = args[1];
-				_input = args[2];
-				_input2 = args[3];
-				_script = args[4];
-				try{_metaSize =Integer.parseInt(args[5]);}
-				catch(NumberFormatException e){ returnError("sMetaPlot",args[5],"int");} 
-				try{_imageSize =Integer.parseInt(args[6]);}
-				catch(NumberFormatException e){ returnError("sImg",args[6],"int");}
-				readOption(args,7);
-				_step = _imageSize/2;
-				String pathFileMatrix = _loopsFile.replace(".bedpe", "_matrix.tab");
-				String output = pathFileMatrix.replace("_matrix.tab", ".pdf");
-				readLoopFile();
-				makeTif(_input,_minRes,_imageSize);
-				makeTif(_input2,_minRes,_imageSize);
-				FileToMatrix ftm = new FileToMatrix(_input,_input2, _loopsFile, _resolution, _metaSize);
-				ftm.creatMatrixSubstarction(_step, _ratio);
-				
-				ftm.getAPA();
-				ftm.writeStrengthFile();
-				if(_min == -1)
-					_min = ftm.getMinMatrix();
-				if(_max == -1)
-					_max = ftm.getMaxMatrix();
-				if(ftm.isTest()){
-					Rscript r = new Rscript(_script, pathFileMatrix,output,"true",_min,_max); 
-					r.runRscript();
-					System.out.println(output);
+		}	
+		else{
+			MetaplotGUI gui = new MetaplotGUI();
+			while( gui.isShowing()){
+				 try {Thread.sleep(1);}
+				catch (InterruptedException e) {e.printStackTrace();}
+		    }	
+			if (gui.isStart()){
+				_input = gui.getRawDataDir();
+				_loopsFile = gui.getLoopFile();
+				_script = gui.getRFile();
+				_type ="";
+				_resMax = gui.isMaxRes();
+				if(gui.isOneData()){	_type ="simple";}
+				else{
+					_type = "substraction";
+					_input2 = gui.getRawDataDir2();
 				}
+				_min = gui.getMinValue();
+				_max = gui.getMaxValue();
+				_metaSize = gui.getMatrixSize();
+				_imageSize = gui.getSipImageSize();
+				_gui = true;
+			}else {
+				System.out.println("program metaplot closed: if you want the help: -h");
+				System.exit(0);
 			}
+		}
+		_step = _imageSize/2;
+		int nbLine = readLoopFile();
+		if(_type.matches("simple")){
+			String pathFileMatrix = _loopsFile.replace(".bedpe", "_matrix.tab");
+			String output = pathFileMatrix.replace("_matrix.tab", ".pdf");
+			makeTif(_input,_minRes,_imageSize);
+		
+			FileToMatrix ftm = new FileToMatrix(_input, _loopsFile, _resolution, _metaSize);		
+			int step = (_imageSize/_ratio)/2;
+			ftm.creatMatrix(step, _ratio, _gui,nbLine);
+			ftm.getAPA();
+			ftm.writeStrengthFile();
+			if(_min == -1)
+				_min = ftm.getMinMatrix();
+			if(_max == -1)
+				_max = ftm.getMaxMatrix();
+			if(ftm.isTest()){
+				Rscript r = new Rscript(_script, pathFileMatrix,output,"false",(int)_min,(int)_max); 
+				r.runRscript();
+				System.out.println(output);
+			}
+		}else if(_type.matches("substraction")){
+			String pathFileMatrix = _loopsFile.replace(".bedpe", "_matrix.tab");
+			String output = pathFileMatrix.replace("_matrix.tab", ".pdf");
+			
+			makeTif(_input,_minRes,_imageSize);
+			makeTif(_input2,_minRes,_imageSize);
+			FileToMatrix ftm = new FileToMatrix(_input,_input2, _loopsFile, _resolution, _metaSize);
+			ftm.creatMatrixSubstarction(_step, _ratio, _gui, nbLine);
+			ftm.getAPA();
+			ftm.writeStrengthFile();
+			if(_min == -1)
+				_min = ftm.getMinMatrix();
+			if(_max == -1)
+				_max = ftm.getMaxMatrix();
+			if(ftm.isTest()){
+				Rscript r = new Rscript(_script, pathFileMatrix,output,"true",(int)_min,(int)_max);  
+				r.runRscript();
+				System.out.println(output);
+			}
+		}
+		else{
+			System.out.println(_doc);
+			System.exit(0);
 		}
 	}
 	
@@ -158,7 +215,7 @@ public class MainMetaplot{
 	 * @param chrSizeFile
 	 * @throws IOException
 	 */
-	private static void readLoopFile() throws IOException{
+	private static int readLoopFile() throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(_loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
@@ -192,6 +249,7 @@ public class MainMetaplot{
 			_resolution = _minRes;
 			_ratio = _resolution/_minRes;
 		}
+		return nbLine;
 	} 
 	
 	
@@ -212,16 +270,6 @@ public class MainMetaplot{
 	}
 	
 	/**
-	 * -res: resolution in bases (default 5000 bases)
-	 * -mat: matrix size in bins (default 2000 bins)
-	 * -d: diagonal size in bins (default 2 bins)
-	 * -g: Gaussian filter (default 1)
-	 * -max: Maximum filter: increase the region of high intensity (default 1.5)
-	 * -min: minimum filter: removed the isolated high value (default 1.5)
-	 * -sat: % of staturated pixel: enhance the contrast in the image (default 0.05)
-	 * -t Threshold for loops detection (default 3000)
-	 * -norm: <NONE/VC/VC_SQRT/KR> only for hic option (default KR)
-	 * -nbZero: 
 	 * 
 	 * @param args table of String stocking the arguments for the program
 	 * @param index table index where start to read the arguments
@@ -274,8 +322,15 @@ public class MainMetaplot{
 	public static void makeTif(String imgDir, int resMin, int imageSize) throws IOException{
 		File folder = new File(imgDir);
 		File[] listOfFolder = folder.listFiles();
+		Progress plopi = new Progress();
+		if(_gui){
+			plopi = new Progress("tif disatnce normalized",listOfFolder.length-1);
+			plopi.bar.setValue(0);
+		}
 		for(int i = 0; i < listOfFolder.length;++i){
 			if(!(listOfFolder[i].toString().contains("normVector")) && listOfFolder[i].isDirectory()){
+				if(_gui)
+					plopi.bar.setValue(i);
 				File[] listOfFile = listOfFolder[i].listFiles();
 				if(testTiff(listOfFile, resMin) == false){
 					for(int j = 0; j < listOfFile.length; ++j){
@@ -286,7 +341,8 @@ public class MainMetaplot{
 					}
 				}				
 			}
-		}	
+		}
+		plopi.dispose();
 	}
 	
 	
