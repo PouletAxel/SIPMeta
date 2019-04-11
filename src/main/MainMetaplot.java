@@ -10,7 +10,7 @@ import gui.MetaplotGUI;
 import gui.Progress;
 import utils.FileToMatrix;
 import utils.ProcessTuplesFile;
-import utils.Rscript;
+import utils.Script;
 
 /**
  * 
@@ -131,7 +131,7 @@ public class MainMetaplot{
 			if (gui.isStart()){
 				_input = gui.getRawDataDir();
 				_loopsFile = gui.getLoopFile();
-				_script = gui.getRFile();
+				_script = gui.getScript();
 				_type ="";
 				_resMax = gui.isMaxRes();
 				if(gui.isOneData()){	_type ="simple";}
@@ -166,7 +166,7 @@ public class MainMetaplot{
 			if(_max == -1)
 				_max = ftm.getMaxMatrix();
 			if(ftm.isTest()){
-				Rscript r = new Rscript(_script, pathFileMatrix,output,"false",(int)_min,(int)_max); 
+				Script r = new Script(_script, pathFileMatrix,output,"false",(int)_min,(int)_max); 
 				r.runRscript();
 				System.out.println(output);
 			}
@@ -185,7 +185,7 @@ public class MainMetaplot{
 			if(_max == -1)
 				_max = ftm.getMaxMatrix();
 			if(ftm.isTest()){
-				Rscript r = new Rscript(_script, pathFileMatrix,output,"true",(int)_min,(int)_max);  
+				Script r = new Script(_script, pathFileMatrix,output,"true",(int)_min,(int)_max);  
 				r.runRscript();
 				System.out.println(output);
 			}

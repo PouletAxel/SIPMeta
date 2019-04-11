@@ -29,7 +29,7 @@ public class TestGui {
 			String raw = gui.getRawDataDir();
 			String raw2 = "";
 			String loop = gui.getLoopFile();
-			String rScript = gui.getRFile();
+			String rScript = gui.getScript();
 			String plopi ="";
 			boolean maxRes = gui.isMaxRes();
 			if(gui.isOneData()){	plopi ="simple";}

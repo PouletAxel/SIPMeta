@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
@@ -47,9 +48,9 @@ public class MetaplotGUI extends JFrame{
 	private JButton _jbLoopsFile = new JButton("loops file");
 
 	/** */
-	private JTextField _jtfRFile = new JTextField();
+	private JTextField _jtfScript = new JTextField();
 	/** */
-	private JButton _jbRFile = new JButton("R script");
+	private JButton _jbScriptFile = new JButton("Script");
 	
 	private JButton _jbStart = new JButton("Start");
 	/** */
@@ -80,14 +81,22 @@ public class MetaplotGUI extends JFrame{
 	 *  -l and -u should be optional integers. If no input it uses the default scale from matplotlib. If set, -l and -u correspond to the color range in the heatmap.
 	 *  You  can pass the matrix to -i in the python script.
 	 *  -o in the python script is the prefix for output png files. It appends “_bullseye.png” and “_normal.png” to the prefix.
+	 *  -s   Trim edges to make a square bullseye plot
+	 *  
 	 */
 	
 	/** */
 	private ButtonGroup _bGroupMetaType = new ButtonGroup();
 	/** */
-	private JRadioButton _jrManha = new JRadioButton("Manhattan distance");
+	private JRadioButton _jrManha = new JRadioButton("Manhattan distance (bullseye plot)");
 	/** */
 	private JRadioButton _jrClassic = new JRadioButton("Classic");
+	
+	/** */
+	private JRadioButton _jrZscore = new JRadioButton("Bullseye with Zscore");
+	/** */
+	private JRadioButton _jrEdge = new JRadioButton("Trim edges to make a square bullseye plot");
+	
 	
 	/** Accent, Accent_r, Blues, Blues_r, BrBG, BrBG_r, BuGn, BuGn_r, BuPu, BuPu_r, CMRmap, CMRmap_r, Dark2, Dark2_r, GnBu, GnBu_r, Greens, Greens_r, Greys, Greys_r, OrRd, 
 	 * OrRd_r, Oranges, Oranges_r, PRGn, PRGn_r, Paired, Paired_r, Pastel1, Pastel1_r, Pastel2, Pastel2_r, PiYG, PiYG_r, PuBu, PuBuGn, PuBuGn_r, PuBu_r, PuOr, PuOr_r, PuRd,
@@ -141,14 +150,14 @@ public class MetaplotGUI extends JFrame{
 	public MetaplotGUI(){
 		///////////////////////////////////////////// Global parameter of the JFram and def of the gridBaglayout
 		this.setTitle("Metaploter");
-		this.setSize(550, 650);
+		this.setSize(550, 600);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setBackground(Color.LIGHT_GRAY);
 		_container = getContentPane();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.1};
-		gridBagLayout.rowHeights = new int[] {17, 260, 124, 7};
+		gridBagLayout.rowHeights = new int[] {17, 280, 124, 7};
 		gridBagLayout.columnWeights = new double[] {0.0, 0.0, 0.0, 0.1};
 		gridBagLayout.columnWidths = new int[] {260, 120, 72, 20};
 		_container.setLayout (gridBagLayout);
@@ -161,8 +170,8 @@ public class MetaplotGUI extends JFrame{
 		   		GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0
 		 ));   	
 		
-	   	_bGroupMetaType .add(_jrClassic);
-	   	_bGroupMetaType .add(_jrManha);
+	   	_bGroupMetaType.add(_jrClassic);
+	   	_bGroupMetaType.add(_jrManha);
 	 	
 	   	_jrClassic.setFont(new java.awt.Font("arial",2,11));
 	   	_jrManha.setFont(new java.awt.Font("arial",2,11));
@@ -211,7 +220,7 @@ public class MetaplotGUI extends JFrame{
 	   	   	
 		label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",1,12));
-	   	label.setText("Input and Rscript choices:");
+	   	label.setText("Input and script choices:");
 	   	_container.add(label, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 		   		GridBagConstraints.NONE, new Insets(110, 10, 0, 0), 0, 0
@@ -270,22 +279,30 @@ public class MetaplotGUI extends JFrame{
 						GridBagConstraints.NONE, new Insets(190, 160, 0, 0),0, 0
 				)
 		);
-		
-		_jbRFile.setPreferredSize(new java.awt.Dimension(100, 21));
-	   	_jbRFile.setFont(new java.awt.Font("arial",2,11));
-	   	_container.add ( _jbRFile, new GridBagConstraints
+	   	label = new JLabel();
+	   	label.setFont(new java.awt.Font("arial",2,11));
+	   	label.setText("Script path (Classic metaplot (heatmap.R) bullseye plot (bullseye.py))");
+	   	_container.add(label, new GridBagConstraints
+				(
+						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+						GridBagConstraints.NONE, new Insets(220, 20, 0, 0),0, 0
+				)
+		);
+		_jbScriptFile.setPreferredSize(new java.awt.Dimension(100, 21));
+	   	_jbScriptFile.setFont(new java.awt.Font("arial",2,11));
+	   	_container.add ( _jbScriptFile, new GridBagConstraints
 	   			(
 	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(220, 10, 0, 0), 0, 0
+	   					GridBagConstraints.NONE, new Insets(240, 10, 0, 0), 0, 0
 	   			)
 	   	);
 	   	
-	   	this._jtfRFile.setPreferredSize(new java.awt.Dimension(280, 21));
-	   	_jtfRFile.setFont(new java.awt.Font("arial",2,10));
-		_container.add(_jtfRFile, new GridBagConstraints
+	   	this._jtfScript.setPreferredSize(new java.awt.Dimension(280, 21));
+	   	_jtfScript.setFont(new java.awt.Font("arial",2,10));
+		_container.add(_jtfScript, new GridBagConstraints
 				(
 						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(220, 160, 0, 0),0, 0
+						GridBagConstraints.NONE, new Insets(240, 160, 0, 0),0, 0
 				)
 		);
 	   	///////////////////// Parameters for the metaplot
@@ -336,6 +353,7 @@ public class MetaplotGUI extends JFrame{
 		));
 	
 		
+		
 		label = new JLabel();
 	   	label.setText("Used the resolution max detected in the loops file ?:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
@@ -359,16 +377,21 @@ public class MetaplotGUI extends JFrame{
 		));
 		_jrTrue.setSelected(true);
 		
-		////////////////// heatmap min and max parameters
-		
 	   	label = new JLabel();
-	   	label.setText("Heatmap parameters for the key values:");
-	   	label.setFont(new java.awt.Font("arial",1,12));
+	   	label.setText("Heatmap color for Manhattan disatnce option:");
+	   	label.setFont(new java.awt.Font("arial",2,11));
 		_container.add(label, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.NONE, new Insets(90, 20, 0, 0), 0, 0
 		));
-			
+		
+		_comboColor.setFont(new java.awt.Font("arial",0,10));
+		_container.add( _comboColor, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(87, 300, 0, 0), 0, 0
+		));
+		_comboColor.setEnabled(false);
+		
 	   	label = new JLabel();
 	   	label.setText("Min value:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
@@ -382,15 +405,15 @@ public class MetaplotGUI extends JFrame{
 		_minValue.setFont(new java.awt.Font("arial",2,11));
 		_container.add( _minValue, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(120, 130, 0, 0), 0, 0
+				GridBagConstraints.NONE, new Insets(117, 90, 0, 0), 0, 0
 		));
 		
 		label = new JLabel();
-	   	label.setText("max value:");
+	   	label.setText("Max value:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 		_container.add(label, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(120, 230, 0, 0), 0, 0
+				GridBagConstraints.NONE, new Insets(120, 200, 0, 0), 0, 0
 		));
 			
 		this._maxValue.setText("20");
@@ -398,28 +421,47 @@ public class MetaplotGUI extends JFrame{
 		_maxValue.setFont(new java.awt.Font("arial",2,11));
 		_container.add(_maxValue, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(120, 400, 0, 0), 0, 0
+				GridBagConstraints.NONE, new Insets(117, 300, 0, 0), 0, 0
 		));
+		
+		_jrZscore.setFont(new java.awt.Font("arial",2,11));
+		_container.add(_jrZscore, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(150, 20, 0, 0), 0, 0
+		));
+		_jrZscore.setSelected(false);
+		_jrZscore.setEnabled(false);
+		
+		_jrEdge.setFont(new java.awt.Font("arial",2,11));
+		_container.add(_jrEdge, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(150, 200, 0, 0), 0, 0
+		));
+		_jrEdge.setSelected(false);
+		_jrEdge.setEnabled(false);
+
 		
 		////////////////////////// start and quit button
 		_jbStart.setPreferredSize(new java.awt.Dimension(120, 21));
 	   	_container.add(_jbStart, new GridBagConstraints(
 	   			0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
-	   			GridBagConstraints.NONE, new Insets(160, 140, 0,0), 0, 0
+	   			GridBagConstraints.NONE, new Insets(190, 140, 0,0), 0, 0
 	   	));
 	   	
 	   	
 	   	_jbQuit.setPreferredSize(new java.awt.Dimension(120, 21));
 		_container.add(_jbQuit,new GridBagConstraints(
 				0, 2, 0, 0,  0.0, 0.0,GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE,new Insets(160, 10, 0, 0), 0, 0
+				GridBagConstraints.NONE,new Insets(190, 10, 0, 0), 0, 0
 		));
 		
 		RBHicListener plop = new RBHicListener(this);
-	  	this._jrSimple.addActionListener(plop);
+		this._jrClassic.addActionListener(plop);
+	  	this._jrManha.addActionListener(plop);
+		this._jrSimple.addActionListener(plop);
 	  	this._jrSubstraction.addActionListener(plop);
-		FileListener rFile = new FileListener(_jtfRFile);
-		_jbRFile.addActionListener(rFile);
+		FileListener rFile = new FileListener(_jtfScript);
+		_jbScriptFile.addActionListener(rFile);
 		FileListener loopsFile = new FileListener(_jtfLoopsFile);
 		_jbLoopsFile.addActionListener(loopsFile);	 
 		
@@ -455,7 +497,7 @@ public class MetaplotGUI extends JFrame{
 	 * 
 	 * @return
 	 */
-	public String getRFile(){ return this._jtfRFile.getText(); }
+	public String getScript(){ return this._jtfScript.getText(); }
 	
 	
 	/**
@@ -482,6 +524,17 @@ public class MetaplotGUI extends JFrame{
 	 */
 	public boolean isCompare(){ return this._jrSubstraction.isSelected(); }
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isClassic(){ return this._jrClassic.isSelected();}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isManhattan(){ return this._jrManha.isSelected();}
 	
 	/**
 	 * 
@@ -515,7 +568,6 @@ public class MetaplotGUI extends JFrame{
 		return Integer.parseInt(x.replaceAll(",", "."));
 	}
 
-	
 	/**
 	 * 
 	 * @return
@@ -524,6 +576,7 @@ public class MetaplotGUI extends JFrame{
 		String x = this._sipImageSize.getText();
 		return Integer.parseInt(x.replaceAll(",", "."));
 	}
+
 	/********************************************************************************************************************************************
 	 * 	Classes listener to interact with the several element of the window
 	 */
@@ -551,8 +604,39 @@ public class MetaplotGUI extends JFrame{
 		 * 
 		 */
 		public void actionPerformed(ActionEvent actionEvent){
-			_start=true;
-			_gui.dispose();
+			if(_jtfRawData.getText().equals("") || _gui._jtfLoopsFile.getText().equals("")|| _gui._jtfScript.getText().equals("")){
+				JOptionPane.showMessageDialog(
+				null, "Add the path of Raw  data directory and/or loops file and/or script",
+				"Error", JOptionPane.ERROR_MESSAGE);	
+			}else if(_gui.isClassic()){
+				if(_gui.getScript().contains("heatmap.R")){
+					if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
+						JOptionPane.showMessageDialog(
+								null, "Add path of Raw data2 directory",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}else{
+						_start=true;
+						_gui.dispose();
+					}
+				}else{
+					JOptionPane.showMessageDialog(
+						null, "The script choose for the classic metaplot is not the good one. give the path of heatmap.R",
+						"Error", JOptionPane.ERROR_MESSAGE);	
+				}
+			}else if(_gui.isManhattan()){
+				if(_gui.getScript().contains("bullseye.py")){
+					_start=true;
+					_gui.dispose();
+				}else{
+					JOptionPane.showMessageDialog
+					(
+						null,
+						"The script choose for the bullseye metaplot is not the good one. give the path of bullseye.py",
+						"Error",
+						JOptionPane.ERROR_MESSAGE
+					);	
+				}
+			}
 		}
 	}
 		
@@ -636,13 +720,26 @@ public class MetaplotGUI extends JFrame{
 		 * 
 		 */
 		public void actionPerformed(ActionEvent actionEvent){
-			if(_gui.isCompare()){
-        		_gui._jtfRawData2.setEditable(true);
-        		_gui._jbRawData2.setEnabled(true);
-        	}else if(_gui.isOneData()){
-        		_gui._jtfRawData2.setEditable(false);
-        		_gui._jbRawData2.setEnabled(false);
-	        }
+			if(_gui.isClassic()){
+				if(_gui.isCompare()){
+					_gui._jtfRawData2.setEditable(true);
+					_gui._jbRawData2.setEnabled(true);
+				}else if(_gui.isOneData()){
+					_gui._jtfRawData2.setEditable(false);
+					_gui._jbRawData2.setEnabled(false);
+				}
+				_jrEdge.setEnabled(false);
+				_jrZscore.setEnabled(false);
+				_comboColor.setEnabled(false);
+				_jrSubstraction.setEnabled(true);
+			 	_jrSimple.setEnabled(true);	
+			}else if(_gui.isManhattan()){
+				_jrEdge.setEnabled(true);
+				_jrZscore.setEnabled(true);
+				_comboColor.setEnabled(true);
+				_jrSubstraction.setEnabled(false);
+			 	_jrSimple.setEnabled(false);
+			}
 	    }
 	}
 	
