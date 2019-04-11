@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -69,7 +70,41 @@ public class MetaplotGUI extends JFrame{
 	private JRadioButton _jrTrue = new JRadioButton("True");
 	/** */
 	private JRadioButton _jrFalse = new JRadioButton("False");
-
+	/**
+	 *  To help, I created a command line version of the bullseye plot. It takes the matrix.tab output from your metaplotter and creates both bullseye and normal heatmaps. 
+	 * We should replace the Rscript with this python script. Note that it has several options that would be nice for users to have.  Here are the options and how 
+	 * I think they should be in the gui:
+	 * -c in the python script should be an optional text entry in the gui (or dropdown menu if possible) for any colorscheme in matplotlib. If not set in python script it defaults to Red.
+	 * -z should be a checkbox in the gui (default is no check). In the python script, the -z option calculates the zscores of each ring in the bullseye.
+	 *  We don’t need to worry about the -s option in the bullseye script. 
+	 *  -l and -u should be optional integers. If no input it uses the default scale from matplotlib. If set, -l and -u correspond to the color range in the heatmap.
+	 *  You  can pass the matrix to -i in the python script.
+	 *  -o in the python script is the prefix for output png files. It appends “_bullseye.png” and “_normal.png” to the prefix.
+	 */
+	
+	/** */
+	private ButtonGroup _bGroupMetaType = new ButtonGroup();
+	/** */
+	private JRadioButton _jrManha = new JRadioButton("Manhattan distance");
+	/** */
+	private JRadioButton _jrClassic = new JRadioButton("Classic");
+	
+	/** Accent, Accent_r, Blues, Blues_r, BrBG, BrBG_r, BuGn, BuGn_r, BuPu, BuPu_r, CMRmap, CMRmap_r, Dark2, Dark2_r, GnBu, GnBu_r, Greens, Greens_r, Greys, Greys_r, OrRd, 
+	 * OrRd_r, Oranges, Oranges_r, PRGn, PRGn_r, Paired, Paired_r, Pastel1, Pastel1_r, Pastel2, Pastel2_r, PiYG, PiYG_r, PuBu, PuBuGn, PuBuGn_r, PuBu_r, PuOr, PuOr_r, PuRd,
+	 *  PuRd_r, Purples, Purples_r, RdBu, RdBu_r, RdGy, RdGy_r, RdPu, RdPu_r, RdYlBu, RdYlBu_r, RdYlGn, RdYlGn_r, Reds, Reds_r, Set1, Set1_r, Set2, Set2_r, Set3, Set3_r, 
+	 *  Spectral, Spectral_r, Vega10, Vega10_r, Vega20, Vega20_r, Vega20b, Vega20b_r, Vega20c, Vega20c_r, Wistia, Wistia_r, YlGn, YlGnBu, YlGnBu_r, YlGn_r, YlOrBr, YlOrBr_r, 
+	 *  YlOrRd, YlOrRd_r, afmhot, afmhot_r, autumn, autumn_r, binary, binary_r, bone, bone_r, brg, brg_r, bwr, bwr_r, cool, cool_r, coolwarm, coolwarm_r, copper, copper_r, 
+	 *  cubehelix, cubehelix_r, flag, flag_r, gist_earth, gist_earth_r, gist_gray, gist_gray_r, gist_heat, gist_heat_r, gist_ncar, gist_ncar_r, gist_rainbow, gist_rainbow_r, 
+	 *  gist_stern, gist_stern_r, gist_yarg, gist_yarg_r, gnuplot, gnuplot2, gnuplot2_r, gnuplot_r, gray, gray_r, hot, hot_r, hsv, hsv_r, inferno, inferno_r, jet, jet_r, magma,
+	 *   magma_r, nipy_spectral, nipy_spectral_r, ocean, ocean_r, pink, pink_r, plasma, plasma_r, prism, prism_r, rainbow, rainbow_r, seismic, seismic_r, spectral, spectral_r,
+	 *    spring, spring_r, summer, summer_r, tab10, tab10_r, tab20, tab20_r, tab20b, tab20b_r, tab20c, tab20c_r, terrain, terrain_r, viridis, viridis_r, winter, winter_r
+	 */
+	
+	// define items in a String array:
+	String[] colors = new String[] {"Blues", "BuGn", "Greens", "Purples", "Reds", "coolwarm", "magma", "inferno", "spectral", "viridis"};
+	
+	private JComboBox<String> _comboColor = new JComboBox<String>(colors);
+	
 	/** */
     private JFormattedTextField _matrixSize =  new JFormattedTextField(Number.class);
 	
@@ -92,30 +127,61 @@ public class MetaplotGUI extends JFrame{
 	    
 	/**
 	 * Architecture of the graphical windows
+	 * ccent, Accent_r, Blues, Blues_r, BrBG, BrBG_r, BuGn, BuGn_r, BuPu, BuPu_r, CMRmap, CMRmap_r, Dark2, Dark2_r, GnBu, GnBu_r, Greens, Greens_r, Greys, Greys_r, OrRd, OrRd_r, Oranges, Oranges_r, 
+	 * PRGn, PRGn_r, Paired, Paired_r, Pastel1, Pastel1_r, Pastel2, Pastel2_r, PiYG, PiYG_r, PuBu, PuBuGn, PuBuGn_r, PuBu_r, PuOr, PuOr_r, PuRd, PuRd_r, Purples, Purples_r, RdBu, RdBu_r, RdGy, RdGy_r,
+	 *  RdPu, RdPu_r, RdYlBu, RdYlBu_r, RdYlGn, RdYlGn_r, Reds, Reds_r, Set1, Set1_r, Set2, Set2_r, Set3, Set3_r, Spectral, Spectral_r, Vega10, Vega10_r, Vega20, Vega20_r, Vega20b, Vega20b_r, Vega20c,
+	 *   Vega20c_r, Wistia, Wistia_r, YlGn, YlGnBu, YlGnBu_r, YlGn_r, YlOrBr, YlOrBr_r, YlOrRd, YlOrRd_r, afmhot, afmhot_r, autumn, autumn_r, binary, binary_r, bone, bone_r, brg, brg_r, bwr, bwr_r, cool,
+	 *    cool_r, coolwarm, coolwarm_r, copper, copper_r, cubehelix, cubehelix_r, flag, flag_r, gist_earth, gist_earth_r, gist_gray, gist_gray_r, gist_heat, gist_heat_r, gist_ncar, gist_ncar_r, gist_rainbow,
+	 *     gist_rainbow_r, gist_stern, gist_stern_r, gist_yarg, gist_yarg_r, gnuplot, gnuplot2, gnuplot2_r, gnuplot_r, gray, gray_r, hot, hot_r, hsv, hsv_r, inferno, inferno_r, jet, jet_r, magma, magma_r,
+	 *      nipy_spectral, nipy_spectral_r, ocean, ocean_r, pink, pink_r, plasma, plasma_r, prism, prism_r, rainbow, rainbow_r, seismic, seismic_r, spectral, spectral_r, spring, spring_r, summer, summer_r,
+	 *       tab10, tab10_r, tab20, tab20_r, tab20b, tab20b_r, tab20c, tab20c_r, terrain, terrain_r, viridis, viridis_r, winter, winter_r
 	 *
 	 */
 	
 	public MetaplotGUI(){
 		///////////////////////////////////////////// Global parameter of the JFram and def of the gridBaglayout
 		this.setTitle("Metaploter");
-		this.setSize(550, 450);
+		this.setSize(550, 650);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setBackground(Color.LIGHT_GRAY);
 		_container = getContentPane();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.1};
-		gridBagLayout.rowHeights = new int[] {17, 200, 124, 7};
+		gridBagLayout.rowHeights = new int[] {17, 260, 124, 7};
 		gridBagLayout.columnWeights = new double[] {0.0, 0.0, 0.0, 0.1};
-		gridBagLayout.columnWidths = new int[] {200, 120, 72, 20};
+		gridBagLayout.columnWidths = new int[] {260, 120, 72, 20};
 		_container.setLayout (gridBagLayout);
 		
-	   	JLabel label = new JLabel();
+		JLabel label = new JLabel();
+	   	label.setFont(new java.awt.Font("arial",1,12));
+	   	label.setText("Type of Metaplot:");
+	   	_container.add(label, new GridBagConstraints(
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+		   		GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0
+		 ));   	
+		
+	   	_bGroupMetaType .add(_jrClassic);
+	   	_bGroupMetaType .add(_jrManha);
+	 	
+	   	_jrClassic.setFont(new java.awt.Font("arial",2,11));
+	   	_jrManha.setFont(new java.awt.Font("arial",2,11));
+		_container.add(_jrClassic,new GridBagConstraints(
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(30, 20, 0, 0), 0, 0
+		));
+		_container.add(_jrManha,new GridBagConstraints(
+				0, 1, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,new Insets(30, 150, 0, 0), 0, 0
+		));
+		_jrClassic.setSelected(true);
+		
+	   	label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",1,12));
 	   	label.setText("Metaplot choice Simple (one data set) or Substarction (two data sets):");
 	   	_container.add(label, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-		   		GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0
+		   		GridBagConstraints.NONE, new Insets(60, 10, 0, 0), 0, 0
 		 ));   	
 		
 		//// Comapre or not 
@@ -128,13 +194,13 @@ public class MetaplotGUI extends JFrame{
 		_container.add(_jrSimple,new GridBagConstraints
 				(
 						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0
+						GridBagConstraints.NONE, new Insets(80, 20, 0, 0), 0, 0
 				)
 		);
 		_container.add(_jrSubstraction,new GridBagConstraints
 				(
 						0, 1, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE,new Insets(20, 150, 0, 0), 0, 0
+						GridBagConstraints.NONE,new Insets(80, 150, 0, 0), 0, 0
 				)
 		);
 		
@@ -148,7 +214,7 @@ public class MetaplotGUI extends JFrame{
 	   	label.setText("Input and Rscript choices:");
 	   	_container.add(label, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-		   		GridBagConstraints.NONE, new Insets(50, 10, 0, 0), 0, 0
+		   		GridBagConstraints.NONE, new Insets(110, 10, 0, 0), 0, 0
 		 ));
 	   	
 	   	_jbLoopsFile.setPreferredSize(new java.awt.Dimension(100, 21));
@@ -156,7 +222,7 @@ public class MetaplotGUI extends JFrame{
 	   	_container.add ( _jbLoopsFile, new GridBagConstraints
 	   			(
 	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(80, 10, 0, 0), 0, 0
+	   					GridBagConstraints.NONE, new Insets(130, 10, 0, 0), 0, 0
 	   			)
 	   	);
 	   	
@@ -165,7 +231,7 @@ public class MetaplotGUI extends JFrame{
 		_container.add(_jtfLoopsFile, new GridBagConstraints
 				(
 						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(80, 160, 0, 0),0, 0
+						GridBagConstraints.NONE, new Insets(130, 160, 0, 0),0, 0
 				)
 		);
 		
@@ -174,7 +240,7 @@ public class MetaplotGUI extends JFrame{
 	   	_container.add ( _jbRawData, new GridBagConstraints
 	   			(
 	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(110, 10, 0, 0), 0, 0
+	   					GridBagConstraints.NONE, new Insets(160, 10, 0, 0), 0, 0
 	   			)
 	   	);
 	   	
@@ -183,7 +249,7 @@ public class MetaplotGUI extends JFrame{
 		_container.add(_jtfRawData, new GridBagConstraints
 				(
 						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(110, 160, 0, 0),0, 0
+						GridBagConstraints.NONE, new Insets(160, 160, 0, 0),0, 0
 				)
 		);
 		
@@ -192,7 +258,7 @@ public class MetaplotGUI extends JFrame{
 	   	_container.add ( _jbRawData2, new GridBagConstraints
 	   			(
 	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(140, 10, 0, 0), 0, 0
+	   					GridBagConstraints.NONE, new Insets(190, 10, 0, 0), 0, 0
 	   			)
 	   	);
 	   	
@@ -201,7 +267,7 @@ public class MetaplotGUI extends JFrame{
 		_container.add(_jtfRawData2, new GridBagConstraints
 				(
 						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(140, 160, 0, 0),0, 0
+						GridBagConstraints.NONE, new Insets(190, 160, 0, 0),0, 0
 				)
 		);
 		
@@ -210,7 +276,7 @@ public class MetaplotGUI extends JFrame{
 	   	_container.add ( _jbRFile, new GridBagConstraints
 	   			(
 	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(170, 10, 0, 0), 0, 0
+	   					GridBagConstraints.NONE, new Insets(220, 10, 0, 0), 0, 0
 	   			)
 	   	);
 	   	
@@ -219,7 +285,7 @@ public class MetaplotGUI extends JFrame{
 		_container.add(_jtfRFile, new GridBagConstraints
 				(
 						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(170, 160, 0, 0),0, 0
+						GridBagConstraints.NONE, new Insets(220, 160, 0, 0),0, 0
 				)
 		);
 	   	///////////////////// Parameters for the metaplot
