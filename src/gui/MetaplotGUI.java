@@ -95,7 +95,7 @@ public class MetaplotGUI extends JFrame{
 	/** */
 	private JRadioButton _jrZscore = new JRadioButton("Bullseye with Zscore");
 	/** */
-	private JRadioButton _jrEdge = new JRadioButton("Trim edges to make a square bullseye plot");
+	private JRadioButton _jrSquare = new JRadioButton("Trim edges to make a square bullseye plot");
 	
 	
 	/** Accent, Accent_r, Blues, Blues_r, BrBG, BrBG_r, BuGn, BuGn_r, BuPu, BuPu_r, CMRmap, CMRmap_r, Dark2, Dark2_r, GnBu, GnBu_r, Greens, Greens_r, Greys, Greys_r, OrRd, 
@@ -110,7 +110,7 @@ public class MetaplotGUI extends JFrame{
 	 */
 	
 	// define items in a String array:
-	String[] colors = new String[] {"Blues", "BuGn", "Greens", "Purples", "Reds", "coolwarm", "magma", "inferno", "spectral", "viridis"};
+	String[] colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
 	
 	private JComboBox<String> _comboColor = new JComboBox<String>(colors);
 	
@@ -136,14 +136,6 @@ public class MetaplotGUI extends JFrame{
 	    
 	/**
 	 * Architecture of the graphical windows
-	 * ccent, Accent_r, Blues, Blues_r, BrBG, BrBG_r, BuGn, BuGn_r, BuPu, BuPu_r, CMRmap, CMRmap_r, Dark2, Dark2_r, GnBu, GnBu_r, Greens, Greens_r, Greys, Greys_r, OrRd, OrRd_r, Oranges, Oranges_r, 
-	 * PRGn, PRGn_r, Paired, Paired_r, Pastel1, Pastel1_r, Pastel2, Pastel2_r, PiYG, PiYG_r, PuBu, PuBuGn, PuBuGn_r, PuBu_r, PuOr, PuOr_r, PuRd, PuRd_r, Purples, Purples_r, RdBu, RdBu_r, RdGy, RdGy_r,
-	 *  RdPu, RdPu_r, RdYlBu, RdYlBu_r, RdYlGn, RdYlGn_r, Reds, Reds_r, Set1, Set1_r, Set2, Set2_r, Set3, Set3_r, Spectral, Spectral_r, Vega10, Vega10_r, Vega20, Vega20_r, Vega20b, Vega20b_r, Vega20c,
-	 *   Vega20c_r, Wistia, Wistia_r, YlGn, YlGnBu, YlGnBu_r, YlGn_r, YlOrBr, YlOrBr_r, YlOrRd, YlOrRd_r, afmhot, afmhot_r, autumn, autumn_r, binary, binary_r, bone, bone_r, brg, brg_r, bwr, bwr_r, cool,
-	 *    cool_r, coolwarm, coolwarm_r, copper, copper_r, cubehelix, cubehelix_r, flag, flag_r, gist_earth, gist_earth_r, gist_gray, gist_gray_r, gist_heat, gist_heat_r, gist_ncar, gist_ncar_r, gist_rainbow,
-	 *     gist_rainbow_r, gist_stern, gist_stern_r, gist_yarg, gist_yarg_r, gnuplot, gnuplot2, gnuplot2_r, gnuplot_r, gray, gray_r, hot, hot_r, hsv, hsv_r, inferno, inferno_r, jet, jet_r, magma, magma_r,
-	 *      nipy_spectral, nipy_spectral_r, ocean, ocean_r, pink, pink_r, plasma, plasma_r, prism, prism_r, rainbow, rainbow_r, seismic, seismic_r, spectral, spectral_r, spring, spring_r, summer, summer_r,
-	 *       tab10, tab10_r, tab20, tab20_r, tab20b, tab20b_r, tab20c, tab20c_r, terrain, terrain_r, viridis, viridis_r, winter, winter_r
 	 *
 	 */
 	
@@ -400,7 +392,7 @@ public class MetaplotGUI extends JFrame{
 				GridBagConstraints.NONE, new Insets(120, 20, 0, 0), 0, 0
 		));
 			
-		this._minValue.setText("0");
+		this._minValue.setText("-1");
 		_minValue.setPreferredSize(new java.awt.Dimension(60, 21));
 		_minValue.setFont(new java.awt.Font("arial",2,11));
 		_container.add( _minValue, new GridBagConstraints(
@@ -416,7 +408,7 @@ public class MetaplotGUI extends JFrame{
 				GridBagConstraints.NONE, new Insets(120, 200, 0, 0), 0, 0
 		));
 			
-		this._maxValue.setText("20");
+		this._maxValue.setText("-1");
 		_maxValue.setPreferredSize(new java.awt.Dimension(60, 21));
 		_maxValue.setFont(new java.awt.Font("arial",2,11));
 		_container.add(_maxValue, new GridBagConstraints(
@@ -432,13 +424,13 @@ public class MetaplotGUI extends JFrame{
 		_jrZscore.setSelected(false);
 		_jrZscore.setEnabled(false);
 		
-		_jrEdge.setFont(new java.awt.Font("arial",2,11));
-		_container.add(_jrEdge, new GridBagConstraints(
+		_jrSquare.setFont(new java.awt.Font("arial",2,11));
+		_container.add(_jrSquare, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
 				GridBagConstraints.NONE, new Insets(150, 200, 0, 0), 0, 0
 		));
-		_jrEdge.setSelected(false);
-		_jrEdge.setEnabled(false);
+		_jrSquare.setSelected(false);
+		_jrSquare.setEnabled(false);
 
 		
 		////////////////////////// start and quit button
@@ -518,6 +510,23 @@ public class MetaplotGUI extends JFrame{
 	 */
 	public boolean isOneData(){	return _jrSimple.isSelected(); }
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isZscore(){	return _jrZscore.isSelected(); }
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isSquareManha(){	return _jrSquare.isSelected(); }	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getColor(){	return (String) _comboColor.getSelectedItem(); }
 	/**
 	 * 
 	 * @return
@@ -610,14 +619,8 @@ public class MetaplotGUI extends JFrame{
 				"Error", JOptionPane.ERROR_MESSAGE);	
 			}else if(_gui.isClassic()){
 				if(_gui.getScript().contains("heatmap.R")){
-					if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
-						JOptionPane.showMessageDialog(
-								null, "Add path of Raw data2 directory",
-								"Error", JOptionPane.ERROR_MESSAGE);
-					}else{
-						_start=true;
-						_gui.dispose();
-					}
+					_start=true;
+					_gui.dispose();
 				}else{
 					JOptionPane.showMessageDialog(
 						null, "The script choose for the classic metaplot is not the good one. give the path of heatmap.R",
@@ -636,6 +639,14 @@ public class MetaplotGUI extends JFrame{
 						JOptionPane.ERROR_MESSAGE
 					);	
 				}
+			}
+			if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
+				JOptionPane.showMessageDialog(
+						null, "Add path of Raw data2 directory",
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}else{
+				_start=true;
+				_gui.dispose();
 			}
 		}
 	}
@@ -728,17 +739,22 @@ public class MetaplotGUI extends JFrame{
 					_gui._jtfRawData2.setEditable(false);
 					_gui._jbRawData2.setEnabled(false);
 				}
-				_jrEdge.setEnabled(false);
+				_jrSquare.setEnabled(false);
 				_jrZscore.setEnabled(false);
 				_comboColor.setEnabled(false);
 				_jrSubstraction.setEnabled(true);
 			 	_jrSimple.setEnabled(true);	
 			}else if(_gui.isManhattan()){
-				_jrEdge.setEnabled(true);
+				if(_gui.isCompare()){
+					_gui._jtfRawData2.setEditable(true);
+					_gui._jbRawData2.setEnabled(true);
+				}else if(_gui.isOneData()){
+					_gui._jtfRawData2.setEditable(false);
+					_gui._jbRawData2.setEnabled(false);
+				}
+				_jrSquare.setEnabled(true);
 				_jrZscore.setEnabled(true);
 				_comboColor.setEnabled(true);
-				_jrSubstraction.setEnabled(false);
-			 	_jrSimple.setEnabled(false);
 			}
 	    }
 	}

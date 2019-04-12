@@ -158,11 +158,9 @@ public class FileToMatrix {
 				File folder = new File(dir);
 				File[] listOfFiles = folder.listFiles();
 				for (int i = 0; i < listOfFiles.length; ++i){
-				//	System.out.println(listOfFiles[i].toString());
 					if(listOfFiles[i].toString().contains(ratio+"_N.tif")){
 						String[] testTable = listOfFiles[i].toString().split("/");
 						String fileName2 = dir2+File.separator+testTable[testTable.length-1];
-						//System.out.println(listOfFiles[i].toString()+"\t"+fileName2);
 						String [] plop = listOfFiles[i].toString().split("/");
 						String coord = plop[plop.length-1].replaceAll("_"+ratio+"_N.tif", "");
 						String [] tcoord = coord.split("_");
@@ -201,7 +199,7 @@ public class FileToMatrix {
 	
 	private void writeMatrix(int nbLine) throws IOException{
 		String pathFile = _loopsFile;
-		pathFile = pathFile.replace(".bedpe", "_matrix.tab");
+		pathFile = pathFile.replace(".txt", "_matrix.tab");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathFile)));
 		for(int x = 0 ; x < _resu.length; x++){
 			String l ="";
@@ -230,7 +228,7 @@ public class FileToMatrix {
 	 */
 	public void writeStrengthFile( ) throws IOException{
 		String pathFile = _loopsFile;
-		pathFile = pathFile.replace(".bedpe", "_strength.txt");
+		pathFile = pathFile.replace(".txt", "_strength.tab");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathFile)));
 		writer.write(this._loopsStrength+"\n");
 		writer.close();
@@ -240,7 +238,7 @@ public class FileToMatrix {
 		double avg = (process3By3Square(1,1)+process3By3Square(1,_metaSize-2)+process3By3Square(_metaSize-2,1)+process3By3Square(_metaSize-2,_metaSize-2))/4; 
 		double val = _resu[_metaSize/2][_metaSize/2];
 		String pathFile = _loopsFile;
-		pathFile = pathFile.replace(".bedpe", "_APA.txt");
+		pathFile = pathFile.replace(".txt", "_APA.tab");
 		_scoreAPA = val/avg;
 		String line = "valueCenter\tcorner avg\tAPA\n"+val+"\t"+avg+"\t"+_scoreAPA;
 		System.out.println(line);

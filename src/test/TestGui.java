@@ -27,18 +27,20 @@ public class TestGui {
 		if (gui.isStart()){
 			System.out.println("test");
 			String raw = gui.getRawDataDir();
-			String raw2 = "";
+			String raw2 = gui.getRawDataDir2();
 			String loop = gui.getLoopFile();
 			String rScript = gui.getScript();
 			String plopi ="";
 			boolean maxRes = gui.isMaxRes();
 			if(gui.isOneData()){	plopi ="simple";}
-			else{
-				plopi = "subtraction";
-				raw2 = gui.getRawDataDir2();
-			}
+			else{	plopi = "subtraction";}
 			double min = gui.getMinValue();
 			double max = gui.getMaxValue();
+			String plot = "classic";
+			if(gui.isManhattan()) plot = "bullseye";
+			boolean zScore = gui.isZscore();
+			boolean square = gui.isSquareManha();
+			String color = gui.getColor();
 			int metaSize = gui.getMatrixSize();
 			int sizeSipImage = gui.getSipImageSize();
 			System.out.println("metaplot mode: "+plopi
@@ -50,7 +52,12 @@ public class TestGui {
 					+"\nmax: "+max
 					+ "\nsize meta: "+metaSize
 					+"\nsizeSipImage: "+sizeSipImage
-					+"\nmax res: "+maxRes+"\n");
+					+"\nmax res: "+maxRes+"\n"
+					+ "color "+color
+					+"\nplot "+plot
+					+"\ntype "+plopi
+					+"\nzScore "+zScore
+					+"\nsquare "+square);
 		}
 		else {
 			System.out.println("program NO Name closed: if you want the help: -h");
