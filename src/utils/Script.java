@@ -81,7 +81,7 @@ public class Script {
 	 *  -l and -u should be optional integers. If no input it uses the default scale from matplotlib. If set, -l and -u correspond to the color range in the heatmap.
 	 *  You  can pass the matrix to -i in the python script.
 	 *  -o in the python script is the prefix for output png files. It appends “_bullseye.png” and “_normal.png” to the prefix.
-	 * 
+	 * bullseye.py [-h] -i INPUT_FILE -o OUTPUT_FILE [-c COLORSCHEME] [-z] [-s] [-l LOWER] [-u UPPER]
 	 * @return
 	 * @throws IOException
 	 */
@@ -92,14 +92,14 @@ public class Script {
 			Process process;
 			if(_min == -1 && _max == -1){
 				if(this._zscore){
-					if(this._square)	process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -s -c "+_color);
-					else				process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -c "+_color);	
+					if(this._square)	process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -s");
+					else				process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z");	
 				}else process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -c "+_color);
 			}else{
 				if(this._zscore){
-					if(this._square) process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -s -c "+_color+" -l "+_min+" -u "+_max);
-					else             process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -c "+_color+" -l "+_min+" -u "+_max);
-				}else process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -c "+_color+" -l "+_min+" -u "+_max);
+					if(this._square) process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -s  -l "+(int)_min+" -u "+(int)_max);
+					else             process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -c -l "+(int)_min+" -u "+(int)_max);
+				}else process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -c "+_color+" -l "+(int)_min+" -u "+(int)_max);
 			}
 			new ReturnFlux(process.getInputStream()).start();
 			new ReturnFlux(process.getErrorStream()).start();
