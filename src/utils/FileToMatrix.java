@@ -60,6 +60,11 @@ public class FileToMatrix {
 	
 	/**
 	 * 
+	 */
+	public FileToMatrix(){ }
+
+	/**
+	 * 
 	 * @param imgDir
 	 * @param loopsFile
 	 * @param res

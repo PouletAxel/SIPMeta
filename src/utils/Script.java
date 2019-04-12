@@ -5,14 +5,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Script {
-	String _logError = "";
-	String _input ="";
-	String _output ="";
-	String _scriptPath = "";
-	String _color = "";
-	int _min;
-	int _max;
-	boolean _zscore = false;
+	private String _logError = "";
+	private String _input ="";
+	private String _output ="";
+	private String _scriptPath = "";
+	private String _color = "";
+	private double _min;
+	private double _max;
+	private boolean _square = false;
+	private boolean _zscore = false;
 	
 	/**
 	 * Constructor of this class to iniatilise the different variables
@@ -22,7 +23,7 @@ public class Script {
 	 * @param norm: String: type of normalisation
 	 * @param resolution: int: resolution of the bins 
 	 */
-	public Script(String script, String input,String pdfOutput, String color, int min, int max){
+	public Script(String script, String input,String pdfOutput, String color, double min, double max){
 		_input = input;
 		_output= pdfOutput;
 		_scriptPath = script;
@@ -38,12 +39,15 @@ public class Script {
 	 * @param norm: String: type of normalisation
 	 * @param resolution: int: resolution of the bins 
 	 */
-	public Script(String script, String color,boolean zscore, String input, String output){
+	public Script(String script, String color,boolean zscore, boolean square, String input, String output, double min, double max ){
 		_input = input;
 		_output= output;
 		_scriptPath = script;
 		_color = color;
 		_zscore = zscore;
+		_square = square;
+		_min = min;
+		_max = max;
 	}
 	
 	/**
@@ -86,8 +90,17 @@ public class Script {
 		Runtime runtime = Runtime.getRuntime();
 		try {
 			Process process;
-			if(this._zscore) process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -c "+_color);
-			else process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -c "+_color);
+			if(_min == -1 && _max == -1){
+				if(this._zscore){
+					if(this._square)	process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -s -c "+_color);
+					else				process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -c "+_color);	
+				}else process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -c "+_color);
+			}else{
+				if(this._zscore){
+					if(this._square) process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -s -c "+_color+" -l "+_min+" -u "+_max);
+					else             process= runtime.exec("python3"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -z -c "+_color+" -l "+_min+" -u "+_max);
+				}else process= runtime.exec("python"+" " +_scriptPath+" -i "+_input+" -o "+_output+" -c "+_color+" -c "+_color+" -l "+_min+" -u "+_max);
+			}
 			new ReturnFlux(process.getInputStream()).start();
 			new ReturnFlux(process.getErrorStream()).start();
 			exitValue=process.waitFor();

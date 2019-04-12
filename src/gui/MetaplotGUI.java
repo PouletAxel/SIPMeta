@@ -626,6 +626,11 @@ public class MetaplotGUI extends JFrame{
 						null, "The script choose for the classic metaplot is not the good one. give the path of heatmap.R",
 						"Error", JOptionPane.ERROR_MESSAGE);	
 				}
+				if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
+					JOptionPane.showMessageDialog(
+							null, "Add path of Raw data2 directory",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}else if(_gui.isManhattan()){
 				if(_gui.getScript().contains("bullseye.py")){
 					_start=true;
@@ -639,11 +644,11 @@ public class MetaplotGUI extends JFrame{
 						JOptionPane.ERROR_MESSAGE
 					);	
 				}
-			}
-			if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
-				JOptionPane.showMessageDialog(
-						null, "Add path of Raw data2 directory",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
+					JOptionPane.showMessageDialog(
+							null, "Add path of Raw data2 directory",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}else{
 				_start=true;
 				_gui.dispose();

@@ -76,9 +76,9 @@ public class MainMetaplot{
 	static String[] _colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
 	
 	private static String _doc = ("metaplot Version 0.0.1 run with java 8\n"
-			+"Usage:\n"
-			+"\tsimple <bullseye or classic> <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME] \n"
-			+"\tsubstraction <bullseye or classic> <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]\n"
+			+"Usage:\n\n"
+			+"simple <bullseye or classic> <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME] \n"
+			+"substraction <bullseye or classic> <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]\n\n"
 			+"sMetaPlot: size of the metaplot (default 20 bins)\n"
 			+"sImg: size of the image analysed by SIP (default 2000 bins)\n"
 			+"-resMax TRUE or FALSE: default true, if false take the samller resolution (only for classic metaplot)\n"
@@ -99,41 +99,40 @@ public class MainMetaplot{
 	 */
 	public static void main(String[] args) throws IOException{
 		if((args.length >= 1 && args.length <= 6)){
-			System.out.println(_doc);
+			System.out.println("miss some arguments!!!!!!\n\n"+_doc);
 			System.exit(0);
 		}else if(args.length > 6){
-			_type =args[0];
-			_plot = args[1];
-			_loopsFile = args[2];
-			_input = args[3];
-			_script = args[4];
-			try{_metaSize =Integer.parseInt(args[5]);}
-			catch(NumberFormatException e){ returnError("sMetaPlot",args[5],"int");} 
-			try{_imageSize =Integer.parseInt(args[6]);}
-			catch(NumberFormatException e){ returnError("sImg",args[6],"int");}
-			if(_type.equals("-h")){
+			_type =args[0];if(_type.equals("-h")){
 				System.out.println(_doc);
 				System.exit(0);
 			}else {
-				if(_type.equals("simple") && _plot.equals("bullseye") && _script.contains("bullseye.py")==false){
-					System.out.println("error bullseye option need bullseye.py script\n"+_doc);
+				_plot = args[1];
+				_loopsFile = args[2];
+				_input = args[3];
+				if(_type.equals("simple") && _plot.equals("bullseye") && args[4].contains("bullseye.py")==false){
+					System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
 					System.exit(0);
 				}
 				if(_type.equals("substraction") && _plot.equals("bullseye") && args[5].contains("bullseye.py")==false){
-					System.out.println("error bullseye option need bullseye.py script\n"+_doc);
+					System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
 					System.exit(0);
 				}
-				if(_type.equals("simple") && _plot.equals("classic") && _script.contains("heatmap.R")==false){
-					System.out.println("error bullseye option need bullseye.py script\n"+_doc);
+				if(_type.equals("simple") && _plot.equals("classic") && args[4].contains("heatmap.R")==false){
+					System.out.println("error classic option need heatmap.R script!!!!!\n\n"+_doc);
 					System.exit(0);
 				}
 				if(_type.equals("substraction") && _plot.equals("classic") && args[5].contains("heatmap.R")==false){
-					System.out.println("error bullseye option need bullseye.py script\n"+_doc);
+					System.out.println("error classic option need heatmap.R script!!!!!!!\n\n"+_doc);
 					System.exit(0);
 				}
-				
-				if(_type.matches("classic")){
+				if(_type.matches("simple")){
 					readOption(args,7);
+					_script = args[4];
+					try{_metaSize =Integer.parseInt(args[5]);}
+					catch(NumberFormatException e){ returnError("sMetaPlot",args[5],"int");} 
+					try{_imageSize =Integer.parseInt(args[6]);}
+					catch(NumberFormatException e){ returnError("sImg",args[6],"int");}				
+				
 				}else if(_type.matches("substraction")){
 					_input2 = args[4];
 					_script = args[5];
@@ -143,7 +142,8 @@ public class MainMetaplot{
 					catch(NumberFormatException e){ returnError("sImg",args[7],"int");}
 					readOption(args,8);
 				}else{
-					System.out.println(_doc);
+					
+					System.out.println("error in classic or substraction choice !!!!\n\n"+_doc);
 					System.exit(0);
 				}
 			
@@ -173,56 +173,48 @@ public class MainMetaplot{
 				_square = gui.isSquareManha();
 				_gui = true;
 				_color = gui.getColor();
-			}else {
-				System.out.println("program metaplot closed: if you want the help: -h\n"+_doc);
-				System.exit(0);
 			}
 		}
-		/*_step = _imageSize/2;
+		
+		_step = _imageSize/2;
 		int nbLine = readLoopFile();
-		
-		if(_type.matches("classic_simple") ||_type.matches("bullseye")){
-			String pathFileMatrix = _loopsFile.replace(".txt", "_matrix.tab");
-			String output = pathFileMatrix.replace("_matrix.tab", ".pdf");
+		FileToMatrix ftm = new FileToMatrix();
+		String pathFileMatrix = _loopsFile.replace(".txt", "_matrix.tab");
+		String output = pathFileMatrix.replace("_matrix.tab", ".pdf");
+		if(_plot.equals("bullseye")) output = _loopsFile.replace(".txt", "");
+				
+		if(_type.matches("simple")){
 			makeTif(_input,_minRes,_imageSize);
-		
-			FileToMatrix ftm = new FileToMatrix(_input, _loopsFile, _resolution, _metaSize);		
+			ftm = new FileToMatrix(_input, _loopsFile, _resolution, _metaSize);		
 			int step = (_imageSize/_ratio)/2;
 			ftm.creatMatrix(step, _ratio, _gui,nbLine);
 			ftm.getAPA();
 			ftm.writeStrengthFile();
-			
-			if(ftm.isTest() && _type.matches("classic_simple")){
-				if(_min == -1) _min = ftm.getMinMatrix();
-				if(_max == -1) _max = ftm.getMaxMatrix();
-				Script r = new Script(_script, pathFileMatrix,output,"false",(int)_min,(int)_max); 
-				r.runRscript();
-				System.out.println(output);
-			}if(ftm.isTest() && _type.matches("bullseye")){
-				d
-			}
-		}else if(_type.matches("classic_substraction")){
-			String pathFileMatrix = _loopsFile.replace(".txt", "_matrix.tab");
-			String output = pathFileMatrix.replace("_matrix.tab", ".pdf");
+		}else if(_type.matches("substraction")){
 			makeTif(_input,_minRes,_imageSize);
 			makeTif(_input2,_minRes,_imageSize);
-			FileToMatrix ftm = new FileToMatrix(_input,_input2, _loopsFile, _resolution, _metaSize);
+			ftm = new FileToMatrix(_input,_input2, _loopsFile, _resolution, _metaSize);
 			ftm.creatMatrixSubstarction(_step, _ratio, _gui, nbLine);
 			ftm.getAPA();
 			ftm.writeStrengthFile();
-			if(_min == -1)	_min = ftm.getMinMatrix();
-			if(_max == -1)	_max = ftm.getMaxMatrix();
-			if(ftm.isTest()){
-				Script r = new Script(_script, pathFileMatrix,output,"true",(int)_min,(int)_max);  
+		}else{
+			System.out.println("plopi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"+_doc);
+			System.exit(0);
+		}
+		
+		if(ftm.isTest() && _plot.matches("classic")){
+				if(_min == -1) _min = ftm.getMinMatrix();
+				if(_max == -1) _max = ftm.getMaxMatrix();
+				Script r = new Script(_script, pathFileMatrix,output,"false",_min,_max); 
 				r.runRscript();
 				System.out.println(output);
-			}
-		}
-		else{
+		}else if(ftm.isTest() && _plot.matches("bullseye")){
+			Script python = new Script(_script, _color, _zScore, _square, pathFileMatrix, output, _min, _max);  
+			python.runPythonScript();
+		}else{
 			System.out.println(_doc);
 			System.exit(0);
-		}*/
-		
+		}
 	}
 	
 
@@ -322,7 +314,7 @@ public class MainMetaplot{
 					catch(NumberFormatException e){ returnError(args[i],args[i+1],"int");} 
 				}else if(args[i].equals("-z")){
 					if(_plot.equals("classic")){
-						System.out.println("-z doesn't exist for classic plot"+_doc);
+						System.out.println("-z doesn't exist for classic plot!!!!!!!!!\n\n"+_doc);
 						System.exit(0);
 					}else{
 						try{_zScore = true;}
@@ -331,7 +323,7 @@ public class MainMetaplot{
 					}
 				}else if(args[i].equals("-s")){
 					if(_plot.equals("classic")){
-						System.out.println("-s doesn't exist for classic plot"+_doc);
+						System.out.println("-s doesn't exist for classic plot!!!!!\n\n"+_doc);
 						System.exit(0);
 					}else{
 						try{_square = true;}
@@ -340,18 +332,18 @@ public class MainMetaplot{
 					}
 				}else if(args[i].equals("-c")){
 					if(_plot.equals("classic")){
-						System.out.println("-c doesn't exist for classic plot"+_doc);
+						System.out.println("-c doesn't exist for classic plot!!!!!!\n\n"+_doc);
 						System.exit(0);
 					}else{					
 						if(_colors.equals(args[i+1]) == false)
 							_color = args[i+1];
 						else{
-							System.out.println("color choose doesn't exist"+_doc);
+							System.out.println("color choose doesn't exist !!!!!!!\n\n"+_doc);
 							System.exit(0);
 						}
 					}
 				}else{
-					System.out.println(args[i]+" doesn't existed\n");
+					System.out.println(args[i]+" doesn't existed\n\n");
 					System.out.println(_doc);
 					System.exit(0);
 				}
@@ -366,7 +358,7 @@ public class MainMetaplot{
 	 * @param type
 	 */
 	private static void returnError(String param, String value, String type){
-		System.out.println(param+" has to be an integer "+value+" can't be convert in "+type+"\n");
+		System.out.println(param+" has to be an integer "+value+" can't be convert in "+type+"\n\n");
 		System.out.println(_doc);
 		System.exit(0);
 	}
