@@ -86,13 +86,6 @@ public class MetaplotGUI extends JFrame{
 	 */
 	
 	/** */
-	private ButtonGroup _bGroupMetaType = new ButtonGroup();
-	/** */
-	private JRadioButton _jrManha = new JRadioButton("Manhattan distance (bullseye plot)");
-	/** */
-	private JRadioButton _jrClassic = new JRadioButton("Classic");
-	
-	/** */
 	private JRadioButton _jrZscore = new JRadioButton("Bullseye with Zscore");
 	/** */
 	private JRadioButton _jrSquare = new JRadioButton("Trim edges to make a square bullseye plot");
@@ -142,47 +135,25 @@ public class MetaplotGUI extends JFrame{
 	public MetaplotGUI(){
 		///////////////////////////////////////////// Global parameter of the JFram and def of the gridBaglayout
 		this.setTitle("Metaploter");
-		this.setSize(550, 600);
+		this.setSize(550, 500);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setBackground(Color.LIGHT_GRAY);
 		_container = getContentPane();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.1};
-		gridBagLayout.rowHeights = new int[] {17, 280, 124, 7};
+		gridBagLayout.rowHeights = new int[] {17, 230, 124, 7};
 		gridBagLayout.columnWeights = new double[] {0.0, 0.0, 0.0, 0.1};
-		gridBagLayout.columnWidths = new int[] {260, 120, 72, 20};
+		gridBagLayout.columnWidths = new int[] {230, 120, 72, 20};
 		_container.setLayout (gridBagLayout);
 		
-		JLabel label = new JLabel();
-	   	label.setFont(new java.awt.Font("arial",1,12));
-	   	label.setText("Type of Metaplot:");
-	   	_container.add(label, new GridBagConstraints(
-	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-		   		GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0
-		 ));   	
-		
-	   	_bGroupMetaType.add(_jrClassic);
-	   	_bGroupMetaType.add(_jrManha);
-	 	
-	   	_jrClassic.setFont(new java.awt.Font("arial",2,11));
-	   	_jrManha.setFont(new java.awt.Font("arial",2,11));
-		_container.add(_jrClassic,new GridBagConstraints(
-				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(30, 20, 0, 0), 0, 0
-		));
-		_container.add(_jrManha,new GridBagConstraints(
-				0, 1, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE,new Insets(30, 150, 0, 0), 0, 0
-		));
-		_jrClassic.setSelected(true);
-		
-	   	label = new JLabel();
+				
+	   	JLabel label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",1,12));
 	   	label.setText("Metaplot choice Simple (one data set) or Substarction (two data sets):");
 	   	_container.add(label, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-		   		GridBagConstraints.NONE, new Insets(60, 10, 0, 0), 0, 0
+		   		GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0
 		 ));   	
 		
 		//// Comapre or not 
@@ -195,13 +166,13 @@ public class MetaplotGUI extends JFrame{
 		_container.add(_jrSimple,new GridBagConstraints
 				(
 						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(80, 20, 0, 0), 0, 0
+						GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0
 				)
 		);
 		_container.add(_jrSubstraction,new GridBagConstraints
 				(
 						0, 1, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE,new Insets(80, 150, 0, 0), 0, 0
+						GridBagConstraints.NONE,new Insets(20, 150, 0, 0), 0, 0
 				)
 		);
 		
@@ -215,88 +186,70 @@ public class MetaplotGUI extends JFrame{
 	   	label.setText("Input and script choices:");
 	   	_container.add(label, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-		   		GridBagConstraints.NONE, new Insets(110, 10, 0, 0), 0, 0
+		   		GridBagConstraints.NONE, new Insets(50, 10, 0, 0), 0, 0
 		 ));
 	   	
 	   	_jbLoopsFile.setPreferredSize(new java.awt.Dimension(100, 21));
 	   	_jbLoopsFile.setFont(new java.awt.Font("arial",2,11));
-	   	_container.add ( _jbLoopsFile, new GridBagConstraints
-	   			(
-	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(130, 10, 0, 0), 0, 0
-	   			)
-	   	);
+	   	_container.add ( _jbLoopsFile, new GridBagConstraints(
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(80, 10, 0, 0), 0, 0
+	   	));
 	   	
 	   	this._jtfLoopsFile.setPreferredSize(new java.awt.Dimension(280, 21));
 	   	_jtfLoopsFile.setFont(new java.awt.Font("arial",2,10));
-		_container.add(_jtfLoopsFile, new GridBagConstraints
-				(
-						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(130, 160, 0, 0),0, 0
-				)
-		);
+		_container.add(_jtfLoopsFile, new GridBagConstraints(
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(80, 160, 0, 0),0, 0
+		));
 		
 	   	_jbRawData.setPreferredSize(new java.awt.Dimension(100, 21));
 	   	_jbRawData.setFont(new java.awt.Font("arial",2,10));
-	   	_container.add ( _jbRawData, new GridBagConstraints
-	   			(
-	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(160, 10, 0, 0), 0, 0
-	   			)
-	   	);
+	   	_container.add ( _jbRawData, new GridBagConstraints(
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(110, 10, 0, 0), 0, 0
+	   	));
 	   	
 	   	_jtfRawData.setPreferredSize(new java.awt.Dimension(280, 21));
 		_jtfRawData.setFont(new java.awt.Font("arial",2,10));
-		_container.add(_jtfRawData, new GridBagConstraints
-				(
-						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(160, 160, 0, 0),0, 0
-				)
-		);
+		_container.add(_jtfRawData, new GridBagConstraints(
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(110, 160, 0, 0),0, 0
+		));
 		
 	   	_jbRawData2.setPreferredSize(new java.awt.Dimension(100, 21));
 	   	_jbRawData2.setFont(new java.awt.Font("arial",2,10));
-	   	_container.add ( _jbRawData2, new GridBagConstraints
-	   			(
-	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(190, 10, 0, 0), 0, 0
-	   			)
-	   	);
+	   	_container.add ( _jbRawData2, new GridBagConstraints(
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(140, 10, 0, 0), 0, 0
+	   	));
 	   	
 	   	_jtfRawData2.setPreferredSize(new java.awt.Dimension(280, 21));
 		_jtfRawData2.setFont(new java.awt.Font("arial",2,10));
-		_container.add(_jtfRawData2, new GridBagConstraints
-				(
-						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(190, 160, 0, 0),0, 0
-				)
-		);
+		_container.add(_jtfRawData2, new GridBagConstraints(
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(140, 160, 0, 0),0, 0
+		));
 	   	label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	label.setText("Script path (Classic metaplot (heatmap.R) bullseye plot (bullseye.py))");
-	   	_container.add(label, new GridBagConstraints
-				(
-						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(220, 20, 0, 0),0, 0
-				)
-		);
+	   	_container.add(label, new GridBagConstraints(
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+	   			GridBagConstraints.NONE, new Insets(170, 20, 0, 0),0, 0
+	   	));
 		_jbScriptFile.setPreferredSize(new java.awt.Dimension(100, 21));
 	   	_jbScriptFile.setFont(new java.awt.Font("arial",2,11));
-	   	_container.add ( _jbScriptFile, new GridBagConstraints
-	   			(
-	   					0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   					GridBagConstraints.NONE, new Insets(240, 10, 0, 0), 0, 0
-	   			)
-	   	);
+	   	_container.add ( _jbScriptFile, new GridBagConstraints(
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(200, 10, 0, 0), 0, 0
+	   	));
 	   	
 	   	this._jtfScript.setPreferredSize(new java.awt.Dimension(280, 21));
 	   	_jtfScript.setFont(new java.awt.Font("arial",2,10));
-		_container.add(_jtfScript, new GridBagConstraints
-				(
-						0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-						GridBagConstraints.NONE, new Insets(240, 160, 0, 0),0, 0
-				)
-		);
+		_container.add(_jtfScript, new GridBagConstraints(
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(200, 160, 0, 0),0, 0
+		));
 	   	///////////////////// Parameters for the metaplot
 		/*   sMetaPlot: size of the metaplot (default 20 bins)
 		 *   sImg: size of the image analysed by SIP (default 2000 bins)
@@ -382,7 +335,6 @@ public class MetaplotGUI extends JFrame{
 				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
 				GridBagConstraints.NONE, new Insets(87, 300, 0, 0), 0, 0
 		));
-		_comboColor.setEnabled(false);
 		
 	   	label = new JLabel();
 	   	label.setText("Min value:");
@@ -422,7 +374,6 @@ public class MetaplotGUI extends JFrame{
 				GridBagConstraints.NONE, new Insets(150, 20, 0, 0), 0, 0
 		));
 		_jrZscore.setSelected(false);
-		_jrZscore.setEnabled(false);
 		
 		_jrSquare.setFont(new java.awt.Font("arial",2,11));
 		_container.add(_jrSquare, new GridBagConstraints(
@@ -430,7 +381,6 @@ public class MetaplotGUI extends JFrame{
 				GridBagConstraints.NONE, new Insets(150, 200, 0, 0), 0, 0
 		));
 		_jrSquare.setSelected(false);
-		_jrSquare.setEnabled(false);
 
 		
 		////////////////////////// start and quit button
@@ -448,8 +398,6 @@ public class MetaplotGUI extends JFrame{
 		));
 		
 		RBHicListener plop = new RBHicListener(this);
-		this._jrClassic.addActionListener(plop);
-	  	this._jrManha.addActionListener(plop);
 		this._jrSimple.addActionListener(plop);
 	  	this._jrSubstraction.addActionListener(plop);
 		FileListener rFile = new FileListener(_jtfScript);
@@ -537,18 +485,6 @@ public class MetaplotGUI extends JFrame{
 	 * 
 	 * @return
 	 */
-	public boolean isClassic(){ return this._jrClassic.isSelected();}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isManhattan(){ return this._jrManha.isSelected();}
-	
-	/**
-	 * 
-	 * @return
-	 */
 	public boolean isMaxRes(){ return this._jrTrue.isSelected(); }
 	/**
 	 * 
@@ -617,38 +553,21 @@ public class MetaplotGUI extends JFrame{
 				JOptionPane.showMessageDialog(
 				null, "Add the path of Raw  data directory and/or loops file and/or script",
 				"Error", JOptionPane.ERROR_MESSAGE);	
-			}else if(_gui.isClassic()){
-				if(_gui.getScript().contains("heatmap.R")){
+			}
+			
+			if(_gui.getScript().contains("bullseye.py")){
 					_start=true;
 					_gui.dispose();
-				}else{
-					JOptionPane.showMessageDialog(
-						null, "The script choose for the classic metaplot is not the good one. give the path of heatmap.R",
-						"Error", JOptionPane.ERROR_MESSAGE);	
+			}else{
+				JOptionPane.showMessageDialog(
+					null, "The script choose for the bullseye metaplot is not the good one. give the path of bullseye.py",
+					"Error",JOptionPane.ERROR_MESSAGE);	
 				}
-				if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
-					JOptionPane.showMessageDialog(
-							null, "Add path of Raw data2 directory",
-							"Error", JOptionPane.ERROR_MESSAGE);
-				}
-			}else if(_gui.isManhattan()){
-				if(_gui.getScript().contains("bullseye.py")){
-					_start=true;
-					_gui.dispose();
-				}else{
-					JOptionPane.showMessageDialog
-					(
-						null,
-						"The script choose for the bullseye metaplot is not the good one. give the path of bullseye.py",
-						"Error",
-						JOptionPane.ERROR_MESSAGE
-					);	
-				}
-				if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
-					JOptionPane.showMessageDialog(
-							null, "Add path of Raw data2 directory",
-							"Error", JOptionPane.ERROR_MESSAGE);
-				}
+			
+			if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
+				JOptionPane.showMessageDialog(
+					null, "Add path of Raw data2 directory",
+					"Error", JOptionPane.ERROR_MESSAGE);
 			}else{
 				_start=true;
 				_gui.dispose();
@@ -736,33 +655,15 @@ public class MetaplotGUI extends JFrame{
 		 * 
 		 */
 		public void actionPerformed(ActionEvent actionEvent){
-			if(_gui.isClassic()){
-				if(_gui.isCompare()){
-					_gui._jtfRawData2.setEditable(true);
-					_gui._jbRawData2.setEnabled(true);
-				}else if(_gui.isOneData()){
-					_gui._jtfRawData2.setEditable(false);
-					_gui._jbRawData2.setEnabled(false);
-				}
-				_jrSquare.setEnabled(false);
-				_jrZscore.setEnabled(false);
-				_comboColor.setEnabled(false);
-				_jrSubstraction.setEnabled(true);
-			 	_jrSimple.setEnabled(true);	
-			}else if(_gui.isManhattan()){
-				if(_gui.isCompare()){
-					_gui._jtfRawData2.setEditable(true);
-					_gui._jbRawData2.setEnabled(true);
-				}else if(_gui.isOneData()){
-					_gui._jtfRawData2.setEditable(false);
-					_gui._jbRawData2.setEnabled(false);
-				}
-				_jrSquare.setEnabled(true);
-				_jrZscore.setEnabled(true);
-				_comboColor.setEnabled(true);
+			if(_gui.isCompare()){
+				_gui._jtfRawData2.setEditable(true);
+				_gui._jbRawData2.setEnabled(true);
+			}else if(_gui.isOneData()){
+				_gui._jtfRawData2.setEditable(false);
+				_gui._jbRawData2.setEnabled(false);
 			}
-	    }
-	}
+		}
+	}	
 	
 	/**
 	 * 

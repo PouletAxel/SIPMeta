@@ -37,7 +37,7 @@ public class TestGui {
 			double min = gui.getMinValue();
 			double max = gui.getMaxValue();
 			String plot = "classic";
-			if(gui.isManhattan()) plot = "bullseye";
+			//if(gui.isManhattan()) plot = "bullseye";
 			boolean zScore = gui.isZscore();
 			boolean square = gui.isSquareManha();
 			String color = gui.getColor();
