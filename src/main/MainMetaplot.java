@@ -96,46 +96,41 @@ public class MainMetaplot{
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException{
-		if((args.length >= 1 && args.length <= 6)){
+		if((args.length >= 1 && args.length < 5)){
 			System.out.println("miss some arguments!!!!!!\n\n"+_doc);
 			System.exit(0);
-		}else if(args.length > 6){
-			_type =args[0];if(_type.equals("-h")){
-				System.out.println(_doc);
+		}else if(args.length >= 5 ){
+			_type= args[0];
+			_loopsFile = args[1];
+			_input = args[2];
+			if(_type.equals("simple") && args[3].contains("bullseye.py")==false){
+				System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
 				System.exit(0);
-			}else {
-				_loopsFile = args[1];
-				_input = args[2];
-				if(_type.equals("simple") && args[3].contains("bullseye.py")==false){
-					System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
-					System.exit(0);
-				}
-				if(_type.equals("substraction") && args[4].contains("bullseye.py")==false){
-					System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
-					System.exit(0);
-				}
+			}
+			if(_type.equals("substraction") && args[4].contains("bullseye.py")==false){
+				System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
+				System.exit(0);
+			}
 				
-				if(_type.matches("simple")){
-					readOption(args,6);
-					_script = args[3];
-					try{_metaSize =Integer.parseInt(args[4]);}
-					catch(NumberFormatException e){ returnError("sMetaPlot",args[4],"int");} 
-					try{_imageSize =Integer.parseInt(args[5]);}
-					catch(NumberFormatException e){ returnError("sImg",args[5],"int");}				
+			if(_type.matches("simple")){
+				readOption(args,6);
+				_script = args[3];
+				try{_metaSize =Integer.parseInt(args[4]);}
+				catch(NumberFormatException e){ returnError("sMetaPlot",args[4],"int");} 
+				try{_imageSize =Integer.parseInt(args[5]);}
+				catch(NumberFormatException e){ returnError("sImg",args[5],"int");}				
 				
-				}else if(_type.matches("substraction")){
-					_input2 = args[3];
-					_script = args[4];
-					try{_metaSize =Integer.parseInt(args[5]);}
-					catch(NumberFormatException e){ returnError("sMetaPlot",args[5],"int");} 
-					try{_imageSize =Integer.parseInt(args[6]);}
-					catch(NumberFormatException e){ returnError("sImg",args[6],"int");}
-					readOption(args,8);
-				}else{
-					System.out.println("error in classic or substraction choice !!!!\n\n"+_doc);
-					System.exit(0);
-				}
-			
+			}else if(_type.matches("substraction")){
+				_input2 = args[3];
+				_script = args[4];
+				try{_metaSize =Integer.parseInt(args[5]);}
+				catch(NumberFormatException e){ returnError("sMetaPlot",args[5],"int");} 
+				try{_imageSize =Integer.parseInt(args[6]);}
+				catch(NumberFormatException e){ returnError("sImg",args[6],"int");}
+				readOption(args,8);
+			}else{
+				System.out.println("error in simple or substraction choice !!!!\n\n"+_doc);
+				System.exit(0);
 			}
 		}else{
 			MetaplotGUI gui = new MetaplotGUI();

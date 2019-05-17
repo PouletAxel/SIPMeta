@@ -109,11 +109,24 @@ public class FileToMatrix {
 							String [] plop = listOfFiles[i].toString().split("/");
 							String coord = plop[plop.length-1].replaceAll("_"+ratio+"_N.tif", "");
 							String [] tcoord = coord.split("_");
-							if(Integer.parseInt(parts[1]) >= Integer.parseInt(tcoord[1]) && Integer.parseInt(parts[4]) <= Integer.parseInt(tcoord[2])){
-								int numImage = Integer.parseInt(tcoord[1])/(step*_resolution);
+							int a = Integer.parseInt(parts[1]);
+							int a_end = Integer.parseInt(parts[4]);
+							int b;
+							int b_end;
+							if(chr.contains("_")){
+								String[] testName = chr.split("_");
+								b = Integer.parseInt(tcoord[testName.length]);
+								b_end = Integer.parseInt(tcoord[testName.length+1]);
+							}else{
+								b= Integer.parseInt(tcoord[1]);
+								b_end = Integer.parseInt(tcoord[2]);
+							}
+							
+							if(a >= b && a_end <= b_end){
+								int numImage = b/(step*_resolution);
 								int correction = numImage*step*_resolution;
-								double j = (Integer.parseInt(parts[1]) - correction)/_resolution; 
-								double k = (Integer.parseInt(parts[4]) - correction)/_resolution;									
+								double j = (a - correction)/_resolution; 
+								double k = (a_end - correction)/_resolution;									
 								ImagePlus img = new ImagePlus();
 								img = IJ.openImage(listOfFiles[i].toString());
 								_loopsStrength = _loopsStrength+"\n"+nbLine+"\t"+line+"\t";
@@ -169,24 +182,36 @@ public class FileToMatrix {
 						String [] plop = listOfFiles[i].toString().split("/");
 						String coord = plop[plop.length-1].replaceAll("_"+ratio+"_N.tif", "");
 						String [] tcoord = coord.split("_");
-						if(Integer.parseInt(parts[1]) >= Integer.parseInt(tcoord[1]) && Integer.parseInt(parts[4]) <= Integer.parseInt(tcoord[2])){
-								int numImage = Integer.parseInt(tcoord[1])/(step*_resolution);
-								int correction = numImage*step*_resolution;
-								double j = (Integer.parseInt(parts[1]) - correction)/_resolution; 
-								double k = (Integer.parseInt(parts[4]) - correction)/_resolution;									
-								ImagePlus img = new ImagePlus();
-								ImagePlus img2 = new ImagePlus();
-								
-								img = IJ.openImage(listOfFiles[i].toString());
-								img2 = IJ.openImage(fileName2);
-								_loopsStrength = _loopsStrength+"\n"+nbLine+"\t"+line+"\t";
-								
-								runImage((int)j,(int)k, img, img2);
-								nbLine++;
-								img.close();
-								break;	
-							}
+						int a = Integer.parseInt(parts[1]);
+						int a_end = Integer.parseInt(parts[4]);
+						int b, b_end;
+						if(chr.contains("_")){
+							String[] testName = chr.split("\\t");
+							b = Integer.parseInt(tcoord[testName.length]);
+							b_end = Integer.parseInt(tcoord[testName.length+1]);
+						}else{
+							b = Integer.parseInt(tcoord[1]);
+							b_end = Integer.parseInt(tcoord[2]);
 						}
+						
+						if(a >= b && a_end <= b_end){
+							int numImage = b/(step*_resolution);
+							int correction = numImage*step*_resolution;
+							double j = (a - correction)/_resolution; 
+							double k = (a_end - correction)/_resolution;									
+							ImagePlus img = new ImagePlus();
+							ImagePlus img2 = new ImagePlus();
+								
+							img = IJ.openImage(listOfFiles[i].toString());
+							img2 = IJ.openImage(fileName2);
+							_loopsStrength = _loopsStrength+"\n"+nbLine+"\t"+line+"\t";
+							
+							runImage((int)j,(int)k, img, img2);
+							nbLine++;
+							img.close();
+							break;	
+						}
+					}
 				}
 			}
 			prout++;
