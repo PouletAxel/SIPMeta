@@ -57,7 +57,8 @@ public class MetaplotGUI extends JFrame{
 	private JButton _jbQuit = new JButton("Quit");
 	/** */
 	private boolean _start = false;
-	
+    /** */
+    private JFormattedTextField _cpu = new JFormattedTextField(Number.class);
 	/** */
 	private ButtonGroup _bGroupMetaplotype = new ButtonGroup();
 	/** */
@@ -345,7 +346,7 @@ public class MetaplotGUI extends JFrame{
 		));
 			
 		this._minValue.setText("-1");
-		_minValue.setPreferredSize(new java.awt.Dimension(60, 21));
+		_minValue.setPreferredSize(new java.awt.Dimension(30, 21));
 		_minValue.setFont(new java.awt.Font("arial",2,11));
 		_container.add( _minValue, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
@@ -357,16 +358,33 @@ public class MetaplotGUI extends JFrame{
 	   	label.setFont(new java.awt.Font("arial",2,11));
 		_container.add(label, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(120, 200, 0, 0), 0, 0
+				GridBagConstraints.NONE, new Insets(120, 130, 0, 0), 0, 0
 		));
 			
 		this._maxValue.setText("-1");
-		_maxValue.setPreferredSize(new java.awt.Dimension(60, 21));
+		_maxValue.setPreferredSize(new java.awt.Dimension(30, 21));
 		_maxValue.setFont(new java.awt.Font("arial",2,11));
 		_container.add(_maxValue, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(117, 300, 0, 0), 0, 0
+				GridBagConstraints.NONE, new Insets(117, 200, 0, 0), 0, 0
 		));
+		
+		label = new JLabel();
+	   	label.setText("Nb CPU:");
+	   	label.setFont(new java.awt.Font("arial",2,11));
+		_container.add(label, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(120, 260, 0, 0), 0, 0
+		));
+			
+		this._cpu.setText("1");
+		_cpu.setPreferredSize(new java.awt.Dimension(30, 21));
+		_cpu.setFont(new java.awt.Font("arial",2,11));
+		_container.add(_cpu, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(117, 310, 0, 0), 0, 0
+		));
+		
 		
 		_jrZscore.setFont(new java.awt.Font("arial",2,11));
 		_container.add(_jrZscore, new GridBagConstraints(
@@ -512,6 +530,14 @@ public class MetaplotGUI extends JFrame{
 		String x = this._matrixSize.getText();
 		return Integer.parseInt(x.replaceAll(",", "."));
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	public int getNbCpu(){
+		String x = this._matrixSize.getText();
+		return Integer.parseInt(x.replaceAll(",", "."));
+	}
 
 	/**
 	 * 
@@ -553,21 +579,19 @@ public class MetaplotGUI extends JFrame{
 				JOptionPane.showMessageDialog(
 				null, "Add the path of Raw  data directory and/or loops file and/or script",
 				"Error", JOptionPane.ERROR_MESSAGE);	
-			}
-			
-			if(_gui.getScript().contains("bullseye.py")){
-					_start=true;
-					_gui.dispose();
-			}else{
+			}else if(_gui.getScript().contains("bullseye.py") == false){
 				JOptionPane.showMessageDialog(
 					null, "The script choose for the bullseye metaplot is not the good one. give the path of bullseye.py",
 					"Error",JOptionPane.ERROR_MESSAGE);	
-				}
-			
-			if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
+			}else if(_gui.isCompare() && _jtfRawData2.getText().equals("")){
 				JOptionPane.showMessageDialog(
 					null, "Add path of Raw data2 directory",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			}else if(_gui.getNbCpu() > Runtime.getRuntime().availableProcessors() || _gui.getNbCpu()<=0 ){
+				JOptionPane.showMessageDialog(
+						null, "The number of CPU chose is superior to the number of computer's CPU",
+						"Error", JOptionPane.ERROR_MESSAGE
+					);	
 			}else{
 				_start=true;
 				_gui.dispose();

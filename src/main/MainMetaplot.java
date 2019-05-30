@@ -1,20 +1,14 @@
 package main;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import gui.MetaplotGUI;
-import gui.Progress;
-import utils.FileToMatrix;
-import utils.ProcessTuplesFile;
-import utils.Script;
+import utils.SIPMeta;
+
 
 /**
  * 
- * @author axel poulet
+ * @author axel poulet and m. jordan rowley
  *
  * metaplot Version 0.0.1 run with java
  * Usage:
@@ -52,6 +46,8 @@ public class MainMetaplot{
 	/** */
 	static int _ratio = 2;
 	/** */
+	static int _nbCpu = 2;
+	/** */
 	static double _avgValue = 0;
 	/** */
 	static double _stdValue = 0;
@@ -68,9 +64,11 @@ public class MainMetaplot{
 	/** */
 	static boolean _square = false;
 	/** */
-	static String _color = "Reds"; 
+	static String _color = "Reds";
 	/** */
 	static boolean _gui = false;
+	static boolean _simple = true;
+	
 	static String[] _colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
 	
 	private static String _doc = ("metaplot Version 0.0.1 run with java 8\n"
@@ -85,10 +83,8 @@ public class MainMetaplot{
 			+"-s Trim edges to make a square\n"
 			+"-min MIN minvalue for color scale\n"
 			+"-max Max maxvalue for color scale\n"
+			+"-cpu: Number of CPU used for SIP processing (default 1)\n"
 			+"-h, --help print help\n");
-	
-	/** hash map stocking in key the name of the chr and in value the size*/
-	private static HashMap<String,Integer> _chrSize =  new HashMap<String,Integer>();
 	
 	/**
 	 * 
@@ -128,6 +124,7 @@ public class MainMetaplot{
 				try{_imageSize =Integer.parseInt(args[6]);}
 				catch(NumberFormatException e){ returnError("sImg",args[6],"int");}
 				readOption(args,8);
+				_simple = false;
 			}else{
 				System.out.println("error in simple or substraction choice !!!!\n\n"+_doc);
 				System.exit(0);
@@ -143,8 +140,10 @@ public class MainMetaplot{
 				_loopsFile = gui.getLoopFile();
 				_script = gui.getScript();
 				_resMax = gui.isMaxRes();
-				if(gui.isOneData())	_type = "simple";
-				else if(gui.isCompare()) _type = "substraction";
+				if(gui.isCompare()){
+					_type = "substraction";
+					_simple = false;
+				}
 				_input2 = gui.getRawDataDir2();
 				_min = gui.getMinValue();
 				_max = gui.getMaxValue();
@@ -154,115 +153,23 @@ public class MainMetaplot{
 				_square = gui.isSquareManha();
 				_gui = true;
 				_color = gui.getColor();
+				_nbCpu = gui.getNbCpu();
 			}
 		}
 		
 		_step = _imageSize/2;
-		int nbLine = readLoopFile();
-		FileToMatrix ftm = new FileToMatrix();
-		String pathFileMatrix = _loopsFile.replace(".txt", "_matrix.tab");
-		String output = _loopsFile.replace(".txt", "");
-				
-		if(_type.matches("simple")){
-			makeTif(_input,_minRes,_imageSize);
-			ftm = new FileToMatrix(_input, _loopsFile, _resolution, _metaSize);		
-			int step = (_imageSize/_ratio)/2;
-			ftm.creatMatrix(step, _ratio, _gui,nbLine);
-			ftm.getAPA();
-			ftm.writeStrengthFile();
-		}else if(_type.matches("substraction")){
-			makeTif(_input,_minRes,_imageSize);
-			makeTif(_input2,_minRes,_imageSize);
-			ftm = new FileToMatrix(_input,_input2, _loopsFile, _resolution, _metaSize);
-			ftm.creatMatrixSubstarction(_step, _ratio, _gui, nbLine);
-			ftm.getAPA();
-			ftm.writeStrengthFile();
-		}else{
-			System.out.println("plopi!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n"+_doc);
-			System.exit(0);
-		}
-		
-		if(ftm.isTest()){
-			Script python = new Script(_script, _color, _zScore, _square, pathFileMatrix, output, _min, _max);  
-			python.runPythonScript();
-		}else{
-			System.out.println(_doc);
-			System.exit(0);
+		try {	
+			SIPMeta sip ;
+			if(_type.matches("simple"))   sip = new SIPMeta(_input,_loopsFile,_gui,_resolution,_resMax,_nbCpu,_imageSize,_metaSize);
+			else			sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resolution,_resMax,_nbCpu,_imageSize,_metaSize);
+			sip.run(_script,_square,_simple,_zScore,_color,_min,_max);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
 
-	/**
-	 * 0 chromossome1
-	 * 1	x1
-	 * 2	x2	
-	 * 3	chromosome2
-	 * 4	y1
-	 * 5	y2
-	 * 6	color
-	 * 7	APScoreAvg
-	 * 8	RegAPScoreAvg
-	 * 9	Avg_diffMaxNeihgboor_1
-	 * 9	Avg_diffMaxNeihgboor_2
-	 * 11	avg
-	 * 12	std
-	 * 13	value
-	 * @param chrSizeFile
-	 * @throws IOException
-	 */
-	private static int readLoopFile() throws IOException{
-		BufferedReader br = new BufferedReader(new FileReader(_loopsFile));
-		StringBuilder sb = new StringBuilder();
-		String line = br.readLine();
-		double sum = 0;
-		int nbLine = 0;
-		ArrayList<Double> value =  new ArrayList<Double> (); 
-		while (line != null){
-			if(nbLine > 0){
-				sb.append(line);
-				String[] parts = line.split("\\t");				
-				String chr = parts[0]; 
-				int size = Integer.parseInt(parts[2])-Integer.parseInt(parts[1]);
-				if(size > _resolution)
-					_resolution = size;
-				if(size < _minRes)
-					_minRes = size;
-				sum +=  Double.parseDouble(parts[13]);
-				value.add(Double.parseDouble(parts[13]));
-				_chrSize.put(chr, size);
-			}
-			++nbLine;
-			sb.append(System.lineSeparator());
-			line = br.readLine();
-		}
-		br.close();
-		_avgValue = sum/(nbLine-1);
-		_stdValue = std(value);
-		if(_resMax)
-			_ratio = _resolution/_minRes;
-		else{
-			_resolution = _minRes;
-			_ratio = _resolution/_minRes;
-		}
-		return nbLine;
-	} 
-	
-	
-	/**
-	 * 
-	 * @param mean
-	 * @param img
-	 * @return
-	 */
-	private static double std(ArrayList<Double> value){
-		double semc = 0;
-		for(int i = 0; i < value.size(); ++i)
-			semc += (value.get(i)-_avgValue)*(value.get(i)-_avgValue);
-		
-		semc = Math.sqrt(semc/value.size());
-		
-		return semc;
-	}
 	
 	/**
 	 * 
@@ -301,6 +208,14 @@ public class MainMetaplot{
 						System.out.println("color choose doesn't exist !!!!!!!\n\n"+_doc);
 						System.exit(0);
 					}
+				}else if(args[i].equals("-cpu")){
+					try{_nbCpu =Integer.parseInt(args[i+1]);}
+					catch(NumberFormatException e){ returnError("-cpu",args[i+1],"int");}
+					if(_nbCpu > Runtime.getRuntime().availableProcessors() || _nbCpu <= 0){
+						System.out.println("the number of CPU "+ _nbCpu+" is superior of the server/computer' cpu "+Runtime.getRuntime().availableProcessors()+"\n");
+						System.out.println(_doc);
+						System.exit(0);
+					}
 				}else{
 					System.out.println(args[i]+" doesn't existed\n\n");
 					System.out.println(_doc);
@@ -320,59 +235,6 @@ public class MainMetaplot{
 		System.out.println(param+" has to be an integer "+value+" can't be convert in "+type+"\n\n");
 		System.out.println(_doc);
 		System.exit(0);
-	}
-	
-	/**
-	 * 
-	 * @param imgDir
-	 * @param resMin
-	 * @param imageSize
-	 * @throws IOException
-	 */
-	public static void makeTif(String imgDir, int resMin, int imageSize) throws IOException{
-		File folder = new File(imgDir);
-		File[] listOfFolder = folder.listFiles();
-		Progress plopi = new Progress();
-		if(_gui){
-			plopi = new Progress("tif disatnce normalized",listOfFolder.length-1);
-			plopi.bar.setValue(0);
-		}
-		for(int i = 0; i < listOfFolder.length;++i){
-			if(!(listOfFolder[i].toString().contains("normVector")) && listOfFolder[i].isDirectory()){
-				if(_gui)
-					plopi.bar.setValue(i);
-				File[] listOfFile = listOfFolder[i].listFiles();
-				if(testTiff(listOfFile, resMin) == false){
-					for(int j = 0; j < listOfFile.length; ++j){
-						if(listOfFile[j].toString().contains(".txt")){
-							ProcessTuplesFile ptf = new ProcessTuplesFile(listOfFile[j].toString(), resMin, imageSize);
-							ptf.readTupleFile(_resolution);
-						}
-					}
-				}				
-			}
-		}
-		plopi.dispose();
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @param listOfFile
-	 * @param min
-	 * @return
-	 */
-	public static boolean testTiff(File[] listOfFile, int min){
-		boolean tif = false;
-		int ratio = _resolution/min;
-		for(int j = 0; j < listOfFile.length; ++j){
-			if(listOfFile[j].toString().contains("_"+ratio+"_N.tif")){
-				tif = true;
-				return tif;
-			}
-		}
-		return tif;
 	}
 }
 
