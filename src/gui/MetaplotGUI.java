@@ -535,7 +535,7 @@ public class MetaplotGUI extends JFrame{
 	 * @return
 	 */
 	public int getNbCpu(){
-		String x = this._matrixSize.getText();
+		String x = this._cpu.getText();
 		return Integer.parseInt(x.replaceAll(",", "."));
 	}
 

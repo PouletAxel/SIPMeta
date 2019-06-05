@@ -27,7 +27,7 @@ public class SIPMeta {
 	/** */
 	private int _resolution = 0;
 	/** */
-	private int _minRes = 10000;
+	private int _minRes = 10000000;
 	/** */
 	private int _ratio = 1;
 	/** */
@@ -42,21 +42,20 @@ public class SIPMeta {
 	private int _cpu = 0;
 	
 	
-	public SIPMeta(String input, String loopsFile, boolean gui, int res, boolean resMax, int cpu, int imageSize, int metaSize ) throws IOException{
+	public SIPMeta(String input, String loopsFile, boolean gui, boolean resMax, int cpu, int imageSize, int metaSize ) throws IOException{
 		this._input = input;
 		this._gui = gui;
 		this._resMax = resMax;
 		this._imageSize = imageSize;
 		this._loopsFile = loopsFile;
 		this._nbLine = readLoopFile();
-		this._resolution = res;
 		this._metaSize=metaSize;
 		this._step = (_imageSize/_ratio)/2;
 		this._cpu=cpu;
 		 
 	}
 	
-	public SIPMeta(String input, String input2, String loopsFile, boolean gui, int res, boolean resMax, int cpu,int imageSize, int metaSize)throws IOException{
+	public SIPMeta(String input, String input2, String loopsFile, boolean gui, boolean resMax, int cpu,int imageSize, int metaSize)throws IOException{
 		this._input = input;
 		this._input2 = input2;
 		this._gui = gui;
@@ -64,7 +63,6 @@ public class SIPMeta {
 		this._imageSize = imageSize;
 		this._loopsFile = loopsFile;
 		this._nbLine = readLoopFile();
-		this._resolution = res;
 		this._step = (_imageSize/_ratio)/2;
 		this._cpu=cpu;
 		this._metaSize=metaSize;

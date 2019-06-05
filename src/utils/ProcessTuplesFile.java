@@ -78,7 +78,8 @@ public class ProcessTuplesFile{
 			img = changeRes(img,ratio);
 		
 		FileSaver fileSaver = new FileSaver(img);
-		String newName  = "_"+ratio+"_N.tif";
+		String newName  = "_N.tif";
+		if(ratio > 1)	newName = "_"+ratio+"_N.tif";
 	    fileSaver.saveAsTiff(_file.replace(".txt", newName));
 	}
 	

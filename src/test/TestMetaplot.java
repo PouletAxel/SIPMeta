@@ -39,14 +39,13 @@ public class TestMetaplot{
 		//String output= "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop";
 		//output= "/home/plop/Bureau/SIPpaper/chr1/testNewNew";
 		
-		String input = "/home/plop/Bureau/SIPpaper/Droso/plop/";
-		String loopsFile =  "/home/plop/Bureau/SIPpaper/Droso/plop/loops.txt"; //"https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_30.hic"; //";
+		String input = "/home/plop/Bureau/SIPout3/";
+		String loopsFile =  "/home/plop/Bureau/SIPout3/loops.txt"; //"https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_30.hic"; //";
 		boolean z = true;		
 		boolean squarre = true;
 		boolean simple = true;
 		String python = "/home/plop/Bureau/SIPpaper/bullseye.py";
-		int matrixSize = 2000;
-		int resolution = 5000;
+		int matrixSize = 500;
 		int sizeMeta = 21;
 		double min = 0;
 		double max = 20;
@@ -57,12 +56,11 @@ public class TestMetaplot{
 				+ "python "+python+"\n"
 				+ "min "+min+"\n"
 				+ "max "+max+"\n"
-				+ "matrix size "+matrixSize+"\n"
-				+ "resolution "+resolution+"\n");
+				+ "matrix size "+matrixSize+"\n");
 			
 		//String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max
 		//String input, String input2, String loopsFile, boolean gui, int res, boolean resMax, int cpu,int imageSize
-		SIPMeta sip = new SIPMeta(input,loopsFile,false,resolution,true,2,matrixSize,sizeMeta);
+		SIPMeta sip = new SIPMeta(input,loopsFile,false,true,2,matrixSize,sizeMeta);
 		sip.run(python,squarre,simple,z,color,min,max);
 	}
 

@@ -46,7 +46,7 @@ public class MainMetaplot{
 	/** */
 	static int _ratio = 2;
 	/** */
-	static int _nbCpu = 2;
+	static int _nbCpu = 1;
 	/** */
 	static double _avgValue = 0;
 	/** */
@@ -160,8 +160,8 @@ public class MainMetaplot{
 		_step = _imageSize/2;
 		try {	
 			SIPMeta sip ;
-			if(_type.matches("simple"))   sip = new SIPMeta(_input,_loopsFile,_gui,_resolution,_resMax,_nbCpu,_imageSize,_metaSize);
-			else			sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resolution,_resMax,_nbCpu,_imageSize,_metaSize);
+			if(_type.matches("simple"))   sip = new SIPMeta(_input,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
+			else			sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
 			sip.run(_script,_square,_simple,_zScore,_color,_min,_max);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

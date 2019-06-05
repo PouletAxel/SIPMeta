@@ -65,6 +65,11 @@ public class ProcessMakeImage {
 	private boolean testTiff(File[] listOfFile,int resolution, int ratio){
 		boolean tif = false;
 		for(int j = 0; j < listOfFile.length; ++j){
+			if(ratio == 1 && listOfFile[j].toString().contains("_N.tif")){
+				tif = true;
+				return tif;
+			}
+			
 			if(listOfFile[j].toString().contains("_"+ratio+"_N.tif")){
 				tif = true;
 				return tif;

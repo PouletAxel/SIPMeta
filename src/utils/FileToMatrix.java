@@ -105,7 +105,10 @@ public class FileToMatrix {
 					File folder = new File(dir);
 					File[] listOfFiles = folder.listFiles();
 					for (int i = 0; i < listOfFiles.length; ++i){
-						if(listOfFiles[i].toString().contains("tif")&& listOfFiles[i].toString().contains(ratio+"_N.tif")){
+						String test = "_N.tif";
+						if (ratio > 1) test = ratio+"_N.tif";
+						
+						if(listOfFiles[i].toString().contains("tif") && listOfFiles[i].toString().contains(test)){
 							String [] plop = listOfFiles[i].toString().split("/");
 							String coord = plop[plop.length-1].replaceAll("_"+ratio+"_N.tif", "");
 							String [] tcoord = coord.split("_");
@@ -113,6 +116,7 @@ public class FileToMatrix {
 							int a_end = Integer.parseInt(parts[4]);
 							int b;
 							int b_end;
+							//System.out.println(a+" "+a_end);
 							if(chr.contains("_")){
 								String[] testName = chr.split("_");
 								b = Integer.parseInt(tcoord[testName.length]);
