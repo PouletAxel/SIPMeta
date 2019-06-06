@@ -85,70 +85,69 @@ public class FileToMatrix {
 	 * @throws IOException
 	 */
 	public String creatMatrix(int step, int ratio,boolean gui, int nbloop) throws IOException{
-		int prout = 0; 
+		int nbLine = 0; 
 		if(gui){
 			_plopi = new Progress("loops file processing",nbloop);
-			_plopi.bar.setValue(prout);
+			_plopi.bar.setValue(nbLine);
 		}
 		BufferedReader br = new BufferedReader(new FileReader(_loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
 		String resu = "";
-		int nbLine = 0;
+		
 		
 		while (line != null){
 			sb.append(line);
-			if(prout>0){
-				String[] parts = line.split("\\t");
-					String chr = parts[0];
-					String dir = _imgDir+File.separator+chr;
-					File folder = new File(dir);
-					File[] listOfFiles = folder.listFiles();
-					for (int i = 0; i < listOfFiles.length; ++i){
-						String test = "_N.tif";
-						if (ratio > 1) test = ratio+"_N.tif";
-						
-						if(listOfFiles[i].toString().contains("tif") && listOfFiles[i].toString().contains(test)){
-							String [] plop = listOfFiles[i].toString().split("/");
-							String coord = plop[plop.length-1].replaceAll("_"+ratio+"_N.tif", "");
-							String [] tcoord = coord.split("_");
-							int a = Integer.parseInt(parts[1]);
-							int a_end = Integer.parseInt(parts[4]);
-							int b;
-							int b_end;
-							//System.out.println(a+" "+a_end);
-							if(chr.contains("_")){
-								String[] testName = chr.split("_");
-								b = Integer.parseInt(tcoord[testName.length]);
-								b_end = Integer.parseInt(tcoord[testName.length+1]);
-							}else{
-								b= Integer.parseInt(tcoord[1]);
-								b_end = Integer.parseInt(tcoord[2]);
-							}
-							
-							if(a >= b && a_end <= b_end){
-								int numImage = b/(step*_resolution);
-								int correction = numImage*step*_resolution;
-								double j = (a - correction)/_resolution; 
-								double k = (a_end - correction)/_resolution;									
-								ImagePlus img = new ImagePlus();
-								img = IJ.openImage(listOfFiles[i].toString());
-								_loopsStrength = _loopsStrength+"\n"+nbLine+"\t"+line+"\t";
-								runImage((int)j,(int)k, img);
-								nbLine++;
-								img.close();
-								break;	
-							}
+			String[] parts = line.split("\\t");
+			
+			if((nbLine == 0 && (!(parts[1].equals("x1")))) || nbLine > 0){
+				String chr = parts[0];
+				String dir = _imgDir+File.separator+chr;
+				File folder = new File(dir);
+				File[] listOfFiles = folder.listFiles();
+				for (int i = 0; i < listOfFiles.length; ++i){
+					String test = "_N.tif";
+					if (ratio > 1) test = ratio+"_N.tif";
+					if(listOfFiles[i].toString().contains("tif") && listOfFiles[i].toString().contains(test)){
+						String [] plop = listOfFiles[i].toString().split("/");
+						String coord = plop[plop.length-1].replaceAll("_"+ratio+"_N.tif", "");
+						String [] tcoord = coord.split("_");
+						int a = Integer.parseInt(parts[1]);
+						int a_end = Integer.parseInt(parts[4]);
+						int b;
+						int b_end;
+						//System.out.println(a+" "+a_end);
+						if(chr.contains("_")){
+							String[] testName = chr.split("_");
+							b = Integer.parseInt(tcoord[testName.length]);
+							b_end = Integer.parseInt(tcoord[testName.length+1]);
+						}else{
+							b= Integer.parseInt(tcoord[1]);
+							b_end = Integer.parseInt(tcoord[2]);
 						}
+							
+						if(a >= b && a_end <= b_end){
+							int numImage = b/(step*_resolution);
+							int correction = numImage*step*_resolution;
+							double j = (a - correction)/_resolution; 
+							double k = (a_end - correction)/_resolution;									
+							ImagePlus img = new ImagePlus();
+							img = IJ.openImage(listOfFiles[i].toString());
+							_loopsStrength = _loopsStrength+"\n"+nbLine+"\t"+line+"\t";
+							runImage((int)j,(int)k, img);
+							nbLine++;
+							img.close();
+							break;	
+						}
+					}
 				}
 			}
-			prout++;
-			if(gui)
-				_plopi.bar.setValue(prout);
+			if(gui) _plopi.bar.setValue(nbLine);
 			sb.append(System.lineSeparator());
 			line = br.readLine();
 		}
 		br.close();
+		if(gui) _plopi.dispose();
 		_test = true;
 		writeMatrix(nbLine);
 		return resu;
@@ -268,6 +267,7 @@ public class FileToMatrix {
 		writer.close();
 		
 	}
+	
 	public double getAPA() throws IOException{
 		double avg = (process3By3Square(1,1)+process3By3Square(1,_metaSize-2)+process3By3Square(_metaSize-2,1)+process3By3Square(_metaSize-2,_metaSize-2))/4; 
 		double val = _resu[_metaSize/2][_metaSize/2];
