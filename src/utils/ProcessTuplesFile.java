@@ -21,6 +21,8 @@ public class ProcessTuplesFile{
 	private int _matrixSize = 0;
 	/** */
 	private int _res = 0;
+	/** */
+	private double _threshold = 0;
 	
 	/**
 	 * 
@@ -29,11 +31,13 @@ public class ProcessTuplesFile{
 	 * @param matrixSize
 	 * @throws IOException
 	 */
-	public ProcessTuplesFile(String inputFile, int resMin, int matrixSize) throws IOException{
+	
+	public ProcessTuplesFile(String inputFile, int resMin, int matrixSize, double threshold) throws IOException{
 		_file = inputFile;
 		_step = matrixSize/2;
 		_matrixSize = matrixSize;
 		_res = resMin;
+		_threshold = threshold;
 		System.out.println(_file+"\t"+_step+"\t"+_res+"\t"+_matrixSize);
 	}
 		
@@ -62,9 +66,16 @@ public class ProcessTuplesFile{
 				int i = (Integer.parseInt(parts[0]) - correction)/_res; 
 				int j = (Integer.parseInt(parts[1]) - correction)/_res;
 				
-				if(i < _matrixSize &&j<_matrixSize){
-					p.setf(i, j, a);
-					p.setf(j, i, a);
+				if(i < _matrixSize && j < _matrixSize){
+					if(_threshold > -1){
+						if(a < _threshold){
+							p.setf(i, j, a);
+							p.setf(j, i, a);
+						}
+					}else if(_threshold == -1){
+						p.setf(i, j, a);
+						p.setf(j, i, a);
+					}
 				}
 				sb.append(System.lineSeparator());
 				line = br.readLine();

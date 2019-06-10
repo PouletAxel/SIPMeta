@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 import multiProcessing.ProcessMakeImage;
 
 /**
@@ -11,7 +13,10 @@ import multiProcessing.ProcessMakeImage;
  * @author axel poulet
  *
  */
+
 public class SIPMeta {
+	/** */
+	private String _prefix = "";
 	/** */
 	private String _loopsFile = "";
 	/** */
@@ -42,6 +47,17 @@ public class SIPMeta {
 	private int _cpu = 0;
 	
 	
+	/**
+	 * 
+	 * @param input
+	 * @param loopsFile
+	 * @param gui
+	 * @param resMax
+	 * @param cpu
+	 * @param imageSize
+	 * @param metaSize
+	 * @throws IOException
+	 */
 	public SIPMeta(String input, String loopsFile, boolean gui, boolean resMax, int cpu, int imageSize, int metaSize ) throws IOException{
 		this._input = input;
 		this._gui = gui;
@@ -55,6 +71,18 @@ public class SIPMeta {
 		 
 	}
 	
+	/**
+	 * 
+	 * @param input
+	 * @param input2
+	 * @param loopsFile
+	 * @param gui
+	 * @param resMax
+	 * @param cpu
+	 * @param imageSize
+	 * @param metaSize
+	 * @throws IOException
+	 */
 	public SIPMeta(String input, String input2, String loopsFile, boolean gui, boolean resMax, int cpu,int imageSize, int metaSize)throws IOException{
 		this._input = input;
 		this._input2 = input2;
@@ -75,23 +103,33 @@ public class SIPMeta {
 	 * @throws InterruptedException 
 	 */
 	
-	public void run(String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max) throws IOException, InterruptedException{
+	public void run(String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max, double threshold) throws IOException, InterruptedException{
 		String pathFileMatrix = _loopsFile.replace(".txt", "_matrix.tab");
-		String output = _loopsFile.replace(".txt", "");
+		String pattern = Pattern.quote(System.getProperty("file.separator"));
+		String [] tab = pathFileMatrix.split(pattern);
+		
+		String newName = _prefix+"_"+tab[tab.length-1];
+		//System.out.println("##################################################################### "+newName+"\t"+tab[tab.length-1]);
+		pathFileMatrix = pathFileMatrix.replace(tab[tab.length-1], newName);
+		//System.out.println("##################################################################### "+pathFileMatrix);
+		String output = pathFileMatrix.replace(".txt", "");
+		//System.out.println("##################################################################### "+output);
 		FileToMatrix ftm = new FileToMatrix();
 		System.out.println("Check existing images if not existing the program creating the image");
-		makeTif(_input);
+		makeTif(_input,threshold);
 		if (simple){
-			ftm = new FileToMatrix(_input, _loopsFile, _resolution, _metaSize);
+			ftm = new FileToMatrix(_input, _loopsFile,pathFileMatrix, _resolution, _metaSize);
+			ftm.creatMatrix(_step, _ratio, _gui,_nbLine);
 		}else{
-			makeTif(_input2);
-			ftm = new FileToMatrix(_input,_input2, _loopsFile, _resolution, _metaSize);
+			makeTif(_input2,threshold);
+			ftm = new FileToMatrix(_input,_input2, _loopsFile,pathFileMatrix, _resolution, _metaSize);
+			ftm.creatMatrixSubstarction(_step, _ratio, _gui,_nbLine);
 		}
 		System.out.println("##### End of creating the image\n Start matrix for metaplot");
-		ftm.creatMatrix(_step, _ratio, _gui,_nbLine);
+		
 		ftm.getAPA();
 		ftm.writeStrengthFile();
-		System.out.println("##### End of matrix (file: )"+pathFileMatrix+" \n Start python script");
+		System.out.println("##### End of matrix (file: "+pathFileMatrix+") \n Start python script");
 		Script python = new Script(script, color, zscore, squarre, pathFileMatrix, output, min,max);  
 		python.runPythonScript();
 		System.out.println("End of SIPMeta");
@@ -106,9 +144,9 @@ public class SIPMeta {
 	 * @throws IOException
 	 * @throws InterruptedException 
 	 */
-	public void makeTif(String imgDir) throws IOException, InterruptedException{
+	public void makeTif(String imgDir,double threshold) throws IOException, InterruptedException{
 		ProcessMakeImage process = new ProcessMakeImage();
-		process.go(imgDir, _chr,_cpu, _gui, _resolution, _ratio,_imageSize );
+		process.go(imgDir, _chr,_cpu, _gui, _resolution, _ratio, _imageSize, threshold);
 	}
 	
 	
@@ -134,9 +172,7 @@ public class SIPMeta {
 		BufferedReader br = new BufferedReader(new FileReader(_loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
-		//double sum = 0;
 		int nbLine = 0;
-		//ArrayList<Double> value =  new ArrayList<Double> (); 
 		while (line != null){
 			if(nbLine > 0){
 				sb.append(line);
@@ -150,8 +186,6 @@ public class SIPMeta {
 					_resolution = size;
 				if(size < _minRes)
 					_minRes = size;
-				//sum +=  Double.parseDouble(parts[13]);
-				//value.add(Double.parseDouble(parts[13]));
 			}
 			++nbLine;
 			sb.append(System.lineSeparator());
@@ -164,21 +198,26 @@ public class SIPMeta {
 		return nbLine;
 	} 
 		
-	
 	/**
 	 * 
-	 * @param mean
-	 * @param img
 	 * @return
 	 */
-	/*private double std(ArrayList<Double> value){
-		double semc = 0;
-		for(int i = 0; i < value.size(); ++i)
-			semc += (value.get(i)-_avgValue)*(value.get(i)-_avgValue);
-		semc = Math.sqrt(semc/value.size());
-		return semc;
-	}*/
-		
-		
+	public int getResolution(){return this._resolution;}
+	/**
+	 * 
+	 * @return
+	 */
+	public int getStep(){return this._step;}
+	/**
+	 * 
+	 * @param input
+	 */
+	public void setInput(String input){this._input = input;}
+	/**
+	 * 
+	 * @param input
+	 */
+			
+	public void setPrefix(String input){this._prefix = input;}		
 	
 }

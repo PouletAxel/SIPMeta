@@ -42,6 +42,8 @@ public class FileToMatrix {
 	private int _max = -100000000;
 	/** */
 	private Progress _plopi;	
+	/** */
+	private String _matrixPathFile;
 	
 	/**
 	 * 
@@ -50,12 +52,13 @@ public class FileToMatrix {
 	 * @param res
 	 * @param meta
 	 */
-	public FileToMatrix(String imgDir, String loopsFile, int res, int meta){
+	public FileToMatrix(String imgDir, String loopsFile, String matrixPathFile, int res, int meta){
 		_resolution = res;
 		_imgDir = imgDir;
 		_loopsFile = loopsFile;
 		_resu = new float[meta][meta];
-		_metaSize = meta  ;
+		_metaSize = meta ;
+		_matrixPathFile = matrixPathFile;
 	}
 	
 	/**
@@ -70,13 +73,14 @@ public class FileToMatrix {
 	 * @param res
 	 * @param meta
 	 */
-	public FileToMatrix(String imgDir1,String imgDir2, String loopsFile, int res, int meta){
+	public FileToMatrix(String imgDir1,String imgDir2, String loopsFile, String matrixPathFile, int res, int meta){
 		_resolution = res;
 		_imgDir = imgDir1;
 		_imgDir2 = imgDir2;
 		_loopsFile = loopsFile;
 		_resu = new float[meta][meta];
-		_metaSize = meta  ;
+		_metaSize = meta;
+		_matrixPathFile = matrixPathFile;
 	}
 	
 	/**
@@ -189,11 +193,11 @@ public class FileToMatrix {
 						int a_end = Integer.parseInt(parts[4]);
 						int b, b_end;
 						if(chr.contains("_")){
-							String[] testName = chr.split("\\t");
+							String[] testName = chr.split("_");
 							b = Integer.parseInt(tcoord[testName.length]);
 							b_end = Integer.parseInt(tcoord[testName.length+1]);
 						}else{
-							b = Integer.parseInt(tcoord[1]);
+							b= Integer.parseInt(tcoord[1]);
 							b_end = Integer.parseInt(tcoord[2]);
 						}
 						
@@ -226,14 +230,18 @@ public class FileToMatrix {
 		br.close();
 		_test = true;
 		writeMatrix(nbLine);
+		if(gui)
+			_plopi.dispose();
 		return resu;
 	}
 	
-	
+	/**
+	 * 
+	 * @param nbLine
+	 * @throws IOException
+	 */
 	private void writeMatrix(int nbLine) throws IOException{
-		String pathFile = _loopsFile;
-		pathFile = pathFile.replace(".txt", "_matrix.tab");
-		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathFile)));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(_matrixPathFile)));
 		for(int x = 0 ; x < _resu.length; x++){
 			String l ="";
 			for(int y = 0 ; y < _resu[x].length; y++){
@@ -260,19 +268,26 @@ public class FileToMatrix {
 	 * @throws IOException
 	 */
 	public void writeStrengthFile( ) throws IOException{
-		String pathFile = _loopsFile;
-		pathFile = pathFile.replace(".txt", "_strength.tab");
+		String pathFile = _matrixPathFile;
+		pathFile = pathFile.replace("_matrix.tab", "_strength.tab");
+		System.out.println("strength file: "+pathFile);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathFile)));
 		writer.write(this._loopsStrength+"\n");
 		writer.close();
 		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	public double getAPA() throws IOException{
 		double avg = (process3By3Square(1,1)+process3By3Square(1,_metaSize-2)+process3By3Square(_metaSize-2,1)+process3By3Square(_metaSize-2,_metaSize-2))/4; 
 		double val = _resu[_metaSize/2][_metaSize/2];
-		String pathFile = _loopsFile;
-		pathFile = pathFile.replace(".txt", "_APA.tab");
+		String pathFile = _matrixPathFile;
+		pathFile = pathFile.replace("_matrix.tab", "_APA.tab");
+		System.out.println("strength file: "+pathFile);
 		_scoreAPA = val/avg;
 		String line = "valueCenter\tcorner avg\tAPA\n"+val+"\t"+avg+"\t"+_scoreAPA;
 		System.out.println(line);
@@ -370,7 +385,4 @@ public class FileToMatrix {
 	 * @return
 	 */
 	public int getMaxMatrix(){ return this._max+1;}
-	
-	
-	
 }

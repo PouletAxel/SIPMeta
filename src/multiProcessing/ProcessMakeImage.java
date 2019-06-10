@@ -26,7 +26,7 @@ public class ProcessMakeImage {
 	 * @param nbCPU
 	 * @throws InterruptedException
 	 */
-	public void go(String SIPDir,ArrayList<String> chr, int nbCPU, boolean gui, int resolution, int ratio, int imageSize) throws InterruptedException{
+	public void go(String SIPDir,ArrayList<String> chr, int nbCPU, boolean gui, int resolution, int ratio, int imageSize,double threshold) throws InterruptedException{
 		if(gui){
 			_p = new Progress("tif disatnce normalized",chr.size()-1);
 			_p.bar.setValue(0);
@@ -37,7 +37,7 @@ public class ProcessMakeImage {
 			File a = new File(SIPDir+File.separator+chr.get(i));
 			File[] listOfFile = a.listFiles();
 			if(testTiff(listOfFile,resolution,ratio) == false){
-				arrayListImageThread.add(new RunnableMakeImage(	listOfFile, resolution, imageSize));
+				arrayListImageThread.add(new RunnableMakeImage(	listOfFile, resolution, imageSize,threshold));
 				arrayListImageThread.get(i).start();	
 				while (_continuer == false)
 					Thread.sleep(10);
