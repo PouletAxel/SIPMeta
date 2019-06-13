@@ -5,22 +5,30 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Runnable class
+ * Runnable class to dummp the data
  * 
  * @author axel poulet
  *
  */
 public class RunnableDumpData extends Thread implements Runnable{
 
+	/**String: path where save the dump data  */
 	private String _outdir ="";
+	/**String: name of the chr*/
 	private String _chrName = "";
+	/**int: chr size */
 	private int _chrSize = 0;
+	/** DumpData object run juicertoolbox.jar*/
 	private DumpData _dumpData;
+	/**int: bin resolution*/
 	private int _res = 0;
+	/**int: image Size */
 	private int _matrixSize = 0;
+	/**int: size of the step to run a chr */
 	private int _step = 0;
 	
 	/**
+	 * Constructor
 	 * 
 	 * @param outdir
 	 * @param chrName
@@ -37,10 +45,11 @@ public class RunnableDumpData extends Thread implements Runnable{
 		this._res = res;
 		this._matrixSize = matrixSize;
 		this._step = step;
-		_dumpData = dumpData;
+		this._dumpData = dumpData;
 	}
 	
 	/**
+	 * create the name file, and call the dumpData function
 	 * 
 	 */
 	public void run(){
@@ -62,7 +71,6 @@ public class RunnableDumpData extends Thread implements Runnable{
 		try {
 			this._dumpData.getNormVector(this._chrName,normOutput+File.separator+this._chrName+".norm");
 			System.out.println("start dump "+this._chrName+" size "+this._chrSize);
-			
 			for(int i = 0 ; j-1 <= this._chrSize; i+=step,j+=step){
 				int end =j-1;
 				String dump = this._chrName+":"+i+":"+end;

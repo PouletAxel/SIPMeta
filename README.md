@@ -1,16 +1,20 @@
-# SIPMeta beta version
+# SIPMeta1.0 version
 
-	
 	Usage:
+		
 		with SIP output
+		
 			simple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]
 			substraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]
+		
 		with .hic file
-		hic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]
-		hic substraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]
+			
+				hic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]
+				hic substraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]
 				
-		Param:
-			sMetaPlot: size of the metaplot (default 20 bins)
+		Parameters:
+		
+			sMetaPlot: size of the metaplot (default 21 bins)
 			sImg: size of the image analysed by SIP (default 2000 bins)
 			chrSizeFile: path to the chr size file, with the same name of the chr as in the hic file
 			-resMax TRUE or FALSE: default true, if false take the samller resolution

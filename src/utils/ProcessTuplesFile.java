@@ -8,71 +8,72 @@ import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 
 /**
+ * Process dump file data and make images (.tif file)
  * 
  * @author axel poulet
  *
  */
 public class ProcessTuplesFile{
-	/** */
+	/** String path to the input file*/
 	private String _file;
-	/** */
+	/** int size of the step */
 	private int _step = 0;
-	/** */
+	/** image sixe*/
 	private int _matrixSize = 0;
-	/** */
+	/** image resolution*/
 	private int _res = 0;
-	/** */
+	/** threshold, if value superior to threshold remove the value of the image*/
 	private double _threshold = 0;
 	
 	/**
+	 * Constructor
 	 * 
-	 * @param inputFile
-	 * @param resMin
-	 * @param matrixSize
+	 * @param inputFile String
+	 * @param resMin int
+	 * @param matrixSize int image size
+	 * @param threshold double threshold removed value > at this threshold
 	 * @throws IOException
 	 */
-	
 	public ProcessTuplesFile(String inputFile, int resMin, int matrixSize, double threshold) throws IOException{
-		_file = inputFile;
-		_step = matrixSize/2;
-		_matrixSize = matrixSize;
-		_res = resMin;
-		_threshold = threshold;
+		this._file = inputFile;
+		this._step = matrixSize/2;
+		this._matrixSize = matrixSize;
+		this._res = resMin;
+		this._threshold = threshold;
 		System.out.println(_file+"\t"+_step+"\t"+_res+"\t"+_matrixSize);
 	}
 		
 	/**
+	 * read the tuple file and make the tif file
 	 * 
-	 * @param resMax
+	 * @param resMax resolution
 	 */
 	public void readTupleFile(int resMax){
 		BufferedReader br;
-		FloatProcessor p = new FloatProcessor(_matrixSize,_matrixSize);
-		String[] tfile = _file.split("_");
+		FloatProcessor p = new FloatProcessor(this._matrixSize,this._matrixSize);
+		String[] tfile = this._file.split("_");
 		ImagePlus img = new ImagePlus();
-		int numImage = Integer.parseInt(tfile[tfile.length-2])/(_step*_res);
+		int numImage = Integer.parseInt(tfile[tfile.length-2])/(this._step*this._res);
 		try {
 			p.abs();
-			br = new BufferedReader(new FileReader(_file));
+			br = new BufferedReader(new FileReader(this._file));
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 			while (line != null){
 				sb.append(line);
 				String[] parts = line.split("\\t");
 				float a = 0;
-				if(!(parts[3].equals("NAN")))
-					a +=Float.parseFloat(parts[3]);
-				int correction = numImage*_step*_res;
-				int i = (Integer.parseInt(parts[0]) - correction)/_res; 
-				int j = (Integer.parseInt(parts[1]) - correction)/_res;
-				
-				if(i < _matrixSize && j < _matrixSize){
-					if(_threshold > -1){
-						if(a < _threshold){
+				if(!(parts[3].equals("NAN")))	a +=Float.parseFloat(parts[3]);
+				int correction = numImage*this._step*this._res;
+				int i = (Integer.parseInt(parts[0]) - correction)/this._res; 
+				int j = (Integer.parseInt(parts[1]) - correction)/this._res;
+				if(i < this._matrixSize && j < this._matrixSize){
+					if(this._threshold > -1){
+						if(a < this._threshold){
 							p.setf(i, j, a);
 							p.setf(j, i, a);
 						}
-					}else if(_threshold == -1){
+					}else{
 						p.setf(i, j, a);
 						p.setf(j, i, a);
 					}
@@ -82,22 +83,20 @@ public class ProcessTuplesFile{
 			}
 			br.close();
 		} catch (IOException e) { e.printStackTrace();}
-			
 		img.setProcessor(p);
-		int ratio = resMax/_res;
-		if (ratio != 1)
-			img = changeRes(img,ratio);
-		
+		int ratio = resMax/this._res;
+		if (ratio != 1) 	img = changeRes(img,ratio);
 		FileSaver fileSaver = new FileSaver(img);
 		String newName  = "_N.tif";
 		if(ratio > 1)	newName = "_"+ratio+"_N.tif";
-	    fileSaver.saveAsTiff(_file.replace(".txt", newName));
+	    fileSaver.saveAsTiff(this._file.replace(".txt", newName));
 	}
 	
 	/**
+	 * Change the resolution if needed
 	 * 
-	 * @param img
-	 * @param factor
+	 * @param img ImagePlus object
+	 * @param factor int define the increase of resolution
 	 * @return
 	 */
 	public ImagePlus changeRes(ImagePlus img, int factor){

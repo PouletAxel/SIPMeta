@@ -147,18 +147,14 @@ public class DumpData {
 		Process process;
 		try {
 			process = runtime.exec(cmd);
-		
 			new ReturnFlux(process.getInputStream()).start();
 			new ReturnFlux(process.getErrorStream()).start();
 			exitValue=process.waitFor();
-		
 			BufferedReader br = Files.newBufferedReader(Paths.get(expected), StandardCharsets.UTF_8);
-			for (String line = null; (line = br.readLine()) != null;)
-				this._lExpected.add(Double.parseDouble(line));
+			for (String line = null; (line = br.readLine()) != null;) this._lExpected.add(Double.parseDouble(line));
 			br.close();
 			File file =  new File(expected);
 			file.delete();
-			
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -194,28 +190,25 @@ public class DumpData {
 	public class ReturnFlux extends Thread {  
 
 		/**  Flux to redirect  */
-		private InputStream flux;
+		private InputStream _flux;
 
 		/**
 		 * <b>Constructor of ReturnFlux</b>
 		 * @param flux
 		 *  flux to redirect
 		 */
-		public ReturnFlux(InputStream flux){	this.flux = flux; }
+		public ReturnFlux(InputStream flux){	this._flux = flux; }
 		
 		/**
 		 * 
 		 */
 		public void run(){
 			try {    
-				InputStreamReader reader = new InputStreamReader(flux);
+				InputStreamReader reader = new InputStreamReader(this._flux);
 				BufferedReader br = new BufferedReader(reader);
 				String line=null;
 				while ( (line = br.readLine()) != null) _logError = _logError+line+"\n";
-			}
-			catch (IOException ioe){
-				ioe.printStackTrace();
-			}
+			}	catch (IOException ioe){ioe.printStackTrace();}
 		}		
 	} 
 }

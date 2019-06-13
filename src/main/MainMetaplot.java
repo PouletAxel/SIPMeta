@@ -11,104 +11,128 @@ import utils.SIPMeta;
 
 
 /**
+ * This main class obtain all the parameter by the gui or the command line to then run SIPMetaplot with the good parameters gave by the the user
+ * 
+ * Usage:
+ * with SIP output
+ * simple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]
+ * substraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]
+ * 
+ * with .hic file
+ * hic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]
+ * hic substraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]
+ * 
+ * 	Param:
+ * 	sMetaPlot: size of the metaplot (default 20 bins)
+ * sImg: size of the image analysed by SIP (default 2000 bins)
+ * chrSizeFile: path to the chr size file, with the same name of the chr as in the hic file
+ * -resMax TRUE or FALSE: default true, if false take the samller resolution
+ * -c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno, spectral, viridis) default Reds
+ * -z znorm each ring in bullseye
+ * -s Trim edges to make a square
+ * -min MIN minvalue for color scale
+ * -max Max maxvalue for color scale
+ * -cpu number of cpu uses
+ * -t T threshold value tests the distance normalized value, all the value > T will be replace by zero
+ * -prefix PREFIX name of the output file
+ * -h, --help print help
+ * 
+ * 	We are using juicerboxTools.jar for the hic option to dump the data of the coodinate of interest.
+ * Neva C. Durand, Muhammad S. Shamim, Ido Machol, Suhas S. P. Rao, Miriam H. Huntley, Eric S. Lander, and Erez Lieberman Aiden. "Juicer provides a 
+ * one-click system for analyzing loop-resolution Hi-C experiments." Cell Systems 3(1), 2016.
+ * 
+ * We are also using imageJ to create the image and run them.
+ *  Schneider, C. A.; Rasband, W. S. & Eliceiri, K. W. (2012), "NIH Image to ImageJ: 25 years of image analysis", Nature methods 9(7): 671-675, PMID 22930834
+ *  Rueden, C. T.; Schindelin, J. & Hiner, M. C. et al. (2017), "ImageJ2: ImageJ for the next generation of scientific image data", BMC Bioinformatics 18:529, PMID 29187165, doi:10.1186/s12859-017-1934-z
  * 
  * @author axel poulet and m. jordan rowley
  *
- * metaplot Version 0.0.1 run with java
- * Usage:
- *	 simple <loopsFile> <RawData> <Rscript> <sMetaPlot> <sImg> [option]
- *   substraction <loopsFile> <RawData1> <RawData2> <Rscript> <sMetaPlot> <sImg> [option]
- *   		
- *   sMetaPlot: size of the metaplot (default 20 bins)
- *   sImg: size of the image analysed by SIP (default 2000 bins)
- *   -resMax: default true, if false take the samller resolution
- *   -min: default min value detected in the matrix results
- *   -max: default max value detected in the matrix results
- *   -h, --help print help
- *
- *
  */
 public class MainMetaplot{
-	/** */
+	/** String: stock the loops file path */
 	static String _loopsFile = "";
-	/** */
+	/** String: stock the input2 path (hic file or directory dependent of the SIP value)*/
 	static String _input2 ="";
-	/** */
+	/** String: stock the input path (hic file or directory dependent of the SIP value)*/
 	static String _input ="";
+	/** String: stock the output2 path if SIP false, path for the dump dat of the input2*/
 	static String _outDir2 ="";
-	/** */
+	/** String: stock the output path if SIP false, path for the dump dat of the input*/
 	static String _outDir ="";
-	/** */
+	/** String: stock the script file path have to be bullseye.py */
 	static String _script = "";
-	/** */
+	/** int: image size of SIP */
 	static int _imageSize =2000;
-	/** */
+	/** int: sixe step to run a chr */
 	static int _step = 0;
-	/** */
+	/** int: sixe of the metaplot*/
 	static int _metaSize = 21;
-	/** */
+	/**int: loops res*/
 	static int _resolution = 0;
-	/** */
-	static int _minRes = 10000;
-	/** */
+	/** int: min resolution to do the metaplot*/
+	static int _minRes = 1000000;
+	/** ratio between minRes and resolution*/
 	static int _ratio = 2;
-	/** */
+	/** int: nb cpu used*/
 	static int _nbCpu = 1;
-	/** */
-	static double _avgValue = 0;
-	/** */
-	static double _stdValue = 0;
-	/** */
+	/** boolean if true do the analysis a the max resolution found in the loops file*/
 	static boolean _resMax = true;
-	/** */
+	/** double: min value for the key of the metaplot*/
 	static double _min = -1;
-	/** */
+	/** double: max value for the key of the metaplot*/
 	static double _max = -1;
-	/** */
+	/**boolean: if true compute the zscore in bullseye.py*/
 	static boolean _zScore = false;
-	/** */
+	/**boolean: if true compute manhattan distance in bullseye.py*/
 	static boolean _square = false;
-	/** */
+	/**boolean: if true run SIPMeta with the hic option if false input is SIP output*/
 	static boolean _hic = false;
-	/** */
+	/** String: colors of the metaplot*/
 	static String _color = "Reds";
-	/** */
+	/**boolean: if true SIPMeta is run with a gui */
 	static boolean _gui = false;
+	/**boolean: if true run SIPMeta simple else run SIPMeta substraction */
 	static boolean _simple = true;
 	/** hash map stocking in key the name of the chr and in value the size*/
 	private static HashMap<String,Integer> _chrSize =  new HashMap<String,Integer>();
-	
-
+	/**double: threshold value for the matrix computation */
 	private static double _threshold = -1;
 	/** Path to the jucier_tools_box to dump the data not necessary for Processed and dumped method */
 	private static String _juiceBoxTools = "";
 	/**Normalisation method to dump the the data with hic method (KR,NONE.VC,VC_SQRT)*/
 	private static String _juiceBoXNormalisation = "KR";
+	/**String: prefix for metaplot output */
 	private static String _prefix = "SIPMeta";
+	/**Array String: list of colors available for the metaplot*/
 	static String[] _colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
+	/** String: doc of SIPMeta*/
+	private static String _doc = ("SIPMeta1.0 Version  run with java 8\n"
+			+ "Usage:\n"
+			+ "with SIP output\n"
+			+ "\tsimple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\tsubstraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\nwith .hic file\n"
+			+ "\thic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\thic substraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]\n"
+			+ "\nParameters:\n"
+			+ "\tsMetaPlot: size of the metaplot (default 21 bins)\n"
+			+ "\tsImg: size of the image analysed by SIP (default 2000 bins)\n"
+			+ "\tchrSizeFile: path to the chr size file, with the same name of the chr as in the hic file\n"
+			+ "\t-resMax TRUE or FALSE: default true, if false take the samller resolution\n"
+			+ "\t-c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno, spectral, viridis) default Reds\n"
+			+ "\t-z znorm each ring in bullseye\n"
+			+ "\t-s Trim edges to make a square\n"
+			+ "\t-min MIN minvalue for color scale\n"
+			+ "\t-max Max maxvalue for color scale\n"
+			+ "\t-cpu number of cpu uses\n"
+			+ "\t-t T threshold value tests the distance normalized value, all the value > T will be replace by zero\n"
+			+ "\t-prefix PREFIX name of the output file\n"
+			+ "\t-h, --help print help\n");
 	
-	private static String _doc = ("metaplot Version 0.0.1 run with java 8\n"
-			+"Usage:\n\n"
-			+"simple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME] \n"
-			+"substraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n\n"
-			+"hic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME] \n"
-			+"hic substraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]\n\n"
-			+"sMetaPlot: size of the metaplot (default 21 bins)\n"
-			+"sImg: size of the image analysed by SIP (default 2000 bins)\n"
-			+"chrSizeFile: path to the chr size file, with the same name of the chr as in the hic file\n"
-			+ "-norm: <NONE/VC/VC_SQRT/KR> only for hic option (default KR)\n"
-			+"-resMax TRUE or FALSE: default true, if false take the samller resolution\n"
-			+"-c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno, spectral, viridis) default Reds\n"
-			+"-z znorm each ring\n"
-			+"-t T threshold value tests the distance normalized value, all the value > T will be replace by zero\n"
-			+"-prefix PREFIX name of the output file\n"
-			+"-s Trim edges to make a square\n"
-			+"-min MIN minvalue for color scale\n"
-			+"-max Max maxvalue for color scale\n"
-			+"-cpu: Number of CPU used for SIP processing (default 1)\n"
-			+"-h, --help print help\n");
 	
 	/**
+	 * Obtain the parameter from the gui or the command line.
+	 * and then run the program on function the paramters
 	 * 
 	 * @param args
 	 * @throws IOException
@@ -117,8 +141,9 @@ public class MainMetaplot{
 		if((args.length >= 1 && args.length < 5)){
 			System.out.println("miss some arguments!!!!!!\n\n"+_doc);
 			System.exit(0);
-		}else if(args.length >= 5 ){
-			if(args[0].equals("hic")){
+		}else if(args.length >= 5 ){ ////////////////////////////////////////////////////////////////////// Here command line parameters
+			/// if hic paramater
+			if(args[0].equals("hic")){ 
 				_hic=true;
 				_loopsFile = args[2];
 				_input = args[3];
@@ -155,6 +180,7 @@ public class MainMetaplot{
 					readOption(args,12);
 				}
 			}else if(args[0].equals("simple") || args[0].equals("substarction")){
+				///if SIP output
 				_loopsFile = args[1];
 				_input = args[2];
 				if(args[0].equals("substarction")){
@@ -187,7 +213,7 @@ public class MainMetaplot{
 				System.out.println(_doc);
 				System.exit(0);
 			}
-		}else{
+		}else{ ////////////////// If gui 
 			MetaplotGUI gui = new MetaplotGUI();
 			while( gui.isShowing()){
 				 try {Thread.sleep(1);}
@@ -203,15 +229,13 @@ public class MainMetaplot{
 				if(gui.isSIP()==false){
 					_hic = true;		
 					readChrSizeFile(gui.getChrSizeFile());
-				}
-				
+				}	
 				_outDir = gui.getOutDir();
 				_outDir2 = gui.getOutDir2();
 				_juiceBoxTools = gui.getJuiceBox();
 				if(gui.isNONE()) _juiceBoXNormalisation = "NONE";
 				else if (gui.isVC()) _juiceBoXNormalisation = "VC";
 				else if (gui.isVC_SQRT()) _juiceBoXNormalisation = "VC_SQRT";
-				
 				_input2 = gui.getRawDataDir2();
 				_min = gui.getMinValue();
 				_max = gui.getMaxValue();
@@ -223,16 +247,19 @@ public class MainMetaplot{
 				_color = gui.getColor();
 				_nbCpu = gui.getNbCpu();
 				_prefix = gui.getPrefix();
-			}
-			else{
+			}else{
 				System.out.println(_doc);
 				System.exit(0);
 			}
 		}
-		
+		///////////////////// SIPMeta process.
 		_step = _imageSize/2;
 		try {	
 			SIPMeta sip = new SIPMeta(_input,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
+			if ((_metaSize % 2) == 0) {
+				System.out.println("Error: bullseye requires a central point in the matrix, therefore metaplot size must be odd\n");
+				System.exit(0);
+			}
 			if(_hic){
 				System.out.println("start dump data "+_input);
 				ProcessDumpData processDumpData = new ProcessDumpData();
@@ -249,14 +276,12 @@ public class MainMetaplot{
 				System.out.println("plopi");
 				sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
 			}
-			
-			System.out.println("prefix "+_prefix+"\n"
-					+ "input "+_input+"\n"
-					+ "input "+_input2+"\n"
-					);
 			sip.setPrefix(_prefix);
-			sip.run(_script,_square,_simple,_zScore,_color,_min,_max,_threshold);
-			
+			try {
+				sip.run(_script,_square,_simple,_zScore,_color,_min,_max,_threshold);
+			} catch (NullPointerException w) {
+				System.out.println("\nError! This is usually because the chromosome names don't match up between the loops file and the raw data files."
+						+ " For example Chr1 (capitalized) vs chr1 (no caps) vs 1 (no chr).\n Change your loops file to stay consistent with the 2-D input data.");	}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -274,12 +299,9 @@ public class MainMetaplot{
 		if(index < args.length){
 			for(int i = index; i < args.length;i+=2){
 				if(args[i].equals("-resMax")){
-					if(args[i+1].equals("false") || args[i+1].equals("FALSE"))
-						_resMax = false;
-					else if(args[i+1].equals("true") || args[i+1].equals("TRUE"))
-						_resMax = true;
-					else
-						returnError(args[i+1],args[i+1],"String");
+					if(args[i+1].equals("false") || args[i+1].equals("FALSE")) _resMax = false;
+					else if(args[i+1].equals("true") || args[i+1].equals("TRUE")) _resMax = true;
+					else returnError(args[i+1],args[i+1],"String");
 				}else if(args[i].equals("-prefix")){
 					_prefix = args[i+1];
 				}else if(args[i].equals("-t")){
