@@ -181,14 +181,14 @@ public class FileToMatrix {
 		String line = br.readLine();
 		String resu = "";
 		int nbLine = 0;
-		int prout = 0;  
+		int cmp = 0;  
 		if(gui){
 			this._progress = new Progress("loops file processing",nbLoops);
-			this._progress._bar.setValue(prout);
+			this._progress._bar.setValue(cmp);
 		}
 		while (line != null){
 			sb.append(line);
-			if(prout > 0){
+			if(cmp > 0){
 				String[] parts = line.split("\\t");
 				String chr = parts[0];
 				String dir = this._imgDir+File.separator+chr;
@@ -235,8 +235,8 @@ public class FileToMatrix {
 					}
 				}
 			}
-			prout++;
-			if(gui) this._progress._bar.setValue(prout);
+			cmp++;
+			if(gui) this._progress._bar.setValue(cmp);
 			sb.append(System.lineSeparator());
 			line = br.readLine();
 		}

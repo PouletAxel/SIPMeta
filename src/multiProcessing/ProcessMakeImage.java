@@ -41,7 +41,7 @@ public class ProcessMakeImage {
 	 */
 	public void go(String SIPDir,ArrayList<String> chr, int nbCPU, boolean gui, int resolution, int ratio, int imageSize,double threshold) throws InterruptedException{
 		if(gui){
-			_p = new Progress("tif disatnce normalized",chr.size()-1);
+			_p = new Progress("tif distance normalized",chr.size()-1);
 			_p._bar.setValue(0);
 		}
 		_nbLance = 0;
