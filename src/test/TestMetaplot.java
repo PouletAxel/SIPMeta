@@ -45,7 +45,7 @@ public class TestMetaplot{
 		
 		String input =  "/home/plop/Bureau/SIPpaper/Droso/HiC_rep12.hic";
 		String input2 =  "/home/plop/Bureau/SIPpaper/Droso/HiC_rep12.hic";
-		String loopsFile =  "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop/loops.txt"; //"https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_30.hic"; //";
+		String loopsFile =  "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop/loops"; //"https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_30.hic"; //";
 		//String output = "/home/plop/Bureau/plopi/";
 		boolean z = true;		
 		boolean squarre = true;
@@ -66,7 +66,11 @@ public class TestMetaplot{
 		String juiceBoXNormalisation = "KR";
 		int cpu = 2;
 		String prefix = "plopi";
-		readChrSizeFile("/home/plop/Bureau/SIPpaper/Droso/armsizes.txt");
+		
+		
+		
+		//System.out.println(pathFileMatrix);
+		/*readChrSizeFile("/home/plop/Bureau/SIPpaper/Droso/armsizes.txt");
 		System.out.println("input "+input+"\n"
 				+ "loops file "+loopsFile+"\n"
 				+ "python "+python+"\n"
@@ -92,7 +96,7 @@ public class TestMetaplot{
 		//String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max
 		//String input, String input2, String loopsFile, boolean gui, int res, boolean resMax, int cpu,int imageSize
 		sip.setPrefix(prefix);
-		sip.run(python,squarre,simple,z,color,min,max,threshold);
+		sip.run(python,squarre,simple,z,color,min,max,threshold);*/
 	}
 	
 	/**

@@ -115,12 +115,21 @@ public class SIPMeta {
 	 */
 	
 	public void run(String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max, double threshold) throws IOException, InterruptedException{
-		String pathFileMatrix = this._loopsFile.replace(".txt", "_matrix.tab");
+		String pathFileMatrix = "";
+		String output = "";
+		if(this._loopsFile.contains("\\.")){
+			String[] tmp = this._loopsFile.split(".");
+			pathFileMatrix = tmp[0]+"_matix.tab";
+			output = tmp[0];
+		}else{		
+			output = this._loopsFile;
+			pathFileMatrix = this._loopsFile+"_matix.tab";
+		}
+		
 		String pattern = Pattern.quote(System.getProperty("file.separator"));
 		String [] tab = pathFileMatrix.split(pattern);
 		String newName = this._prefix+"_"+tab[tab.length-1];
 		pathFileMatrix = pathFileMatrix.replace(tab[tab.length-1], newName);
-		String output = pathFileMatrix.replace(".txt", "");
 		FileToMatrix ftm = new FileToMatrix();
 		System.out.println("Check existing images if not existing the program creating the image");
 		makeTif(this._input,threshold);
