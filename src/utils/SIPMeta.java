@@ -116,20 +116,16 @@ public class SIPMeta {
 	
 	public void run(String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max, double threshold) throws IOException, InterruptedException{
 		String pathFileMatrix = "";
-		String output = "";
-		if(this._loopsFile.contains("\\.")){
-			String[] tmp = this._loopsFile.split(".");
-			pathFileMatrix = tmp[0]+"_matix.tab";
-			output = tmp[0];
+		String[] tmpPath = this._loopsFile.split("\\/");
+		String output = this._loopsFile.replaceAll(tmpPath[tmpPath.length-1], this._prefix);
+		if(tmpPath[tmpPath.length-1].contains(".")){
+			String[] tmp = tmpPath[tmpPath.length-1].split("\\.");
+			pathFileMatrix = output+"_"+tmp[0]+"_matrix.tab";
+			output = output+"_"+tmp[0];
 		}else{		
-			output = this._loopsFile;
-			pathFileMatrix = this._loopsFile+"_matix.tab";
+			output = output+"_"+tmpPath[tmpPath.length-1];
+			pathFileMatrix = output+"_matrix.tab";
 		}
-		
-		String pattern = Pattern.quote(System.getProperty("file.separator"));
-		String [] tab = pathFileMatrix.split(pattern);
-		String newName = this._prefix+"_"+tab[tab.length-1];
-		pathFileMatrix = pathFileMatrix.replace(tab[tab.length-1], newName);
 		FileToMatrix ftm = new FileToMatrix();
 		System.out.println("Check existing images if not existing the program creating the image");
 		makeTif(this._input,threshold);

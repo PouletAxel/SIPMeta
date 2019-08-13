@@ -67,9 +67,21 @@ public class TestMetaplot{
 		int cpu = 2;
 		String prefix = "plopi";
 		
+		String pathFileMatrix = "";
+		String[] tmpPath = loopsFile.split("\\/");
+
+		String output = loopsFile.replaceAll(tmpPath[tmpPath.length-1], prefix);
+		System.out.println(output);
+		if(tmpPath[tmpPath.length-1].contains(".")){
+			String[] tmp = tmpPath[tmpPath.length-1].split("\\.");
+			pathFileMatrix = output+"_"+tmp[0]+"_matrix.tab";
+			output = output+"_"+tmp[0];
+		}else{		
+			output = output+"_"+tmpPath[tmpPath.length-1];
+			pathFileMatrix = output+"_matrix.tab";
+		}
+			System.out.println(pathFileMatrix+" "+output);
 		
-		
-		//System.out.println(pathFileMatrix);
 		/*readChrSizeFile("/home/plop/Bureau/SIPpaper/Droso/armsizes.txt");
 		System.out.println("input "+input+"\n"
 				+ "loops file "+loopsFile+"\n"
