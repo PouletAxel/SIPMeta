@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import multiProcessing.ProcessMakeImage;
 
@@ -67,10 +66,9 @@ public class SIPMeta {
 		this._imageSize = imageSize;
 		this._loopsFile = loopsFile;
 		this._nbLine = readLoopFile();
-		this._metaSize=metaSize;
+		this._metaSize = metaSize;
 		this._step = (_imageSize/_ratio)/2;
 		this._cpu=cpu;
-		 
 	}
 	
 	/**
@@ -174,12 +172,14 @@ public class SIPMeta {
 		while (line != null){
 			if(nbLine > 0){
 				sb.append(line);
-				String[] parts = line.split("\\t");				
-				String chr = parts[0]; 
-				if (this._chr.contains(chr)==false)	this._chr.add(chr);
-				int size = Integer.parseInt(parts[2])-Integer.parseInt(parts[1]);
-				if(size > this._resolution) this._resolution = size;
-				if(size < this._minRes) this._minRes = size;
+				String[] parts = line.split("\\t");
+				if(parts.length >1 ){
+					String chr = parts[0]; 
+					if (this._chr.contains(chr)==false)	this._chr.add(chr);
+					int size = Integer.parseInt(parts[2])-Integer.parseInt(parts[1]);
+					if(size > this._resolution) this._resolution = size;
+					if(size < this._minRes) this._minRes = size;
+				}
 			}
 			++nbLine;
 			sb.append(System.lineSeparator());
