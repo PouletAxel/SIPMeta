@@ -175,7 +175,7 @@ public class MainMetaplot{
 					catch(NumberFormatException e){ returnError("sImg",args[11],"int");}				
 					readOption(args,12);
 				}
-			}else if(args[0].equals("simple") || args[0].equals("substarction")){
+			}else if(args[0].equals("simple") || args[0].equals("subtraction")){
 				///if SIP output
 				_loopsFile = args[1];
 				_input = args[2];
