@@ -13,30 +13,6 @@ import utils.SIPMeta;
 /**
  * This main class obtain all the parameter by the gui or the command line to then run SIPMetaplot with the good parameters gave by the the user
  * 
- * Usage:
- * with SIP output
- * simple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]
- * subtraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]
- * 
- * with .hic file
- * hic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]
- * hic subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]
- * 
- * 	Param:
- * 	sMetaPlot: size of the metaplot (default 20 bins)
- * sImg: size of the image analysed by SIP (default 2000 bins)
- * chrSizeFile: path to the chr size file, with the same name of the chr as in the hic file
- * -resMax TRUE or FALSE: default true, if false take the samller resolution
- * -c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno, spectral, viridis) default Reds
- * -z znorm each ring in bullseye
- * -s Trim edges to make a square
- * -min MIN minvalue for color scale
- * -max Max maxvalue for color scale
- * -cpu number of cpu uses
- * -t T threshold value tests the distance normalized value, all the value > T will be replace by zero
- * -prefix PREFIX name of the output file
- * -h, --help print help
- * 
  * 	We are using juicerboxTools.jar for the hic option to dump the data of the coodinate of interest.
  * Neva C. Durand, Muhammad S. Shamim, Ido Machol, Suhas S. P. Rao, Miriam H. Huntley, Eric S. Lander, and Erez Lieberman Aiden. "Juicer provides a 
  * one-click system for analyzing loop-resolution Hi-C experiments." Cell Systems 3(1), 2016.
@@ -107,25 +83,35 @@ public class MainMetaplot{
 	static String[] _colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
 	/** String: doc of SIPMeta*/
 	private static String _doc = ("SIPMeta1.0 Version run with java 8\n"
-			+"Usage:\n\n"
-			+"simple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME] \n"
-			+"subtraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n\n"
-			+"hic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME] \n"
-			+"hic subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]\n\n"
-			+"sMetaPlot: size of the metaplot (default 21 bins). Must be an odd number\n"
-			+"sImg: size of the image analysed by SIP (default 2000 bins)\n"
-			+"chrSizeFile: path to the chr size file, with the same name of the chr as in the hic file\n"
-			+ "-norm: <NONE/VC/VC_SQRT/KR> only for hic option (default KR)\n"
-			+"-resMax TRUE or FALSE: default true, if false take the smaller resolution\n"
-			+"-c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno, spectral, viridis) default Reds\n"
-			+"-z znorm each ring\n"
-			+"-t T threshold value tests the distance normalized value, all the value > T will be replaced by zero\n"
-			+"-prefix Prefix name of the output file\n"
-			+"-s Trim edges to make a square plot but with Manhattan distances\n"
-			+"-min Min minvalue for color scale\n"
-			+"-max Max maxvalue for color scale\n"
-			+"-cpu: Number of CPU used for processing (default 1)\n"
-			+"-h, --help print help\n");
+			+ "Usage:\n"
+			+ "\twith SIP output\n"
+			+ "\t\tsimple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\t\tsubtraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\twith .hic file\n"
+			+ "\thic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]"
+			+ "\thic subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]\n"
+			+ "\nParameters:\n"
+			+ "\tsMetaPlot: size of the desired metaplot (default 21 bins). Must be an odd number.\n"
+			+ "\tsImg: size of the image analyzed by SIP. Corresponds to –mat option in SIP (default 2000 bins).\n"
+			+ "\tchrSizeFile: path to the chr size file, with the same name of the chr as in the hic file (i.e. chr1 does not match Chr1 or 1).\n"
+			+ "\t-norm: <NONE/VC/VC_SQRT/KR> only for hic option (default KR).\n"
+			+ "\t-resMax TRUE or FALSE: default true, if false take the smaller resolution.\n"
+			+ "\t-c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno, spectral, viridis) default Reds. Can be any matplotlib color gradient.\n"
+			+ "\t-z Set this option to znorm each ring.\n"
+			+ "\t-t Threshold value tests the distance normalized value, all the value > T will be replaced by zero. Set high to avoid outliers skewing the average.\n"
+			+ "\t-prefix Prefix desired when naming the output files.\n"
+			+ "\t-s Set this option to trim edges to make a square plot but with Manhattan distances. (Not recommended as normal square plots are already created).\n"
+			+ "\t-min Min minimum value for color scale.\n"
+			+ "\t-max Max maximum value for color scale.\n"
+			+ "\t-cpu: Number of CPU used for processing (default 1).\n"
+			+ "\t-h, --help print help."
+			+ "\nAuthors:\n"
+			+ "Axel Poulet\n"
+			+ "\tDepartment of Molecular, Cellular  and Developmental Biology Yale University 165 Prospect St\n"
+			+ "\tNew Haven, CT 06511, USA\n"
+			+ "M. Jordan Rowley\n"
+			+ "\tDepartment of Genetics, Cell Biology and Anatomy, University of Nebraska Medical Center Omaha,NE 68198-5805\n"
+			+ "\nContact: pouletaxel@gmail.com OR jordan.rowley@unmc.edu");
 	/**
 	 * Obtain the parameter from the gui or the command line.
 	 * and then run the program on function the paramters

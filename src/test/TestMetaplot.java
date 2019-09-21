@@ -5,8 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import multiProcessing.ProcessDumpData;
-import utils.SIPMeta;
+
 
 
 /**
@@ -40,12 +39,13 @@ public class TestMetaplot{
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
+		String loopsFile =  "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop/loops"; //"https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_30.hic"; //";
 		//String output= "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop";
 		//output= "/home/plop/Bureau/SIPpaper/chr1/testNewNew";
 		
-		String input =  "/home/plop/Bureau/SIPpaper/Droso/HiC_rep12.hic";
+		/*String input =  "/home/plop/Bureau/SIPpaper/Droso/HiC_rep12.hic";
 		String input2 =  "/home/plop/Bureau/SIPpaper/Droso/HiC_rep12.hic";
-		String loopsFile =  "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop/loops"; //"https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_30.hic"; //";
+		
 		//String output = "/home/plop/Bureau/plopi/";
 		boolean z = true;		
 		boolean squarre = true;
@@ -64,7 +64,7 @@ public class TestMetaplot{
 		String outdir2 =  "/home/plop/Bureau/plop/plopBis/";
 		String juiceBoxTools = "/home/plop/Tools/juicer_tools.1.8.9_jcuda.0.8.jar";
 		String juiceBoXNormalisation = "KR";
-		int cpu = 2;
+		int cpu = 2;*/
 		String prefix = "plopi";
 		
 		String pathFileMatrix = "";
@@ -116,6 +116,7 @@ public class TestMetaplot{
 	 * @param chrSizeFile path chr size file
 	 * @throws IOException if file does't exist
 	 */
+	@SuppressWarnings("unused")
 	private static void readChrSizeFile( String chrSizeFile) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(chrSizeFile));
 		StringBuilder sb = new StringBuilder();
