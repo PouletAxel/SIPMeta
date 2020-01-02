@@ -2,6 +2,7 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -121,19 +122,15 @@ public class MainMetaplot{
 	 */
 	public static void main(String[] args) throws IOException{
 		if((args.length >= 1 && args.length < 5)){
-			System.out.println("missing some arguments!!!!!!\n\n"+_doc);
+			System.out.println("missing some arguments !!!!!!\n\n"+_doc);
 			System.exit(0);
 		}else if(args.length >= 5 ){ ////////////////////////////////////////////////////////////////////// Here command line parameters
 			/// if hic paramater
 			if(args[0].equals("hic")){ 
-				_hic=true;
+				_hic = true;
 				_loopsFile = args[2];
 				_input = args[3];
 				if(args[1].equals("simple")){
-					if(args[7].contains("bullseye.py")==false){
-						System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
-						System.exit(0);
-					}
 					_outDir = args[4];
 					_script = args[7];
 					readChrSizeFile(args[5]);
@@ -145,10 +142,6 @@ public class MainMetaplot{
 					readOption(args,10);
 				}else if(args[1].equals("subtraction")){
 					_simple = false;
-					if(args[9].contains("bullseye.py")==false){
-						System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
-						System.exit(0);
-					}
 					_input2 = args[4];
 					_outDir = args[5];
 					_outDir2 = args[6];
@@ -166,10 +159,6 @@ public class MainMetaplot{
 				_loopsFile = args[1];
 				_input = args[2];
 				if(args[0].equals("subtraction")){
-					if(args[4].contains("bullseye.py")==false){
-						System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
-						System.exit(0);
-					}
 					_simple=false;
 					_script = args[4];
 					_input2 = args[3];
@@ -179,10 +168,6 @@ public class MainMetaplot{
 					catch(NumberFormatException e){ returnError("sImg",args[6],"int");}
 					readOption(args,7);
 				}else if(args[0].equals("simple")){
-					if(args[3].contains("bullseye.py")==false){
-						System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
-						System.exit(0);
-					}
 					_script = args[3];
 					try{_metaSize =Integer.parseInt(args[4]);}
 					catch(NumberFormatException e){ returnError("sMetaPlot",args[4],"int");} 
@@ -193,7 +178,7 @@ public class MainMetaplot{
 			}else{
 				System.out.println(args[0]+" doesn't existed\n\n");
 				System.out.println(_doc);
-				System.exit(0);
+				return;
 			}
 		}else{ ////////////////// If gui 
 			MetaplotGUI gui = new MetaplotGUI();
@@ -231,18 +216,54 @@ public class MainMetaplot{
 				_prefix = gui.getPrefix();
 			}else{
 				System.out.println(_doc);
-				System.exit(0);
+				return;
 			}
 		}
+
+		////Test dir and file
+		
+		File f = new File(_loopsFile);
+		if(f.exists()==false){
+			System.out.println(_loopsFile+" doesn't existed !!! \n\n");
+			System.out.println(_doc);
+			return;
+		}
+		
+		if(_script.contains("bullseye.py")==false){
+			System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
+			return;
+		}
+		f = new File(_script);
+		if(f.exists()==false){
+			System.out.println(_script+" doesn't existed !!! \n\n");
+			System.out.println(_doc);
+			return;
+		}
+		
+		f = new File(_input);
+		if(f.exists()==false){
+				System.out.println(_input+" doesn't existed !!! \n\n");
+				System.out.println(_doc);
+				return;
+		}
+		
+		if(_simple == false){
+			f = new File(_input2);
+			if(f.exists()==false){
+					System.out.println(_input2+" doesn't existed !!! \n\n");
+					System.out.println(_doc);
+					return;
+			}
+		}
+		
 		///////////////////// SIPMeta process.
 		_step = _imageSize/2;
 		try {	
 			SIPMeta sip = new SIPMeta(_input,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
 			if ((_metaSize % 2) == 0) {
 				System.out.println("Error: bullseye requires a central point in the matrix, therefore metaplot size must be odd\n");
-				System.exit(0);
+				return;
 			}
-			
 			if(_hic){
 				System.out.println("start dump data "+_input);
 				ProcessDumpData processDumpData = new ProcessDumpData();

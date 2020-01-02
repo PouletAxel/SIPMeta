@@ -85,6 +85,10 @@ public class DumpData {
 		catch (IOException e) {	e.printStackTrace();}
 		catch (InterruptedException e) {e.printStackTrace();}
 		observedMExpected(obs,output);
+		if(_logError!=""){
+			System.out.println(_logError);
+			System.exit(0);
+		}
 		return exitValue==0;
 	}
 	
@@ -158,6 +162,10 @@ public class DumpData {
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
+		if(_logError!=""){
+			System.out.println(_logError);
+			System.exit(0);
+		}
 		return exitValue==0;
 	}
 	
@@ -179,6 +187,10 @@ public class DumpData {
 		new ReturnFlux(process.getInputStream()).start();
 		new ReturnFlux(process.getErrorStream()).start();
 		exitValue=process.waitFor();
+		if(_logError!=""){
+			System.out.println(_logError);
+			System.exit(0);
+		}
 		return exitValue==0;
 	}
 	
@@ -207,7 +219,10 @@ public class DumpData {
 				InputStreamReader reader = new InputStreamReader(this._flux);
 				BufferedReader br = new BufferedReader(reader);
 				String line=null;
-				while ( (line = br.readLine()) != null) _logError = _logError+line+"\n";
+				while ( (line = br.readLine()) != null) { 
+					if(line.contains("WARN")== false)
+						_logError = _logError+line+"\n";
+				}
 			}	catch (IOException ioe){ioe.printStackTrace();}
 		}		
 	} 

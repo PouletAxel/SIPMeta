@@ -38,6 +38,7 @@ public class RunnableDumpData extends Thread implements Runnable{
 	 * @param matrixSize
 	 * @param step
 	 */
+	
 	public RunnableDumpData (String outdir, String chrName, int chrSize, DumpData dumpData,int res, int matrixSize, int step){
 		this._outdir = outdir;
 		this._chrName = chrName;
@@ -62,6 +63,7 @@ public class RunnableDumpData extends Thread implements Runnable{
 		if (file.exists()==false) file.mkdir();
 		int step = this._step*this._res;
 		int j = this._matrixSize*this._res;
+		if (j > _chrSize) {j = _chrSize; }
 		String test = this._chrName+":0:"+j;
 		String name = outdir+this._chrName+"_0_"+j+".txt";
 		this._dumpData.getExpected(test,name);
