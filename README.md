@@ -1,3 +1,13 @@
+# SIPMeta
+
+<img src="https://github.com/PouletAxel/SIPImage/blob/master/meta.jpeg" width="1000">
+
+# What is SIPMeta
+
+SIPMeta is a tool to create both **normal** and **bullseye** transformed average **metaplots** of 2-D matrices, specifically Hi-C, HiChIP, or ChIA-PET data. This program is written in java with a helper python script and can be run on Linux, Windows, or MAC systems and includes either command line options or a graphical user interface.
+
+
+SIPMeta help menu:
 # SIPMeta1.0 version
 	
 	
