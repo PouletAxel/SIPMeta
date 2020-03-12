@@ -11,6 +11,13 @@ Follow these links to get started.
 
 * [Parameter Guide](https://github.com/PouletAxel/SIPMeta/wiki/Explanations-of-Parameters)
 
+* [View the Paper](https://genome.cshlp.org/content/early/2020/03/03/gr.257832.119.long)
+
+# Citing SIPMeta
+
+If you use SIP or SIPMeta please cite us.
+
+Rowley MJ, Poulet A, Nichols MH, Bixler BJ, Sanborn AL, Brouhard EA, Hermetz K, Linsenbaum H, Csankovszki G, Lieberman Aiden E, Corces G. Analysis of Hi-C data using SIP effectively identifies loops in organisms from C. elegans to mammals. Genome Research 2020.
 
 SIPMeta help menu:
 # SIPMeta1.0 version
