@@ -2,6 +2,10 @@ package multiProcessing;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import gui.Progress;
 
 /**
@@ -11,12 +15,6 @@ import gui.Progress;
  *
  */
 public class ProcessMakeImage {
-	/**int: number of processus*/
-	static int _nbLance = 0;
-	/** boolean: if true continue the process else take a break*/
-	static boolean _continuer;
-	/** */
-	static int _indice = 0;
 	/** progress bar if gui is true*/
 	private Progress _p;
 
@@ -39,27 +37,30 @@ public class ProcessMakeImage {
 	 * @param threshold
 	 * @throws InterruptedException
 	 */
-	public void go(String SIPDir,ArrayList<String> chr, int nbCPU, boolean gui, int resolution, int ratio, int imageSize,double threshold) throws InterruptedException{
-		if(gui){
-			_p = new Progress("tif distance normalized",chr.size()-1);
-			_p._bar.setValue(0);
-		}
-		_nbLance = 0;
-		ArrayList<Thread> arrayListImageThread = new ArrayList<Thread>() ;
+
+	public void go(String SIPDir,ArrayList<String> chr, int nbCPU, boolean gui, int resolution, int imageSize,double threshold) throws InterruptedException{
+		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(nbCPU);
 		for(int i = 0; i < chr.size(); ++i){
-			File a = new File(SIPDir+File.separator+chr.get(i));
+			File a = new File(SIPDir+chr.get(i));
 			File[] listOfFile = a.listFiles();
-			if(testTiff(listOfFile,resolution,ratio) == false){
-				arrayListImageThread.add(new RunnableMakeImage(	listOfFile, resolution, imageSize,threshold));
-				arrayListImageThread.get(i).start();	
-				while (_continuer == false)	Thread.sleep(10);
-				while (_nbLance > nbCPU) Thread.sleep(10);
-				}
-			if(gui)	_p._bar.setValue(i);
+			if(testTiff(listOfFile,resolution) == false){
+				RunnableMakeImage task =  new  RunnableMakeImage(listOfFile, resolution, imageSize,threshold);
+				executor.execute(task);	
+			}
 		}
-		for (int i = 0; i < arrayListImageThread.size(); ++i)
-			while(arrayListImageThread.get(i).isAlive())
-				Thread.sleep(10);
+		executor.shutdown();
+		int nb = 0;
+			
+		if(gui){
+			_p = new Progress("Loop Detection step",chr.size()+1);
+			_p._bar.setValue(nb);
+		}
+		while (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+			if (nb != executor.getCompletedTaskCount()) {
+				nb = (int) executor.getCompletedTaskCount();
+				if(gui) _p._bar.setValue(nb);
+			}
+		}
 		if(gui)	_p.dispose();
 	}
 	
@@ -71,15 +72,10 @@ public class ProcessMakeImage {
 	 * @param min
 	 * @return
 	 */
-	private boolean testTiff(File[] listOfFile,int resolution, int ratio){
+	private boolean testTiff(File[] listOfFile,int resolution){
 		boolean tif = false;
 		for(int j = 0; j < listOfFile.length; ++j){
-			if(ratio == 1 && listOfFile[j].toString().contains("_N.tif")){
-				tif = true;
-				return tif;
-			}
-			
-			if(listOfFile[j].toString().contains("_"+ratio+"_N.tif")){
+			if(listOfFile[j].toString().contains("_N.tif")){
 				tif = true;
 				return tif;
 			}

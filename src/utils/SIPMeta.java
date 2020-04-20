@@ -1,9 +1,10 @@
 package utils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import multiProcessing.ProcessMakeImage;
 
@@ -27,25 +28,18 @@ public class SIPMeta {
 	/**int: image size */
 	private int _imageSize =2000;
 	/** int step size*/
-	private int _step = 0;
+	private int _step = _imageSize/2;
 	/** int metaplot matrix size*/
 	private int _metaSize = 21;
 	/** int bin resolution*/
-	private int _resolution = 0;
-	/** int min resolution*/
-	private int _minRes = 10000000;
-	/** int ratio = res/minRes*/
-	private int _ratio = 1;
+	private int _resolution = 5000;
 	/**boolean is true used teh max resolution to do the metaplot */
-	private boolean _resMax = true;
-	/** boolean if true used the progress bar*/
 	private boolean _gui = false;
 	/** array list of string with the name of the chr*/
 	private ArrayList<String> _chr = new ArrayList<String>(); 
-	/** nb of loops*/
-	private int _nbLine = 0;
 	/** nb of cpu used in the nalaysis*/
 	private int _cpu = 0;
+	
 	
 	
 	/**
@@ -59,16 +53,15 @@ public class SIPMeta {
 	 * @param metaSize
 	 * @throws IOException
 	 */
-	public SIPMeta(String input, String loopsFile, boolean gui, boolean resMax, int cpu, int imageSize, int metaSize ) throws IOException{
+	public SIPMeta(String input, String loopsFile, boolean gui, int resolution, int cpu, int imageSize, int metaSize ) throws IOException{
 		this._input = input;
 		this._gui = gui;
-		this._resMax = resMax;
 		this._imageSize = imageSize;
 		this._loopsFile = loopsFile;
-		this._nbLine = readLoopFile();
 		this._metaSize = metaSize;
-		this._step = (_imageSize/_ratio)/2;
+		this._step = _imageSize/2;
 		this._cpu=cpu;
+		this._resolution = resolution;
 	}
 	
 	/**
@@ -84,15 +77,14 @@ public class SIPMeta {
 	 * @param metaSize
 	 * @throws IOException
 	 */
-	public SIPMeta(String input, String input2, String loopsFile, boolean gui, boolean resMax, int cpu,int imageSize, int metaSize)throws IOException{
+	public SIPMeta(String input, String input2, String loopsFile, boolean gui, int res , int cpu,int imageSize, int metaSize)throws IOException{
 		this._input = input;
 		this._input2 = input2;
 		this._gui = gui;
-		this._resMax = resMax;
+		this._resolution = res;
 		this._imageSize = imageSize;
 		this._loopsFile = loopsFile;
-		this._nbLine = readLoopFile();
-		this._step = (_imageSize/_ratio)/2;
+		this._step = _imageSize/2;
 		this._cpu=cpu;
 		this._metaSize=metaSize;
 	}
@@ -125,15 +117,39 @@ public class SIPMeta {
 			pathFileMatrix = output+"_matrix.tab";
 		}
 		FileToMatrix ftm = new FileToMatrix();
+				
+		String nameRes = String.valueOf(_resolution);
+		nameRes = nameRes.replace("000", "");
+		nameRes = nameRes+"kb"; 
+		String input = this._input+nameRes+File.separator;
+		File a = new File(input);
+		System.out.println(input);
+		if(a.exists()==false) {
+			if(_gui){
+				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+this._input+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
+			}
+			System.out.println(this._resolution+" is not present in the dumped file: \"+this._input+\" run the program with the hic or cool option to dump the dataset !!!!\n");
+			return;
+		}
+			
 		System.out.println("Check existing images if not existing the program creating the image");
-		makeTif(this._input,threshold);
+		a = new File(input);
+		File[] listOfFile = a.listFiles();
+		for(int i = 0; i < listOfFile.length; ++i) {
+			if(listOfFile[i].isDirectory()) {
+				String [] b = listOfFile[i].toString().split(File.separator);
+				this._chr.add(b[b.length-1]);
+			}
+		}
+		System.out.println(input);
+		makeTif(input,threshold);
 		if (simple){
-			ftm = new FileToMatrix(this._input, this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
-			ftm.creatMatrix(this._step, this._ratio,this. _gui,this._nbLine);
+			ftm = new FileToMatrix(input, this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
+			ftm.creatMatrix(this._step,this. _gui);
 		}else{
 			makeTif(this._input2,threshold);
 			ftm = new FileToMatrix(this._input,this._input2,this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
-			ftm.creatMatrixSubstarction(this._step, this._ratio, this._gui,this._nbLine);
+			ftm.creatMatrixSubstarction(this._step, this._gui);
 		}
 		System.out.println("##### End of creating the image\n Start matrix for metaplot");
 		ftm.getAPA();
@@ -154,41 +170,9 @@ public class SIPMeta {
 	 */
 	public void makeTif(String imgDir,double threshold) throws IOException, InterruptedException{
 		ProcessMakeImage process = new ProcessMakeImage();
-		process.go(imgDir, this._chr,this._cpu, this._gui, this._resolution, this._ratio, this._imageSize, threshold);
+		process.go(imgDir, this._chr,this._cpu, this._gui, this._resolution, this._imageSize, threshold);
 	}
 	
-	
-	/**
-	 * read the loop file and initialized the arrayList chr, minRes, res and ratio
-	 * @return the nb of loops
-	 * @throws IOException
-	 */
-	 
-	private int readLoopFile() throws IOException{
-		BufferedReader br = new BufferedReader(new FileReader(this._loopsFile));
-		StringBuilder sb = new StringBuilder();
-		String line = br.readLine();
-		int nbLine = 0;
-		while (line != null){
-			if(nbLine > 0){
-				sb.append(line);
-				String[] parts = line.split("\\t");
-				if(parts.length >1 ){
-					String chr = parts[0]; 
-					if (this._chr.contains(chr)==false)	this._chr.add(chr);
-					int size = Integer.parseInt(parts[2])-Integer.parseInt(parts[1]);
-					if(size > this._resolution) this._resolution = size;
-					if(size < this._minRes) this._minRes = size;
-				}
-			}
-			++nbLine;
-			sb.append(System.lineSeparator());
-			line = br.readLine();
-		}
-		br.close();
-		if(this._resMax) this._ratio = this._resolution/this._minRes;
-		return nbLine;
-	} 
 		
 	/**
 	 * getter of the image resolution

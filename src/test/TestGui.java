@@ -31,7 +31,7 @@ public class TestGui {
 			String loop = gui.getLoopFile();
 			String rScript = gui.getScript();
 			String plopi ="";
-			boolean maxRes = gui.isMaxRes();
+			//boolean maxRes = gui.isMaxRes();
 			if(gui.isOneData()){	plopi ="simple";}
 			else{	plopi = "subtraction";}
 			double min = gui.getMinValue();
@@ -52,7 +52,7 @@ public class TestGui {
 					+"\nmax: "+max
 					+ "\nsize meta: "+metaSize
 					+"\nsizeSipImage: "+sizeSipImage
-					+"\nmax res: "+maxRes+"\n"
+					//+"\nmax res: "+maxRes+"\n"
 					+ "color "+color
 					+"\nplot "+plot
 					+"\ntype "+plopi

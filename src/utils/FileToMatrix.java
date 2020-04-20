@@ -57,6 +57,7 @@ public class FileToMatrix {
 	public FileToMatrix(String imgDir, String loopsFile, String matrixPathFile, int res, int meta){
 		this._resolution = res;
 		this._imgDir = imgDir;
+		System.out.println(imgDir);
 		this._loopsFile = loopsFile;
 		this._resu = new float[meta][meta];
 		this._metaSize = meta ;
@@ -97,10 +98,10 @@ public class FileToMatrix {
 	 * @return
 	 * @throws IOException
 	 */
-	public String creatMatrix(int step, int ratio,boolean gui, int nbloop) throws IOException{
+	public String creatMatrix(int step, boolean gui) throws IOException{
 		int nbLine = 0; 
 		if(gui){
-			this._progress = new Progress("loops file processing",nbloop);
+			this._progress = new Progress("loops file processing",10000);
 			this._progress._bar.setValue(nbLine);
 		}
 		BufferedReader br = new BufferedReader(new FileReader(this._loopsFile));
@@ -119,11 +120,9 @@ public class FileToMatrix {
 				File folder = new File(dir);
 				File[] listOfFiles = folder.listFiles();
 				for (int i = 0; i < listOfFiles.length; ++i){
-					String test = "_N.tif";
-					if (ratio > 1) test = ratio+"_N.tif";
-					if(listOfFiles[i].toString().contains("tif") && listOfFiles[i].toString().contains(test)){
+					if(listOfFiles[i].toString().contains("tif") && listOfFiles[i].toString().contains("_N.tif")){
 						String [] tTemp = listOfFiles[i].toString().split("/");
-						String coord = tTemp[tTemp.length-1].replaceAll("_"+ratio+"_N.tif", "");
+						String coord = tTemp[tTemp.length-1].replaceAll("_N.tif", "");
 						String [] tcoord = coord.split("_");
 						int a = Integer.parseInt(parts[1]);
 						int a_end = Integer.parseInt(parts[4]);
@@ -175,7 +174,7 @@ public class FileToMatrix {
 	 * @return
 	 * @throws IOException
 	 */
-	public String creatMatrixSubstarction(int step, int ratio, boolean gui, int nbLoops) throws IOException{
+	public String creatMatrixSubstarction(int step, boolean gui) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(this._loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
@@ -183,7 +182,7 @@ public class FileToMatrix {
 		int nbLine = 0;
 		int cmp = 0;  
 		if(gui){
-			this._progress = new Progress("loops file processing",nbLoops);
+			this._progress = new Progress("loops file processing",10000);
 			this._progress._bar.setValue(cmp);
 		}
 		while (line != null){
@@ -196,11 +195,11 @@ public class FileToMatrix {
 				File folder = new File(dir);
 				File[] listOfFiles = folder.listFiles();
 				for (int i = 0; i < listOfFiles.length; ++i){
-					if(listOfFiles[i].toString().contains(ratio+"_N.tif")){
+					if(listOfFiles[i].toString().contains("_N.tif")){
 						String[] testTable = listOfFiles[i].toString().split("/");
 						String fileName2 = dir2+File.separator+testTable[testTable.length-1];
 						String [] tTemp = listOfFiles[i].toString().split("/");
-						String coord = tTemp[tTemp.length-1].replaceAll("_"+ratio+"_N.tif", "");
+						String coord = tTemp[tTemp.length-1].replaceAll("_N.tif", "");
 						String [] tcoord = coord.split("_");
 						int a = Integer.parseInt(parts[1]);
 						int a_end = Integer.parseInt(parts[4]);

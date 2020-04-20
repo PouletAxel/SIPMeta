@@ -108,7 +108,7 @@ public class DumpData {
 			String [] tline = line.split("\t");
 			int dist = Math.abs((Integer.parseInt(tline[0])-Integer.parseInt(tline[1]))/this._resolution);
 			if(!tline[2].equals("NaN")){
-				double normalizedValue = 1+(((Double.parseDouble(tline[2])+1)-(this._lExpected.get(dist)+1))/(this._lExpected.get(dist)+1));
+				double normalizedValue = (Double.parseDouble(tline[2])+1)/(this._lExpected.get(dist)+1);
 				double oMe = Double.parseDouble(tline[2])-this._lExpected.get(dist);
 				writer.write(tline[0]+"\t"+tline[1]+"\t"+oMe+"\t"+normalizedValue+"\n");
 			}

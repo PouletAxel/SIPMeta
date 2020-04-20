@@ -38,8 +38,6 @@ public class RunnableMakeImage extends Thread implements Runnable{
 	 * 
 	 */
 	public void run(){
-		ProcessMakeImage._nbLance++;
-		ProcessMakeImage._continuer = true;
 		for(int j = 0; j < _listOfFile.length; ++j){
 			if(this._listOfFile[j].toString().contains(".txt")){
 				ProcessTuplesFile ptf;
@@ -50,6 +48,5 @@ public class RunnableMakeImage extends Thread implements Runnable{
 			}
 		}
 		System.gc();
-		ProcessMakeImage._nbLance--;
 	}
 }

@@ -11,20 +11,35 @@ Follow these links to get started.
 
 * [Parameter Guide](https://github.com/PouletAxel/SIPMeta/wiki/Explanations-of-Parameters)
 
+* [View the Published Paper](https://genome.cshlp.org/content/early/2020/03/03/gr.257832.119.long)
+
+## Citing SIP
+
+If you use SIP or SIPMeta, please cite us.
+
+Rowley MJ, Poulet A, Nichols MH, Bixler BJ, Sanborn AL, Brouhard EA, Hermetz K, Linsenbaum H, Csankovszki G, Lieberman Aiden E, Corces G. Analysis of Hi-C data using SIP effectively identifies loops in organisms from C. elegans to mammals. Genome Research 2020.
 
 SIPMeta help menu:
-# SIPMeta1.0 version
+# SIPMeta version
 	
 	
 	Usage:
 		with SIP output
 			simple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [options]
 			subtraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [options]
+		
 		with .hic file
 			hic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script>
 			 <sMetaPlot> <sImg> [options]
 			hic subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile>
 			 <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [options]
+		
+		with .mcool file
+			cool simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <cooler> <cooltools> <script> <sMetaPlot>
+			 <sImg> [options]
+			cool subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile>
+			 <cooler> <cooltools> <script> <sMetaPlot> <sImg> [options]\n"
+			 
 
 	Parameters:
 		sMetaPlot: size of the desired metaplot (default 21 bins). Must be an odd number.
@@ -32,7 +47,7 @@ SIPMeta help menu:
 		chrSizeFile: path to the chr size file, with the same name of the chr as in the hic file
 		(i.e. chr1 does not match Chr1 or 1).
 		-norm: <NONE/VC/VC_SQRT/KR> only for hic option (default KR).
-		-resMax TRUE or FALSE: default true, if false take the smaller resolution.
+		res: resolution in bp (default 5000 bp).
 		-c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno,
 		 spectral, viridis) default Reds. Can be any matplotlib color gradient.
 		-z Set this option to znorm each ring.

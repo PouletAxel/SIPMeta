@@ -5,6 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import multiProcessing.ProcessCoolerDumpData;
+import multiProcessing.ProcessDumpData;
+import utils.SIPMeta;
+
 
 
 
@@ -38,38 +42,30 @@ public class TestMetaplot{
 	static HashMap<String,Integer> _chrSize = new HashMap<String,Integer>();
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
-		
-		String loopsFile =  "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop/loops"; //"https://hicfiles.s3.amazonaws.com/hiseq/gm12878/in-situ/combined_30.hic"; //";
-		//String output= "/home/plop/Bureau/SIPpaper/Droso/SIPresuPlop";
-		//output= "/home/plop/Bureau/SIPpaper/chr1/testNewNew";
-		
-		/*String input =  "/home/plop/Bureau/SIPpaper/Droso/HiC_rep12.hic";
-		String input2 =  "/home/plop/Bureau/SIPpaper/Droso/HiC_rep12.hic";
-		
-		//String output = "/home/plop/Bureau/plopi/";
+		String loopsFile =  "/home/plop/Desktop/CoolTest21/5kbLoops.txt"; 
+		//String input =  "/home/plop/Desktop/SIP/testCooler/GM12878_4DNFIXP4QG5B.mcool";
+		//String input =  "/home/plop/Desktop/SIP/testCooler/4DNFI1UEG1HD.hic";
+		String input =  "/home/plop/Desktop/CoolTest21/";
 		boolean z = true;		
 		boolean squarre = true;
-		
-		boolean simple = false;
-		
-		String python = "/home/plop/Bureau/SIPpaper/bullseye.py";
+		boolean simple = true;
+		String python = "/home/plop/Desktop/SIP/bullseye.py";
 		int matrixSize = 2000;
+		int res = 5000;
 		int sizeMeta = 21;
 		double min = 0;
 		double max = 20;
-		String inputType = "hic";
+		String juicer = "/home/plop/Tools/juicer_tools_1.13.02.jar";
+		String cooler = "/home/plop/anaconda3/bin/cooler";
+		String cooltools = "/home/plop/anaconda3/bin/cooltools";
+		int nbCpu = 3;
+		
 		String color = "inferno";
 		double threshold = -1;
-		String outdir =  "/home/plop/Bureau/plop/plopi/";
-		String outdir2 =  "/home/plop/Bureau/plop/plopBis/";
-		String juiceBoxTools = "/home/plop/Tools/juicer_tools.1.8.9_jcuda.0.8.jar";
-		String juiceBoXNormalisation = "KR";
-		int cpu = 2;*/
-		String prefix = "plopi";
-		
+		String outdir =  "/home/plop/Desktop/Juicer21/";
+		String prefix = "cool";
 		String pathFileMatrix = "";
 		String[] tmpPath = loopsFile.split("\\/");
-
 		String output = loopsFile.replaceAll(tmpPath[tmpPath.length-1], prefix);
 		System.out.println(output);
 		if(tmpPath[tmpPath.length-1].contains(".")){
@@ -82,7 +78,7 @@ public class TestMetaplot{
 		}
 			System.out.println(pathFileMatrix+" "+output);
 		
-		/*readChrSizeFile("/home/plop/Bureau/SIPpaper/Droso/armsizes.txt");
+		readChrSizeFile("/home/plop/Desktop/w_hg19.sizes");
 		System.out.println("input "+input+"\n"
 				+ "loops file "+loopsFile+"\n"
 				+ "python "+python+"\n"
@@ -90,25 +86,17 @@ public class TestMetaplot{
 				+ "max "+max+"\n"
 				+ "matrix size "+matrixSize+"\n");
 		
-		SIPMeta sip = new SIPMeta(input,loopsFile,false,true,2,matrixSize,sizeMeta);
-		if(inputType.equals("hic") ){
-			System.out.println("start 1");
-			ProcessDumpData processDumpData = new ProcessDumpData();
-			processDumpData.go(input, outdir, _chrSize, juiceBoxTools, juiceBoXNormalisation, cpu-1, sip.getResolution(), matrixSize,false);
-			sip.setInput(outdir);
-			System.out.println("#######end 1");
-			if(simple==false){
-				System.out.println("start 2");
-				processDumpData.go(input2, outdir2, _chrSize, juiceBoxTools, juiceBoXNormalisation, cpu-1, sip.getResolution(), matrixSize,false);
-				sip = new SIPMeta(outdir,outdir2,loopsFile,false,true,cpu-1,matrixSize,sizeMeta);
-				System.out.println("end 2");
-			}
-		}
+		//ProcessCoolerDumpData dumpData = new ProcessCoolerDumpData();
+		//go( String coolFile, String output, HashMap<String,Integer> chrSize,int nbCPU, int resolution, int matrixSize, boolean gui)
+		//dumpData.go(input, outdir, _chrSize, cooltools,cooler, nbCpu, res, matrixSize,false);
 		
-		//String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max
-		//String input, String input2, String loopsFile, boolean gui, int res, boolean resMax, int cpu,int imageSize
+		//ProcessDumpData processDumpData = new ProcessDumpData();
+		//processDumpData.go(input, outdir, _chrSize, juicer, "KR", nbCpu, res, matrixSize,false);
+				
+		SIPMeta sip = new SIPMeta(input,loopsFile, true,res,nbCpu,matrixSize,sizeMeta); 
+		sip.setInput(outdir);
 		sip.setPrefix(prefix);
-		sip.run(python,squarre,simple,z,color,min,max,threshold);*/
+		sip.run(python,squarre,simple,z,color,min,max,threshold);
 	}
 	
 	/**

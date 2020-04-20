@@ -54,13 +54,14 @@ public class RunnableDumpData extends Thread implements Runnable{
 	 * 
 	 */
 	public void run(){
-		ProcessDumpData._nbLance++;
-		ProcessDumpData._continuer = true;
 		boolean juicerTools;
 		String expected ="";
-		String outdir = this._outdir+File.separator+this._chrName+File.separator;
+		String nameRes = String.valueOf(_res);
+		nameRes = nameRes.replace("000", "");
+		nameRes = nameRes+"kb"; 
+		String outdir = this._outdir+File.separator+nameRes+File.separator+this._chrName+File.separator;
 		File file = new File(outdir);
-		if (file.exists()==false) file.mkdir();
+		if (file.exists()==false) file.mkdirs();
 		int step = this._step*this._res;
 		int j = this._matrixSize*this._res;
 		if (j > _chrSize) {j = _chrSize; }
@@ -85,7 +86,6 @@ public class RunnableDumpData extends Thread implements Runnable{
 					System.out.print(dump+" "+"\n"+juicerTools+"\n");
 					System.exit(0);
 				}
-				
 				if(j+step > this._chrSize && j < this._chrSize){
 					j= this._chrSize;
 					i+=step;
@@ -104,6 +104,5 @@ public class RunnableDumpData extends Thread implements Runnable{
 			e.printStackTrace();
 		}
 		System.gc();
-		ProcessDumpData._nbLance--;
 	}
 }

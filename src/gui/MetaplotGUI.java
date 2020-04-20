@@ -35,12 +35,22 @@ public class MetaplotGUI extends JFrame{
 	private ButtonGroup _bGroupInputData = new ButtonGroup();
 	/** SIP radioButton */
 	private JRadioButton _jrSIP = new JRadioButton("SIP files");
-	/** Hic, file radioButton*/
-	private JRadioButton _jrHicFile = new JRadioButton(".hic file");
+	/** Hic file radioButton*/
+	private JRadioButton _jrHic = new JRadioButton(".hic file");
+	/** mcool file radioButton*/
+	private JRadioButton _jrCool = new JRadioButton(".mcool file");
     /** textfiled for the juicerboxtools.jar*/
     private JTextField _jtfBoxTools = new JTextField();
     /** Button to select the juicer jar*/
     private JButton _jbBoxTools = new JButton("Juicer Tools");
+    /** textfiled for the juicerboxtools.jar*/
+    private JTextField _jtfCooler = new JTextField();
+    /** Button to select the juicer jar*/
+    private JButton _jbCooler = new JButton("cooler");
+    /** textfiled for the juicerboxtools.jar*/
+    private JTextField _jtfCoolTools = new JTextField();
+    /** Button to select the juicer jar*/
+    private JButton _jbCoolTools = new JButton("cooltools");
     /** ButtonGroup which contain the choice of dumpData normalization (NONE,KR, VC or VC_SQRT)*/
     private ButtonGroup _bNorm = new ButtonGroup();
     /** radioButton for NONE normalization*/
@@ -56,11 +66,11 @@ public class MetaplotGUI extends JFrame{
 	/** textfiled for chr size file */
 	private JTextField _jtfChrSize  =  new JTextField();
 	/** */
-	private JButton _jbRawData = new JButton("SIP data or .hic");
+	private JButton _jbRawData = new JButton("SIP data, .hic or .mcool");
 	/** textfiled for raw data (SIP or .hic file)*/
 	private JTextField _jtfRawData = new JTextField();
 	/** */
-	private JButton _jbRawData2 = new JButton("2nd SIP data or .hic");
+	private JButton _jbRawData2 = new JButton("2nd SIP data, .hic or .mcool");
 	/** textfiled for raw data 2 (SIP or .hic file) when substraction is selected */
 	private JTextField _jtfRawData2 = new JTextField();
 	/** textfiled for output dumpa data when SIP is selected */
@@ -95,12 +105,8 @@ public class MetaplotGUI extends JFrame{
 	private JRadioButton _jrSimple = new JRadioButton("Simple");
 	/** */
 	private JRadioButton _jrSubtraction = new JRadioButton("Subtraction");
-	/** ButtonGroup which contain the choice of doing the metaplot at the resolution max found in the loop file*/
-	private ButtonGroup _bGroupMaxRes = new ButtonGroup();
 	/** */
-	private JRadioButton _jrTrue = new JRadioButton("True");
-	/** */
-	private JRadioButton _jrFalse = new JRadioButton("False");
+	private JFormattedTextField _jtfResolution = new JFormattedTextField(Number.class);
 	/** */
 	private JRadioButton _jrZscore = new JRadioButton("Bullseye with Zscore");
 	/** */
@@ -139,14 +145,14 @@ public class MetaplotGUI extends JFrame{
 	public MetaplotGUI(){
 		///////////////////////////////////////////// Global parameter of the JFram and def of the gridBaglayout
 		this.setTitle("SIPMeta");
-		this.setSize(550, 780);
+		this.setSize(550, 790);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setBackground(Color.LIGHT_GRAY);
 		this._container = getContentPane();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.1};
-		gridBagLayout.rowHeights = new int[] {17, 260, 124, 7};
+		gridBagLayout.rowHeights = new int[] {17, 350, 124, 7};
 		gridBagLayout.columnWeights = new double[] {0.0, 0.0, 0.0, 0.1};
 		gridBagLayout.columnWidths = new int[] {250, 120, 72, 20};
 		this._container.setLayout (gridBagLayout);
@@ -159,19 +165,25 @@ public class MetaplotGUI extends JFrame{
 		 ));   	
 		
 		this._bGroupInputData.add(this._jrSIP);
-		this._bGroupInputData.add(this._jrHicFile);
+		this._bGroupInputData.add(this._jrHic);
+		this._bGroupInputData.add(this._jrCool);
 	 	
 		this._jrSIP.setFont(new java.awt.Font("arial",2,11));
-		this._jrHicFile.setFont(new java.awt.Font("arial",2,11));
+		this._jrHic.setFont(new java.awt.Font("arial",2,11));
+		this._jrCool.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(this._jrSIP,new GridBagConstraints(
 			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
 			GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0
 		));
 		
-		this._container.add(this._jrHicFile,new GridBagConstraints(
+		this._container.add(this._jrHic,new GridBagConstraints(
 			0, 1, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
 			GridBagConstraints.NONE,new Insets(20, 150, 0, 0), 0, 0
 		));
+		this._container.add(this._jrCool,new GridBagConstraints(
+				0, 1, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,new Insets(20, 280, 0, 0), 0, 0
+			));
 		
 		this._jrSIP.setSelected(true);
 		
@@ -211,7 +223,7 @@ public class MetaplotGUI extends JFrame{
 		   		GridBagConstraints.NONE, new Insets(90, 10, 0, 0), 0, 0
 		 ));
 	   	
-	   	this._jbLoopsFile.setPreferredSize(new java.awt.Dimension(130, 21));
+	   	this._jbLoopsFile.setPreferredSize(new java.awt.Dimension(170, 21));
 	   	this._jbLoopsFile.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add ( this._jbLoopsFile, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
@@ -222,10 +234,10 @@ public class MetaplotGUI extends JFrame{
 	   	this._jtfLoopsFile.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add(this._jtfLoopsFile, new GridBagConstraints(
 				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(110, 160, 0, 0),0, 0
+				GridBagConstraints.NONE, new Insets(110, 200, 0, 0),0, 0
 		));
 		
-	   	this._jbRawData.setPreferredSize(new java.awt.Dimension(130, 21));
+	   	this._jbRawData.setPreferredSize(new java.awt.Dimension(170, 21));
 	   	this._jbRawData.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add ( this._jbRawData, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
@@ -236,10 +248,10 @@ public class MetaplotGUI extends JFrame{
 	   	this._jtfRawData.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add(this._jtfRawData, new GridBagConstraints(
 				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(140, 160, 0, 0),0, 0
+				GridBagConstraints.NONE, new Insets(140, 200, 0, 0),0, 0
 		));
 		
-	   	this._jbRawData2.setPreferredSize(new java.awt.Dimension(130, 21));
+	   	this._jbRawData2.setPreferredSize(new java.awt.Dimension(170, 21));
 	   	this._jbRawData2.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add ( this._jbRawData2, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
@@ -250,7 +262,7 @@ public class MetaplotGUI extends JFrame{
 	   	this._jtfRawData2.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add(this._jtfRawData2, new GridBagConstraints(
 				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(170, 160, 0, 0),0, 0
+				GridBagConstraints.NONE, new Insets(200, 160, 0, 0),0, 0
 		));
 	   	label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",2,11));
@@ -263,22 +275,22 @@ public class MetaplotGUI extends JFrame{
 	   	this._jbScriptFile.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add ( this._jbScriptFile, new GridBagConstraints(
 	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   			GridBagConstraints.NONE, new Insets(230, 10, 0, 0), 0, 0
+	   			GridBagConstraints.NONE, new Insets(220, 10, 0, 0), 0, 0
 	   	));
 	   	
 	   	this._jtfScript.setPreferredSize(new java.awt.Dimension(280, 21));
 	   	this._jtfScript.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add(this._jtfScript, new GridBagConstraints(
 				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(230, 160, 0, 0),0, 0
+				GridBagConstraints.NONE, new Insets(220, 160, 0, 0),0, 0
 		));
 		
 	   	label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",2,11));
-	   	label.setText("Parameters and files for .hic file processing.");
+	   	label.setText("Parameters and files for .hic or .mcool file processing.");
 	   	this._container.add(label, new GridBagConstraints(
-	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-	   			GridBagConstraints.NONE, new Insets(0, 20, 0, 0),0, 0
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+	   			GridBagConstraints.NONE, new Insets(250, 20, 0, 0),0, 0
 	   	));
 	   	
 	   	this._jtfOutput.setEditable(false);
@@ -293,61 +305,74 @@ public class MetaplotGUI extends JFrame{
 		this._jrbKR.setEnabled(false);
 		this._jrbVC.setEnabled(false);
 		this._jrbVC_sqrt.setEnabled(false);
+		
+		this._jtfCoolTools.setEditable(false);
+		this._jbCoolTools.setEnabled(false);
+		this._jtfCooler.setEditable(false);
+		this._jbCooler.setEnabled(false);
 
 		this._jbOutput.setPreferredSize(new java.awt.Dimension(170, 21));
 		this._jbOutput.setFont(new java.awt.Font("arial",2,10));
 		this._container.add ( this._jbOutput, new GridBagConstraints(
-	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   			GridBagConstraints.NONE, new Insets(30, 10, 0, 0), 0, 0
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(270, 10, 0, 0), 0, 0
 	   	));
 	   	
 		this._jtfOutput.setPreferredSize(new java.awt.Dimension(280, 21));
 		this._jtfOutput.setFont(new java.awt.Font("arial",2,10));
 		this._container.add(this._jtfOutput, new GridBagConstraints(
-				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(30, 200, 0, 0),0, 0
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(270, 200, 0, 0),0, 0
 		));
 		
 		this._jbOutput2.setPreferredSize(new java.awt.Dimension(170, 21));
 		this._jbOutput2.setFont(new java.awt.Font("arial",2,10));
 		this._container.add (this._jbOutput2, new GridBagConstraints(
-	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   			GridBagConstraints.NONE, new Insets(60, 10, 0, 0), 0, 0
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(300, 10, 0, 0), 0, 0
 	   	));
 	   	
 		this._jtfOutput2.setPreferredSize(new java.awt.Dimension(280, 21));
 		this._jtfOutput2.setFont(new java.awt.Font("arial",2,10));
 		this._container.add(this._jtfOutput2, new GridBagConstraints(
-				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(60, 200, 0, 0),0, 0
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(300, 200, 0, 0),0, 0
 		));
 	   	
 		this._jbChrSize.setPreferredSize(new java.awt.Dimension(170, 21));
 		this._jbChrSize.setFont(new java.awt.Font("arial",2,10));
 		this._container.add (this._jbChrSize, new GridBagConstraints(
-	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   			GridBagConstraints.NONE, new Insets(90, 10, 0, 0), 0, 0
+	   			0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(330, 10, 0, 0), 0, 0
 	   	));
 	   	
 	   	this._jtfChrSize.setPreferredSize(new java.awt.Dimension(280, 21));
 	   	this._jtfChrSize.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add(this._jtfChrSize, new GridBagConstraints(
-				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(90, 200, 0, 0),0, 0
+				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(330, 200, 0, 0),0, 0
 		));
-
+	   	
+	   	label = new JLabel();
+	   	label.setFont(new java.awt.Font("arial",2,11));
+	   	label.setText("Juicer tool file and paramters.");
+	   	this._container.add(label, new GridBagConstraints(
+	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+	   			GridBagConstraints.NONE, new Insets(10, 20, 0, 0),0, 0
+	   	));
+	   	
 		this._jbBoxTools.setPreferredSize(new java.awt.Dimension(170, 21));
 		this._jbBoxTools.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add (this._jbBoxTools, new GridBagConstraints(
 	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
-	   			GridBagConstraints.NONE, new Insets(120, 10, 0, 0), 0, 0
+	   			GridBagConstraints.NONE, new Insets(30, 10, 0, 0), 0, 0
 	   	));
 	   	
 	   	this._jtfBoxTools.setPreferredSize(new java.awt.Dimension(280, 21));
 	   	this._jtfBoxTools.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add(this._jtfBoxTools, new GridBagConstraints(
 				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(120, 200, 0, 0),0, 0
+				GridBagConstraints.NONE, new Insets(30, 200, 0, 0),0, 0
 		));
 		
 		label = new JLabel();
@@ -355,7 +380,7 @@ public class MetaplotGUI extends JFrame{
 		label.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(label, new GridBagConstraints(
 	   		0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-	   		GridBagConstraints.NONE, new Insets(153, 20, 0, 0), 0, 0
+	   		GridBagConstraints.NONE, new Insets(60, 20, 0, 0), 0, 0
 	   	));
 	   	
 		this._bNorm.add(this._jrbNone);
@@ -370,180 +395,212 @@ public class MetaplotGUI extends JFrame{
 		
 		this._container.add(this._jrbNone,new GridBagConstraints(
 	   		0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-			GridBagConstraints.NONE, new Insets(150, 220, 0, 0), 0, 0
+			GridBagConstraints.NONE, new Insets(57, 220, 0, 0), 0, 0
 		));
 		
 		this._container.add(this._jrbKR,new GridBagConstraints(
 	   		0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
-			GridBagConstraints.NONE,new Insets(150, 290, 0, 0), 0, 0
+			GridBagConstraints.NONE,new Insets(57, 290, 0, 0), 0, 0
 		));
 		
 		this._container.add(this._jrbVC, new GridBagConstraints(
 			0,2, 0, 0, 0.0, 0.0,GridBagConstraints.NORTHWEST,
-			GridBagConstraints.NONE, new Insets(150, 340, 0, 0), 0, 0
+			GridBagConstraints.NONE, new Insets(57, 340, 0, 0), 0, 0
 		));
 	   	
 		this._container.add(this._jrbVC_sqrt, new GridBagConstraints(
 			0,2, 0, 0, 0.0, 0.0,GridBagConstraints.NORTHWEST,
-			GridBagConstraints.NONE, new Insets(150, 390, 0, 0), 0, 0
+			GridBagConstraints.NONE, new Insets(57, 390, 0, 0), 0, 0
 		));
+		
+		label = new JLabel();
+	   	label.setFont(new java.awt.Font("arial",2,11));
+	   	label.setText("cooler and cooltools file.");
+	   	this._container.add(label, new GridBagConstraints(
+	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+	   			GridBagConstraints.NONE, new Insets(80, 20, 0, 0),0, 0
+	   	));
+		
+		this._jbCooler.setPreferredSize(new java.awt.Dimension(170, 21));
+		this._jbCooler.setFont(new java.awt.Font("arial",2,10));
+	   	this._container.add (this._jbCooler, new GridBagConstraints(
+	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(100, 10, 0, 0), 0, 0
+	   	));
+	   	
+	   	this._jtfCooler.setPreferredSize(new java.awt.Dimension(280, 21));
+	   	this._jtfCooler.setFont(new java.awt.Font("arial",2,10));
+	   	this._container.add(this._jtfCooler, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(100, 200, 0, 0),0, 0
+		));
+
+
+		this._jbCoolTools.setPreferredSize(new java.awt.Dimension(170, 21));
+		this._jbCoolTools.setFont(new java.awt.Font("arial",2,10));
+	   	this._container.add (this._jbCoolTools, new GridBagConstraints(
+	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, 
+	   			GridBagConstraints.NONE, new Insets(130, 10, 0, 0), 0, 0
+	   	));
+	   	
+	   	this._jtfCoolTools.setPreferredSize(new java.awt.Dimension(280, 21));
+	   	this._jtfCoolTools.setFont(new java.awt.Font("arial",2,10));
+	   	this._container.add(this._jtfCoolTools, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(130, 200, 0, 0),0, 0
+		));
+	   	
 	   	///////////////////// Parameters for the metaplot
 
 		label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",1,12));
 	   	label.setText("Metaplot parameters:");
 	   	this._container.add(label, new GridBagConstraints(
-	   			0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-		   		GridBagConstraints.NONE, new Insets(55, 10, 0, 0), 0, 0
+	   			0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+		   		GridBagConstraints.NONE, new Insets(160, 10, 0, 0), 0, 0
 		 ));
 		
 	   	label = new JLabel();
 	   	label.setText("Metaplot size (odd number):");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(85, 20, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(185, 20, 0, 0), 0, 0
 		));
 			
 		this._jtfMatrixSize.setText("21");
 		this._jtfMatrixSize.setPreferredSize(new java.awt.Dimension(60, 21));
 		this._jtfMatrixSize.setFont(new java.awt.Font("arial",2,11));
 		this._container.add( this._jtfMatrixSize, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(83, 180, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(183, 180, 0, 0), 0, 0
 		));
 		
 		label = new JLabel();
 	   	label.setText("SIP image size in bins:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(85, 260, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(185, 260, 0, 0), 0, 0
 		));
 			
 		this._jtfSipImageSize.setText("2000");
 		this._jtfSipImageSize.setPreferredSize(new java.awt.Dimension(60, 21));
 		this._jtfSipImageSize.setFont(new java.awt.Font("arial",2,11));
 		this._container.add( this._jtfSipImageSize, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(83, 400, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(183, 400, 0, 0), 0, 0
 		));
 	
 		
-		
 		label = new JLabel();
-	   	label.setText("Use the resolution detected in the loops file?:");
+	   	label.setText("Resolution:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(110, 20, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(215, 20, 0, 0), 0, 0
 		));
 		
-	   	this._bGroupMaxRes.add(this._jrTrue);
-	   	this._bGroupMaxRes.add(this._jrFalse);
+		this._jtfResolution.setText("5000");
+		this._jtfResolution.setPreferredSize(new java.awt.Dimension(60, 21));
+		this._jtfResolution.setFont(new java.awt.Font("arial",2,11));
+		this._container.add( this._jtfResolution, new GridBagConstraints(
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(213, 180, 0, 0), 0, 0
+		));
 	 	
-	   	this._jrTrue.setFont(new java.awt.Font("arial",2,11));
-	   	this._jrFalse.setFont(new java.awt.Font("arial",2,11));
-	   	this._container.add(this._jrTrue,new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(107, 320, 0, 0), 0, 0
-		));
-	   	this._container.add(this._jrFalse,new GridBagConstraints(
-				0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE,new Insets(107, 370, 0, 0), 0, 0
-		));
-	   	this._jrTrue.setSelected(true);
+	   
 		
 	   	label = new JLabel();
 	   	label.setText("Heatmap color for Manhattan distance option:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(140, 20, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(240, 20, 0, 0), 0, 0
 		));
 		
 	   	this._comboColor.setFont(new java.awt.Font("arial",0,10));
 	   	this._container.add( this._comboColor, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(137, 300, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(237, 250, 0, 0), 0, 0
 		));
 		
 	   	label = new JLabel();
 	   	label.setText("Min value:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(170, 20, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(270, 20, 0, 0), 0, 0
 		));
 			
 		this._jtfMinValue.setText("-1");
 		this._jtfMinValue.setPreferredSize(new java.awt.Dimension(30, 21));
 		this._jtfMinValue.setFont(new java.awt.Font("arial",2,11));
 		this._container.add( this._jtfMinValue, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(167, 80, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(267, 80, 0, 0), 0, 0
 		));
 		
 		label = new JLabel();
 	   	label.setText("Max value:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(170, 125, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(270, 125, 0, 0), 0, 0
 		));
 			
 		this._jtfMaxValue.setText("-1");
 		this._jtfMaxValue.setPreferredSize(new java.awt.Dimension(30, 21));
 		this._jtfMaxValue.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(this._jtfMaxValue, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(167, 190, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(267, 190, 0, 0), 0, 0
 		));
 		
 		label = new JLabel();
 	   	label.setText("Nb CPU:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(170, 235, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(270, 235, 0, 0), 0, 0
 		));
 			
 		this._cpu.setText("1");
 		this._cpu.setPreferredSize(new java.awt.Dimension(30, 21));
 		this._cpu.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(this._cpu, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(167, 283, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(267, 283, 0, 0), 0, 0
 		));
 		
 		label = new JLabel();
 	   	label.setText("Threshold:");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(170, 320, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(270, 320, 0, 0), 0, 0
 		));
 			
 		this._jtfThreshold.setText("-1");
 		this._jtfThreshold.setPreferredSize(new java.awt.Dimension(30, 21));
 		this._jtfThreshold.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(this._jtfThreshold, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(167, 385, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(267, 385, 0, 0), 0, 0
 		));
 		
 		
 		this._jrZscore.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(this._jrZscore, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(200, 20, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(290, 20, 0, 0), 0, 0
 		));
 		this._jrZscore.setSelected(false);
 		
 		this._jrSquare.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(this._jrSquare, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(200, 200, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(290, 200, 0, 0), 0, 0
 		));
 		this._jrSquare.setSelected(false);
 
@@ -552,35 +609,36 @@ public class MetaplotGUI extends JFrame{
 	   	label.setText("Prefix for SIPMeta results file");
 	   	label.setFont(new java.awt.Font("arial",2,11));
 	   	this._container.add(label, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(230, 20, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(320, 20, 0, 0), 0, 0
 		));
 		this._jtfPrefix.setText("SIPMeta");
 		this._jtfPrefix.setPreferredSize(new java.awt.Dimension(200, 21));
 		this._jtfPrefix.setFont(new java.awt.Font("arial",2,11));
 		this._container.add(this._jtfPrefix, new GridBagConstraints(
-				0, 3, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
-				GridBagConstraints.NONE, new Insets(227, 200, 0, 0), 0, 0
+				0, 2, 0, 0, 0.0, 0.0,  GridBagConstraints.NORTHWEST, 
+				GridBagConstraints.NONE, new Insets(317, 200, 0, 0), 0, 0
 		));
 		
 		////////////////////////// start and quit button
 		this._jbStart.setPreferredSize(new java.awt.Dimension(120, 21));
 		this._container.add(this._jbStart, new GridBagConstraints(
-	   			0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
-	   			GridBagConstraints.NONE, new Insets(260, 140, 0,0), 0, 0
+	   			0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,
+	   			GridBagConstraints.NONE, new Insets(360, 140, 0,0), 0, 0
 	   	));
 	   	
 		this._jbQuit.setPreferredSize(new java.awt.Dimension(120, 21));
 		this._container.add(this._jbQuit,new GridBagConstraints(
-				0, 3, 0, 0,  0.0, 0.0,GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE,new Insets(260, 10, 0, 0), 0, 0
+				0, 2, 0, 0,  0.0, 0.0,GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,new Insets(360, 10, 0, 0), 0, 0
 		));
 		
-		RBHicListener lsitener = new RBHicListener(this);
-		this._jrSIP.addActionListener(lsitener);
-		this._jrHicFile.addActionListener(lsitener);
-		this._jrSimple.addActionListener(lsitener);
-	  	this._jrSubtraction.addActionListener(lsitener);
+		RBHicListener listener = new RBHicListener(this);
+		this._jrSIP.addActionListener(listener);
+		this._jrHic.addActionListener(listener);
+		this._jrCool.addActionListener(listener);
+		this._jrSimple.addActionListener(listener);
+	  	this._jrSubtraction.addActionListener(listener);
 		
 	  	FileListener rFile = new FileListener(this._jtfScript);
 	  	this._jbScriptFile.addActionListener(rFile);
@@ -591,6 +649,10 @@ public class MetaplotGUI extends JFrame{
 		
 		FileListener juiceBox = new FileListener(this._jtfBoxTools);
 		this._jbBoxTools.addActionListener(juiceBox);
+		FileListener cooler = new FileListener(this._jtfCooler);
+		this._jbCooler.addActionListener(cooler);
+		FileListener cooltools = new FileListener(this._jtfCoolTools);
+		this._jbCoolTools.addActionListener(cooltools);
 		
 		InputDirectoryListener rawDataListener = new InputDirectoryListener(this,this._jtfRawData);
 		this._jbRawData.addActionListener(rawDataListener);
@@ -696,12 +758,6 @@ public class MetaplotGUI extends JFrame{
 	public boolean isCompare(){ return this._jrSubtraction.isSelected(); }
 	
 	/**
-	 * getter if return true use the max resolution find it loops file to do the metaplot
-	 * @return boolean
-	 */
-	public boolean isMaxRes(){ return this._jrTrue.isSelected(); }
-	
-	/**
 	 * getter min value for the heatmap key
 	 * @return double min
 	 */
@@ -736,6 +792,15 @@ public class MetaplotGUI extends JFrame{
 		String x = this._jtfMatrixSize.getText();
 		return Integer.parseInt(x.replaceAll(",", "."));
 	}
+	
+	/**
+	 * getter of the matrix size for te metaplot
+	 * @return int size
+	 */
+	public int getResolution(){
+		String x = this._jtfResolution.getText();
+		return Integer.parseInt(x.replaceAll(",", "."));
+	}
 	/**
 	 * nb of cpu used for the analysis
 	 * @return int cpu
@@ -753,6 +818,18 @@ public class MetaplotGUI extends JFrame{
 		String x = this._jtfSipImageSize.getText();
 		return Integer.parseInt(x.replaceAll(",", "."));
 	}
+	
+	/**
+	 * path to juicer tool box
+	 * @return String path to jar file
+	 */
+	public String getCooler(){ return this._jtfCooler.getText();}
+	
+	/**
+	 * path to juicer tool box
+	 * @return String path to jar file
+	 */
+	public String getCoolTools(){ return this._jtfCoolTools.getText();}
 	
 	/**
 	 * path to juicer tool box
@@ -789,6 +866,16 @@ public class MetaplotGUI extends JFrame{
 	 * @return boolean
 	 */
 	public boolean isSIP(){	return this._jrSIP.isSelected();}
+	/**
+	 * SIP or hic input
+	 * @return boolean
+	 */
+	public boolean isHic(){	return this._jrHic.isSelected();}
+	/**
+	 * SIP or hic input
+	 * @return boolean
+	 */
+	public boolean isCool(){	return this._jrCool.isSelected();}
 
 
 	/********************************************************************************************************************************************
@@ -970,7 +1057,11 @@ public class MetaplotGUI extends JFrame{
 				_gui._jrbVC.setSelected(false);
 				_gui._jrbVC_sqrt.setSelected(false);
 				_gui._jrbNone.setSelected(false);
-			}else if (_gui.isSIP() == false){
+				_gui._jtfCoolTools.setEditable(false);
+				_gui._jbCoolTools.setEnabled(false);
+				_gui._jtfCooler.setEditable(false);
+				_gui._jbCooler.setEnabled(false);
+			}else if (_gui.isHic()){
 				if(_gui.isCompare()){
 					_gui._jtfRawData2.setEditable(true);
 					_gui._jbRawData2.setEnabled(true);
@@ -993,6 +1084,37 @@ public class MetaplotGUI extends JFrame{
 				_gui._jrbKR.setSelected(true);
 				_gui._jrbVC.setEnabled(true);
 				_gui._jrbVC_sqrt.setEnabled(true);
+				_gui._jtfCoolTools.setEditable(false);
+				_gui._jbCoolTools.setEnabled(false);
+				_gui._jtfCooler.setEditable(false);
+				_gui._jbCooler.setEnabled(false);
+			}else if (_gui.isCool()){
+				if(_gui.isCompare()){
+					_gui._jtfRawData2.setEditable(true);
+					_gui._jbRawData2.setEnabled(true);
+					_gui._jtfOutput2.setEditable(true);
+					_gui._jbOutput2.setEnabled(true);
+				}else if(_gui.isOneData()){
+					_gui._jtfRawData2.setEditable(false);
+					_gui._jbRawData2.setEnabled(false);
+					_gui._jtfOutput2.setEditable(false);
+					_gui._jbOutput2.setEnabled(false);
+				}
+				_gui._jtfOutput.setEditable(true);
+				_gui._jbOutput.setEnabled(true);
+				_gui._jtfBoxTools.setEditable(false);
+				_gui._jbBoxTools.setEnabled(false);
+				_gui._jbChrSize.setEnabled(true);
+				_gui._jtfChrSize.setEditable(true);
+				_gui._jrbNone.setEnabled(false);
+				_gui._jrbKR.setEnabled(false);
+				_gui._jrbKR.setSelected(false);
+				_gui._jrbVC.setEnabled(false);
+				_gui._jrbVC_sqrt.setEnabled(false);
+				_gui._jtfCoolTools.setEditable(true);
+				_gui._jbCoolTools.setEnabled(true);
+				_gui._jtfCooler.setEditable(true);
+				_gui._jbCooler.setEnabled(true);
 			}
 		}
 	}	

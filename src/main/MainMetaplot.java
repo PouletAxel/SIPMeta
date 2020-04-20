@@ -4,9 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 import gui.MetaplotGUI;
+import multiProcessing.ProcessCoolerDumpData;
 import multiProcessing.ProcessDumpData;
 import utils.SIPMeta;
 
@@ -38,22 +43,20 @@ public class MainMetaplot{
 	static String _outDir ="";
 	/** String: stock the script file path have to be bullseye.py */
 	static String _script = "";
+	/** String: stock the script file path have to be bullseye.py */
+	static String _logError = "";
 	/** int: image size of SIP */
 	static int _imageSize =2000;
 	/** int: sixe step to run a chr */
-	static int _step = 0;
+	static int _step = _imageSize/2;
 	/** int: sixe of the metaplot*/
 	static int _metaSize = 21;
 	/**int: loops res*/
-	static int _resolution = 0;
-	/** int: min resolution to do the metaplot*/
-	static int _minRes = 1000000;
+	static int _resolution = 5000;
 	/** ratio between minRes and resolution*/
 	static int _ratio = 2;
 	/** int: nb cpu used*/
 	static int _nbCpu = 1;
-	/** boolean if true do the analysis a the max resolution found in the loops file*/
-	static boolean _resMax = true;
 	/** double: min value for the key of the metaplot*/
 	static double _min = -1;
 	/** double: max value for the key of the metaplot*/
@@ -63,7 +66,10 @@ public class MainMetaplot{
 	/**boolean: if true compute manhattan distance in bullseye.py*/
 	static boolean _square = false;
 	/**boolean: if true run SIPMeta with the hic option if false input is SIP output*/
-	static boolean _hic = false;
+	static boolean _isHic = false;
+	/** */
+	static boolean _isCool = false;
+	static boolean _isSip = true;
 	/** String: colors of the metaplot*/
 	static String _color = "Reds";
 	/**boolean: if true SIPMeta is run with a gui */
@@ -76,6 +82,9 @@ public class MainMetaplot{
 	private static double _threshold = -1;
 	/** Path to the jucier_tools_box to dump the data not necessary for Processed and dumped method */
 	private static String _juiceBoxTools = "";
+	private static String _cooler = "";
+	private static String _cooltools = "";
+	private static boolean _isCooltools03 = false;
 	/**Normalisation method to dump the the data with hic method (KR,NONE.VC,VC_SQRT)*/
 	private static String _juiceBoXNormalisation = "KR";
 	/**String: prefix for metaplot output */
@@ -83,20 +92,23 @@ public class MainMetaplot{
 	/**Array String: list of colors available for the metaplot*/
 	static String[] _colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
 	/** String: doc of SIPMeta*/
-	private static String _doc = ("SIPMeta1.0 Version run with java 8\n"
+	private static String _doc = ("SIPMeta run with java 8\n"
 			+ "Usage:\n"
 			+ "\twith SIP output\n"
-			+ "\t\tsimple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
-			+ "\t\tsubtraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
-			+ "\twith .hic file\n"
-			+ "\thic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-resMax TRUE/FALSE][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]"
-			+ "\thic subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-resMax TRUE/FALSE][-z] [-s] [-c COLORSCHEME]\n"
+			+ "\t\tsimple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-res RES][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\t\tsubtraction <loopsFile> <RawData1> <RawData2> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-res RES][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\n\twith .hic file\n"
+			+ "\t\thic simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-res RES][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\t\thic subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <JuicerBoxTools.jar> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-res RES][-z] [-s] [-c COLORSCHEME]\n"
+			+ "\n\twith .mcool file\n"
+			+ "\t\tcool simple  <loopsFile> <hicFile1> <outdir> <chrSizeFile> <cooler> <cooltools> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-res RES][-z] [-s][-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
+			+ "\t\tcool subtraction <loopsFile> <hicFile1> <hicFile2> <outdir1> <outdir2> <chrSizeFile> <cooler> <cooltools> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-t T] [-prefix PREFIX] [-res RES][-z] [-s] [-c COLORSCHEME]\n"
 			+ "\nParameters:\n"
 			+ "\tsMetaPlot: size of the desired metaplot (default 21 bins). Must be an odd number.\n"
 			+ "\tsImg: size of the image analyzed by SIP. Corresponds to –mat option in SIP (default 2000 bins).\n"
 			+ "\tchrSizeFile: path to the chr size file, with the same name of the chr as in the hic file (i.e. chr1 does not match Chr1 or 1).\n"
+			+ "\t-res: resolution in bp (default 5000 bp)\n"
 			+ "\t-norm: <NONE/VC/VC_SQRT/KR> only for hic option (default KR).\n"
-			+ "\t-resMax TRUE or FALSE: default true, if false take the smaller resolution.\n"
 			+ "\t-c COLORSCHEME  matplotlib_colors (Blues, BuGn, Greens, Purples, Reds, coolwarm, magma, inferno, spectral, viridis) default Reds. Can be any matplotlib color gradient.\n"
 			+ "\t-z Set this option to znorm each ring.\n"
 			+ "\t-t Threshold value tests the distance normalized value, all the value > T will be replaced by zero. Set high to avoid outliers skewing the average.\n"
@@ -127,7 +139,7 @@ public class MainMetaplot{
 		}else if(args.length >= 5 ){ ////////////////////////////////////////////////////////////////////// Here command line parameters
 			/// if hic paramater
 			if(args[0].equals("hic")){ 
-				_hic = true;
+				_isHic = true;
 				_loopsFile = args[2];
 				_input = args[3];
 				if(args[1].equals("simple")){
@@ -154,8 +166,37 @@ public class MainMetaplot{
 					catch(NumberFormatException e){ returnError("sImg",args[11],"int");}				
 					readOption(args,12);
 				}
+			}else if(args[0].equals("cool")){ 
+				_isCool = true;
+				_loopsFile = args[2];
+				_input = args[3];
+				if(args[1].equals("simple")){
+					_outDir = args[4];
+					readChrSizeFile(args[5]);
+					_cooler = args[6];
+					_cooltools = args[7];
+					_script = args[8];
+					try{_metaSize =Integer.parseInt(args[9]);}
+					catch(NumberFormatException e){ returnError("sMetaPlot",args[9],"int");} 
+					try{_imageSize =Integer.parseInt(args[10]);}
+					catch(NumberFormatException e){ returnError("sImg",args[10],"int");}				
+					readOption(args,11);
+				}else if(args[1].equals("subtraction")){
+					_simple = false;
+					_input2 = args[4];
+					_outDir = args[5];
+					_outDir2 = args[6];
+					readChrSizeFile( args[7]);
+					_cooler = args[8];
+					_cooltools= args[9];
+					_script = args[10];					
+					try{_metaSize =Integer.parseInt(args[11]);}
+					catch(NumberFormatException e){ returnError("sMetaPlot",args[11],"int");} 
+					try{_imageSize =Integer.parseInt(args[12]);}
+					catch(NumberFormatException e){ returnError("sImg",args[12],"int");}				
+					readOption(args,13);
+				}
 			}else if(args[0].equals("simple") || args[0].equals("subtraction")){
-				///if SIP output
 				_loopsFile = args[1];
 				_input = args[2];
 				if(args[0].equals("subtraction")){
@@ -190,22 +231,32 @@ public class MainMetaplot{
 				_input = gui.getRawDataDir();
 				_loopsFile = gui.getLoopFile();
 				_script = gui.getScript();
-				_resMax = gui.isMaxRes();
 				
 				if(gui.isCompare())	_simple = false;
-				if(gui.isSIP()==false){
-					_hic = true;		
+				if(gui.isHic()){
+					_isHic = true;
+					_isSip = false;
+					_isCool = false;
 					readChrSizeFile(gui.getChrSizeFile());
-				}	
+				}
+				if(gui.isCool()){
+					_isCool = true;
+					_isHic = false;
+					_isSip = false;
+					readChrSizeFile(gui.getChrSizeFile());
+				}
 				_outDir = gui.getOutDir();
 				_outDir2 = gui.getOutDir2();
 				_juiceBoxTools = gui.getJuiceBox();
+				_cooler = gui.getCooler();
+				_cooltools = gui.getCoolTools();
 				if(gui.isNONE()) _juiceBoXNormalisation = "NONE";
 				else if (gui.isVC()) _juiceBoXNormalisation = "VC";
 				else if (gui.isVC_SQRT()) _juiceBoXNormalisation = "VC_SQRT";
 				_input2 = gui.getRawDataDir2();
 				_min = gui.getMinValue();
 				_max = gui.getMaxValue();
+				_resolution = gui.getResolution();
 				_metaSize = gui.getMatrixSize();
 				_imageSize = gui.getSipImageSize();
 				_zScore = gui.isZscore();
@@ -241,7 +292,7 @@ public class MainMetaplot{
 		}
 		
 		f = new File(_input);
-		if(f.exists()==false){
+		if(f.exists()==false && _input.startsWith("https")==false){
 				System.out.println(_input+" doesn't existed !!! \n\n");
 				System.out.println(_doc);
 				return;
@@ -259,28 +310,59 @@ public class MainMetaplot{
 		///////////////////// SIPMeta process.
 		_step = _imageSize/2;
 		try {	
-			SIPMeta sip = new SIPMeta(_input,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
+			SIPMeta sip = new SIPMeta(_input,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
 			if ((_metaSize % 2) == 0) {
 				System.out.println("Error: bullseye requires a central point in the matrix, therefore metaplot size must be odd\n");
 				return;
 			}
-			if(_hic){
+			if(_isHic){
+				if(_outDir.endsWith(File.separator) == false) 
+					_outDir = _outDir+File.separator;
 				System.out.println("start dump data "+_input);
 				ProcessDumpData processDumpData = new ProcessDumpData();
-				processDumpData.go(_input, _outDir, _chrSize, _juiceBoxTools, _juiceBoXNormalisation, _nbCpu-1, sip.getResolution(), _imageSize,_gui);
+				processDumpData.go(_input, _outDir, _chrSize, _juiceBoxTools, _juiceBoXNormalisation, _nbCpu, _resolution, _imageSize,_gui);
 				sip.setInput(_outDir);
 				System.out.println("######## End dump data "+_input);
 				if(_simple==false){
+					if(_outDir2.endsWith(File.separator) == false) 
+						_outDir2 = _outDir2+File.separator;
 					System.out.println("start dump data "+_input2);
-					processDumpData.go(_input2, _outDir2, _chrSize, _juiceBoxTools, _juiceBoXNormalisation, _nbCpu-1, sip.getResolution(), _imageSize, _gui);
-					sip = new SIPMeta(_outDir,_outDir2,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
+					processDumpData.go(_input2, _outDir2, _chrSize, _juiceBoxTools, _juiceBoXNormalisation, _nbCpu, _resolution, _imageSize, _gui);
+					sip = new SIPMeta(_outDir,_outDir2,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
 					System.out.println("######## End dump data "+_input2);
 				}
-			}else if(_hic == false && _simple == false){
-				sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resMax,_nbCpu-1,_imageSize,_metaSize);
+			}else if(_isCool) {
+				if( testTools(_cooltools,0,3,0) == false || testTools(_cooler,0,8,6) == false) {
+					System.out.println( _cooltools +" or" + _cooler+" is not the good version for SIP (it needs cooltools version >= 0.3.0 and cooler version >= 0.8.6) !!! \n\n");
+					System.out.println(_doc);
+					if(_gui){
+						JOptionPane.showMessageDialog(null, "Error SIP program", _cooltools +" or" + _cooler+" is not the good version for SIP (it needs cooltools version >= 0.3.0 and cooler version >= 0.8.6) !!!"
+								 , JOptionPane.ERROR_MESSAGE);
+					}
+					return;
+				}
+				System.out.println("start dump data "+_input);
+				if(_outDir.endsWith(File.separator) == false) 
+					_outDir = _outDir+File.separator;
+				ProcessCoolerDumpData dumpData = new ProcessCoolerDumpData();
+				dumpData.go(_input, _outDir, _chrSize, _cooltools,_cooler, _nbCpu, _resolution, _imageSize,_gui);
+				sip.setInput(_outDir);
+				System.out.println("######## End dump data "+_input);
+				if(_simple==false){
+					if(_outDir2.endsWith(File.separator) == false) 
+						_outDir2 = _outDir2+File.separator;
+					System.out.println("start dump data "+_input2);
+					dumpData.go(_input2, _outDir2, _chrSize, _cooltools,_cooler, _nbCpu, _resolution, _imageSize,_gui);
+					sip = new SIPMeta(_outDir,_outDir2,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
+					System.out.println("######## End dump data "+_input2);
+				}
+				
+			}else if(_isHic == false && _simple == false){
+				sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resolution,_nbCpu-1,_imageSize,_metaSize);
 			}
 			sip.setPrefix(_prefix);
 			try {
+				System.out.println();
 				sip.run(_script,_square,_simple,_zScore,_color,_min,_max,_threshold);
 			} catch (NullPointerException w) {
 				System.out.println("\nError! This is usually because the chromosome names don't match up between the loops file and the raw data files."
@@ -301,10 +383,9 @@ public class MainMetaplot{
 	private static void readOption(String args[], int index) throws IOException{
 		if(index < args.length){
 			for(int i = index; i < args.length;i+=2){
-				if(args[i].equals("-resMax")){
-					if(args[i+1].equals("false") || args[i+1].equals("FALSE")) _resMax = false;
-					else if(args[i+1].equals("true") || args[i+1].equals("TRUE")) _resMax = true;
-					else returnError(args[i+1],args[i+1],"String");
+				if(args[i].equals("-res")){
+					try{_resolution =Integer.parseInt(args[i+1]);}
+					catch(NumberFormatException e){ returnError("-res",args[i+1],"int");} 
 				}else if(args[i].equals("-prefix")){
 					_prefix = args[i+1];
 				}else if(args[i].equals("-t")){
@@ -390,5 +471,67 @@ public class MainMetaplot{
 		}
 		br.close();
 	}
+	
+	public static boolean testTools(String pathTools, int first, int second, int third) {
+		
+		Runtime runtime = Runtime.getRuntime();
+		String cmd = pathTools+" --version";
+		//System.out.println(cmd);
+		Process process;
+		try {
+			process = runtime.exec(cmd);
+	
+		new ReturnFlux(process.getInputStream()).start();
+		new ReturnFlux(process.getErrorStream()).start();
+		process.waitFor();
+		
+		} catch (IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String [] tline = _logError.split(" ");
+		System.out.println("log!!!! "+_logError);
+		_logError = "";
+		if(tline.length > 0){
+			tline = tline[tline.length-1].split("\\.");
+			tline[2] = tline[2].replace("\n", "");
+			if(Integer.parseInt(tline[0]) >= first && Integer.parseInt(tline[1]) >= second) //&& Integer.parseInt(tline[2]) >= third)
+				return true;
+			else
+				return false;
+		}else
+			return false;
+	}
+	
+	public static class ReturnFlux extends Thread {  
+
+		/**  Flux to redirect  */
+		private InputStream _flux;
+
+		/**
+		 * <b>Constructor of ReturnFlux</b>
+		 * @param flux
+		 *  flux to redirect
+		 */
+		public ReturnFlux(InputStream flux){this._flux = flux; }
+		
+		/**
+		 * 
+		 */
+		public void run(){
+			try {    
+				InputStreamReader reader = new InputStreamReader(this._flux);
+				BufferedReader br = new BufferedReader(reader);
+				String line=null;
+				while ( (line = br.readLine()) != null) {
+					if(line.contains("WARN")== false) _logError = _logError+line+"\n";
+				}
+			}
+			catch (IOException ioe){
+				ioe.printStackTrace();
+			}
+		}		
+	}
+	
 }
 
