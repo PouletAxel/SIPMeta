@@ -18,6 +18,7 @@ import utils.SIPMeta;
  * @author Axel Poulet
  *
  */
+@SuppressWarnings("unused")
 public class TestMetaplot{
 	/**
 	 *

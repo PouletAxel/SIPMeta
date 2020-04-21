@@ -262,7 +262,7 @@ public class MetaplotGUI extends JFrame{
 	   	this._jtfRawData2.setFont(new java.awt.Font("arial",2,10));
 	   	this._container.add(this._jtfRawData2, new GridBagConstraints(
 				0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,
-				GridBagConstraints.NONE, new Insets(200, 160, 0, 0),0, 0
+				GridBagConstraints.NONE, new Insets(170, 200, 0, 0),0, 0
 		));
 	   	label = new JLabel();
 	   	label.setFont(new java.awt.Font("arial",2,11));

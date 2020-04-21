@@ -84,7 +84,6 @@ public class MainMetaplot{
 	private static String _juiceBoxTools = "";
 	private static String _cooler = "";
 	private static String _cooltools = "";
-	private static boolean _isCooltools03 = false;
 	/**Normalisation method to dump the the data with hic method (KR,NONE.VC,VC_SQRT)*/
 	private static String _juiceBoXNormalisation = "KR";
 	/**String: prefix for metaplot output */
