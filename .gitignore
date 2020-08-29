@@ -1,8 +1,10 @@
 /bin/
+/classes/
 /test/
 /utils/
 .idea
 .project
+.setting
 .directory
 .classpath
 /target/

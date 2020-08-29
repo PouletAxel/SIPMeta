@@ -43,16 +43,17 @@ public class TestMetaplot{
 	static HashMap<String,Integer> _chrSize = new HashMap<String,Integer>();
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String loopsFile =  "/home/plop/Desktop/CoolTest21/5kbLoops.txt"; 
+		String loopsFile =  "/home/plop/Desktop/GM12878_test/10kbLoops.txt";
 		//String input =  "/home/plop/Desktop/SIP/testCooler/GM12878_4DNFIXP4QG5B.mcool";
 		//String input =  "/home/plop/Desktop/SIP/testCooler/4DNFI1UEG1HD.hic";
-		String input =  "/home/plop/Desktop/CoolTest21/";
+		String input =  "/home/plop/Desktop/GM12878_test/";
+		String input2 =  "/home/plop/Desktop/GM12878_test/";
 		boolean z = true;		
 		boolean squarre = true;
-		boolean simple = true;
+		boolean simple = false;
 		String python = "/home/plop/Desktop/SIP/bullseye.py";
-		int matrixSize = 2000;
-		int res = 5000;
+		int matrixSize = 1000;
+		int res = 10000;
 		int sizeMeta = 21;
 		double min = 0;
 		double max = 20;
@@ -63,8 +64,8 @@ public class TestMetaplot{
 		
 		String color = "inferno";
 		double threshold = -1;
-		String outdir =  "/home/plop/Desktop/Juicer21/";
-		String prefix = "cool";
+		String outdir =  "/home/plop/Desktop/GM12878_test/";
+		String prefix = "plop";
 		String pathFileMatrix = "";
 		String[] tmpPath = loopsFile.split("\\/");
 		String output = loopsFile.replaceAll(tmpPath[tmpPath.length-1], prefix);
@@ -79,7 +80,7 @@ public class TestMetaplot{
 		}
 			System.out.println(pathFileMatrix+" "+output);
 		
-		readChrSizeFile("/home/plop/Desktop/w_hg19.sizes");
+		//readChrSizeFile("/home/plop/Desktop/w_hg19.sizes");
 		System.out.println("input "+input+"\n"
 				+ "loops file "+loopsFile+"\n"
 				+ "python "+python+"\n"
@@ -94,7 +95,8 @@ public class TestMetaplot{
 		//ProcessDumpData processDumpData = new ProcessDumpData();
 		//processDumpData.go(input, outdir, _chrSize, juicer, "KR", nbCpu, res, matrixSize,false);
 				
-		SIPMeta sip = new SIPMeta(input,loopsFile, true,res,nbCpu,matrixSize,sizeMeta); 
+		//SIPMeta sip = new SIPMeta(input,loopsFile, true,res,nbCpu,matrixSize,sizeMeta);
+		SIPMeta sip = new SIPMeta(input,input2,loopsFile,false,res,2, matrixSize, sizeMeta);
 		sip.setInput(outdir);
 		sip.setPrefix(prefix);
 		sip.run(python,squarre,simple,z,color,min,max,threshold);

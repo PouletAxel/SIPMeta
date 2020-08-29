@@ -1,4 +1,4 @@
-package main;
+package mainMetaSip;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -308,7 +308,10 @@ public class MainMetaplot{
 		
 		///////////////////// SIPMeta process.
 		_step = _imageSize/2;
-		try {	
+		try {
+			if (_isCool == false && _isHic ==false)
+				if(_input.endsWith(File.separator) == false)
+					_input = _input+File.separator;
 			SIPMeta sip = new SIPMeta(_input,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
 			if ((_metaSize % 2) == 0) {
 				System.out.println("Error: bullseye requires a central point in the matrix, therefore metaplot size must be odd\n");
@@ -356,13 +359,17 @@ public class MainMetaplot{
 					System.out.println("######## End dump data "+_input2);
 				}
 				
-			}else if(_isHic == false && _simple == false){
+			}else if(_isHic == false && _simple == false && _isCool == false){
+				if(_input2.endsWith(File.separator) == false)
+					_input2 = _input2+File.separator;
+
 				sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resolution,_nbCpu-1,_imageSize,_metaSize);
 			}
 			sip.setPrefix(_prefix);
 			try {
 				System.out.println();
 				sip.run(_script,_square,_simple,_zScore,_color,_min,_max,_threshold);
+				System.out.println("simple"+_simple);
 			} catch (NullPointerException w) {
 				System.out.println("\nError! This is usually because the chromosome names don't match up between the loops file and the raw data files."
 						+ " For example Chr1 (capitalized) vs chr1 (no caps) vs 1 (no chr).\n Change your loops file to stay consistent with the 2-D input data.");	}

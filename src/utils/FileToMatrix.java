@@ -82,6 +82,7 @@ public class FileToMatrix {
 		this._resolution = res;
 		this._imgDir = imgDir1;
 		this._imgDir2 = imgDir2;
+		System.out.println(imgDir1+"\n"+imgDir2);
 		this._loopsFile = loopsFile;
 		this._resu = new float[meta][meta];
 		this._metaSize = meta;
@@ -91,10 +92,9 @@ public class FileToMatrix {
 	
 	/**
 	 * Process the image and compute the final metaplot matrix for simple processing
+	 *
 	 * @param step
-	 * @param ratio
 	 * @param gui
-	 * @param nbloop
 	 * @return
 	 * @throws IOException
 	 */
@@ -167,10 +167,9 @@ public class FileToMatrix {
 	
 	/**
 	 * Process the image and compute the final metaplot matrix for substraction processing 
+	 *
 	 * @param step
-	 * @param ratio
 	 * @param gui
-	 * @param nbLoops
 	 * @return
 	 * @throws IOException
 	 */
@@ -190,9 +189,10 @@ public class FileToMatrix {
 			if(cmp > 0){
 				String[] parts = line.split("\\t");
 				String chr = parts[0];
-				String dir = this._imgDir+File.separator+chr;
-				String dir2 = this._imgDir2+File.separator+chr;
+				String dir = this._imgDir+chr;
+				String dir2 = this._imgDir2+chr;
 				File folder = new File(dir);
+				System.out.println(dir);
 				File[] listOfFiles = folder.listFiles();
 				for (int i = 0; i < listOfFiles.length; ++i){
 					if(listOfFiles[i].toString().contains("_N.tif")){

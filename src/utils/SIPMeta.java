@@ -44,10 +44,11 @@ public class SIPMeta {
 	
 	/**
 	 * Constructor for simple processing, initialised all the value
+	 *
 	 * @param input
 	 * @param loopsFile
 	 * @param gui
-	 * @param resMax
+	 * @param resolution
 	 * @param cpu
 	 * @param imageSize
 	 * @param metaSize
@@ -65,13 +66,14 @@ public class SIPMeta {
 	}
 	
 	/**
-	 * Constructor for the substraction processing, initialised all the value
-	 *  
+	 * Constructor for the subtraction processing, initialised all the value
+	 *
+	 *
 	 * @param input
 	 * @param input2
 	 * @param loopsFile
 	 * @param gui
-	 * @param resMax
+	 * @param res
 	 * @param cpu
 	 * @param imageSize
 	 * @param metaSize
@@ -112,28 +114,33 @@ public class SIPMeta {
 			String[] tmp = tmpPath[tmpPath.length-1].split("\\.");
 			pathFileMatrix = output+"_"+tmp[0]+"_matrix.tab";
 			output = output+"_"+tmp[0];
-		}else{		
+		}else{
 			output = output+"_"+tmpPath[tmpPath.length-1];
 			pathFileMatrix = output+"_matrix.tab";
 		}
 		FileToMatrix ftm = new FileToMatrix();
-				
+
 		String nameRes = String.valueOf(_resolution);
 		nameRes = nameRes.replace("000", "");
-		nameRes = nameRes+"kb"; 
+		nameRes = nameRes+"kb";
 		String input = this._input+nameRes+File.separator;
+		String input2 = this._input2+nameRes+File.separator;
 		File a = new File(input);
-		System.out.println(input);
-		if(a.exists()==false) {
-			if(_gui){
-				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+this._input+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
-			}
-			System.out.println(this._resolution+" is not present in the dumped file: \"+this._input+\" run the program with the hic or cool option to dump the dataset !!!!\n");
+		File a2 = new File(input2);
+		if(simple && a.exists()==false) {
+			if(_gui)
+				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+input+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
+			System.out.println(this._resolution+" is not present in the dumped file: \"+input+\" run the program with the hic or cool option to dump the dataset !!!!\n");
+			return;
+		}else if(simple == false && (a.exists()==false || a2.exists()==false)){
+			if(_gui)
+				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+input+" or "+input2+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
+			System.out.println(this._resolution+" is not present in the dumped file: \"+input+\" or \"+input2+\" run the program with the hic or cool option to dump the dataset !!!!\n");
 			return;
 		}
-			
+
 		System.out.println("Check existing images if not existing the program creating the image");
-		a = new File(input);
+
 		File[] listOfFile = a.listFiles();
 		for(int i = 0; i < listOfFile.length; ++i) {
 			if(listOfFile[i].isDirectory()) {
@@ -147,19 +154,89 @@ public class SIPMeta {
 			ftm = new FileToMatrix(input, this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
 			ftm.creatMatrix(this._step,this. _gui);
 		}else{
-			makeTif(this._input2,threshold);
-			ftm = new FileToMatrix(this._input,this._input2,this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
+			System.out.println(input2);
+			makeTif(input2,threshold);
+			ftm = new FileToMatrix(input,input2,this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
 			ftm.creatMatrixSubstarction(this._step, this._gui);
 		}
 		System.out.println("##### End of creating the image\n Start matrix for metaplot");
 		ftm.getAPA();
 		ftm.writeStrengthFile();
 		System.out.println("##### End of matrix (file: "+pathFileMatrix+") \n Start python script");
-		Script python = new Script(script, color, zscore, squarre, pathFileMatrix, output, min,max);  
+		Script python = new Script(script, color, zscore, squarre, pathFileMatrix, output, min,max);
 		python.runPythonScript();
 		System.out.println("End of SIPMeta");
 	}
 
+	/**
+	 * run the metaSIP with the paramter in input
+	 *
+	 * @param script
+	 * @param squarre
+	 * @param simple
+	 * @param zscore
+	 * @param color
+	 * @param min
+	 * @param max
+	 * @param threshold
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+
+	public void runSubtraction(String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max, double threshold) throws IOException, InterruptedException{
+		String pathFileMatrix = "";
+		String[] tmpPath = this._loopsFile.split("\\/");
+		String output = this._loopsFile.replaceAll(tmpPath[tmpPath.length-1], this._prefix);
+		if(tmpPath[tmpPath.length-1].contains(".")){
+			String[] tmp = tmpPath[tmpPath.length-1].split("\\.");
+			pathFileMatrix = output+"_"+tmp[0]+"_matrix.tab";
+			output = output+"_"+tmp[0];
+		}else{
+			output = output+"_"+tmpPath[tmpPath.length-1];
+			pathFileMatrix = output+"_matrix.tab";
+		}
+		FileToMatrix ftm = new FileToMatrix();
+
+		String nameRes = String.valueOf(_resolution);
+		nameRes = nameRes.replace("000", "");
+		nameRes = nameRes+"kb";
+		String input = this._input+nameRes+File.separator;
+		File a = new File(input);
+		System.out.println(input);
+		String input2 = this._input2+nameRes+File.separator;
+		File a2 = new File(input2);
+		System.out.println(input2);
+		if(a.exists()==false || a2.exists()==false) {
+			if(_gui){
+				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+this._input+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
+			}
+			System.out.println(this._resolution+" is not present in the dumped file: \"+this._input+\" run the program with the hic or cool option to dump the dataset !!!!\n");
+			return;
+		}
+		System.out.println("Check existing images if not existing the program creating the image");
+		File[] listOfFile = a.listFiles();
+		for(int i = 0; i < listOfFile.length; ++i) {
+			if(listOfFile[i].isDirectory()) {
+				String [] b = listOfFile[i].toString().split(File.separator);
+				this._chr.add(b[b.length-1]);
+			}
+		}
+		System.out.println(input);
+		makeTif(input,threshold);
+		System.out.println(input2);
+		makeTif(input2,threshold);
+
+		ftm = new FileToMatrix(input,input2,this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
+		ftm.creatMatrixSubstarction(this._step, this._gui);
+
+		System.out.println("##### End of creating the image\n Start matrix for metaplot");
+		ftm.getAPA();
+		ftm.writeStrengthFile();
+		System.out.println("##### End of matrix (file: "+pathFileMatrix+") \n Start python script");
+		Script python = new Script(script, color, zscore, squarre, pathFileMatrix, output, min,max);
+		python.runPythonScript();
+		System.out.println("End of SIPMeta");
+	}
 	
 	/**
 	 * 
@@ -190,10 +267,10 @@ public class SIPMeta {
 	 * @param input
 	 */
 	public void setInput(String input){this._input = input;}
-	
+
 	/**
-	 * prefix setter 
-	 * @param String prefix
-	 */	
+	 *
+	 * @param input
+	 */
 	public void setPrefix(String input){this._prefix = input;}		
 }

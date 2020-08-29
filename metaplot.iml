@@ -15,15 +15,6 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module-library">
-      <library name="ij-1.52b.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../jar/ij-1.52b.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="Maven: sc.fiji:Auto_Threshold:1.17.2" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:ij:1.51n" level="project" />
   </component>
