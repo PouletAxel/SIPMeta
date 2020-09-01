@@ -36,13 +36,13 @@ public class DumpData {
 	/** String for the log*/
 	private String _log = "";
 	/** String => normalisation to dump the data (NONE, KR, VC, VC_SQRT or NONE)*/
-	private String _normalisation= "";
+	private String _normalisation;
 	/** path to the hic file or url link*/
-	private String _hicFile = "";
+	private String _hicFile;
 	/** int in base for the bin resolution (5000,10000, etc)*/
 	private int _resolution;
 	/** path to juicer_toolsbox.jars*/
-	private String _juiceBoxTools = "";
+	private String _juiceBoxTools;
 	/** List of doucle to stock the expected vector*/
 	private ArrayList<Double> _lExpected =  new ArrayList<Double>();
 	
@@ -67,9 +67,9 @@ public class DumpData {
 	 * 
 	 * @param chr: String for the name of teh chromosome
 	 * @param output: String path of the output
-	 * @return
-	 * @throws IOException
-	 */
+	 * @return boolean
+	 * @throws IOException exception
+ 	 */
 	public boolean dumpObservedMExpected(String chr, String output) throws IOException{
 		int exitValue=1;
 		Runtime runtime = Runtime.getRuntime();
@@ -82,8 +82,7 @@ public class DumpData {
 			new ReturnFlux(process.getErrorStream()).start();
 			exitValue=process.waitFor();		
 		}
-		catch (IOException e) {	e.printStackTrace();}
-		catch (InterruptedException e) {e.printStackTrace();}
+		catch (IOException | InterruptedException e) {	e.printStackTrace();}
 		observedMExpected(obs,output);
 		if(_logError!=""){
 			System.out.println(_logError);
@@ -99,7 +98,7 @@ public class DumpData {
 	 * 
 	 * @param obs: String path with the file of the observed value
 	 * @param chr: name of the chr
-	 * @throws IOException
+	 * @throws IOException exception
 	 */
 	private void observedMExpected(String obs, String chr) throws IOException{
 		BufferedReader br = Files.newBufferedReader(Paths.get(obs), StandardCharsets.UTF_8);
@@ -119,28 +118,14 @@ public class DumpData {
 		br.close();
 	}
 	
-	
-	/**
-	 * getter of the logerror file if necessary
-	 * 
-	 * @return return the String with the error
-	 */
-	public String getLogError(){ return this._logError;}
-	
-	/**
-	 * getter of the log info if necessary 
-	 * @return return a String with the log info
-	 */
-	public String getLog(){	return this._log;}
+
 	
 	/**
 	 * getter of the expected matrix. 
 	 * 
 	 * @param chr: String name of the chromosme
 	 * @param output: path to the output
-	 * @return 
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @return boolean
 	 */
 	public boolean getExpected(String chr,String output){
 		int exitValue=1;
@@ -174,9 +159,9 @@ public class DumpData {
 	 * 
 	 * @param chr: String name of the chromosme
 	 * @param output: path to the output
-	 * @return 
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @return booleana
+	 * @throws IOException exception
+	 * @throws InterruptedException exception
 	 */
 	public boolean getNormVector(String chr,String output) throws IOException, InterruptedException{
 		int exitValue=1;

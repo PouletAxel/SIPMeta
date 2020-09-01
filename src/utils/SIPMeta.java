@@ -18,41 +18,41 @@ import multiProcessing.ProcessMakeImage;
 
 public class SIPMeta {
 	/**String: prefix for the output files */
-	private String _prefix = "";
+	private String _prefix;
 	/** String: path to the loops file */
-	private String _loopsFile = "";
+	private String _loopsFile;
 	/**String: input2 path to the dumpdData used only when simple== false*/
-	private String _input2 ="";
+	private String _input2="";
 	/** String: input path to the dumpdData */
-	private String _input ="";
+	private String _input;
 	/**int: image size */
-	private int _imageSize =2000;
+	private int _imageSize;
 	/** int step size*/
-	private int _step = _imageSize/2;
+	private int _step;
 	/** int metaplot matrix size*/
-	private int _metaSize = 21;
+	private int _metaSize;
 	/** int bin resolution*/
-	private int _resolution = 5000;
+	private int _resolution;
 	/**boolean is true used teh max resolution to do the metaplot */
-	private boolean _gui = false;
+	private boolean _gui;
 	/** array list of string with the name of the chr*/
-	private ArrayList<String> _chr = new ArrayList<String>(); 
+	private ArrayList<String> _chr = new ArrayList<>();
 	/** nb of cpu used in the nalaysis*/
-	private int _cpu = 0;
+	private int _cpu;
 	
 	
 	
 	/**
 	 * Constructor for simple processing, initialised all the value
 	 *
-	 * @param input
-	 * @param loopsFile
-	 * @param gui
-	 * @param resolution
-	 * @param cpu
-	 * @param imageSize
-	 * @param metaSize
-	 * @throws IOException
+	 * @param input	String: path of SIP input
+	 * @param loopsFile	String: path loops file
+	 * @param gui	boolean: is gui or not
+	 * @param resolution int: resolution
+	 * @param cpu	int: nb of processor
+	 * @param imageSize int: imageSize
+	 * @param metaSize	int: metaplot size
+	 * @throws IOException exception
 	 */
 	public SIPMeta(String input, String loopsFile, boolean gui, int resolution, int cpu, int imageSize, int metaSize ) throws IOException{
 		this._input = input;
@@ -69,21 +69,20 @@ public class SIPMeta {
 	 * Constructor for the subtraction processing, initialised all the value
 	 *
 	 *
-	 * @param input
-	 * @param input2
-	 * @param loopsFile
-	 * @param gui
-	 * @param res
-	 * @param cpu
-	 * @param imageSize
-	 * @param metaSize
-	 * @throws IOException
+	 * @param input	path for the data set with SIP data
+	 * @param input2 path for the data set with SIP data
+	 * @param loopsFile path to the loops file
+	 * @param gui	boolean isGui
+	 * @param resolution	int resolution of the SIP data
+	 * @param cpu	int nb of processor used
+	 * @param imageSize	int img size
+	 * @param metaSize int metaplot size
 	 */
-	public SIPMeta(String input, String input2, String loopsFile, boolean gui, int res , int cpu,int imageSize, int metaSize)throws IOException{
+	public SIPMeta(String input, String input2, String loopsFile, boolean gui, int resolution , int cpu,int imageSize, int metaSize){
 		this._input = input;
 		this._input2 = input2;
 		this._gui = gui;
-		this._resolution = res;
+		this._resolution = resolution;
 		this._imageSize = imageSize;
 		this._loopsFile = loopsFile;
 		this._step = _imageSize/2;
@@ -94,19 +93,19 @@ public class SIPMeta {
 	/**
 	 * run the metaSIP with the paramter in input
 	 * 
-	 * @param script
-	 * @param squarre
-	 * @param simple
-	 * @param zscore
-	 * @param color
-	 * @param min
-	 * @param max
-	 * @param threshold
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @param script	path to buleye.py
+	 * @param square	boolean metaplot square
+	 * @param simple boolean simple if yes simple if no subtraction
+	 * @param zscore boolean for the zscore computation
+	 * @param color	String color for the plot
+	 * @param min	double min for the metaplot scale
+	 * @param max	double max for the metaplot scale
+	 * @param threshold double threshold
+	 * @throws IOException	exception
+	 * @throws InterruptedException exception
 	 */
 	
-	public void run(String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max, double threshold) throws IOException, InterruptedException{
+	public void run(String script, boolean square, boolean simple, boolean zscore, String color, double min, double max, double threshold) throws IOException, InterruptedException{
 		String pathFileMatrix = "";
 		String[] tmpPath = this._loopsFile.split("\\/");
 		String output = this._loopsFile.replaceAll(tmpPath[tmpPath.length-1], this._prefix);
@@ -118,8 +117,8 @@ public class SIPMeta {
 			output = output+"_"+tmpPath[tmpPath.length-1];
 			pathFileMatrix = output+"_matrix.tab";
 		}
-		FileToMatrix ftm = new FileToMatrix();
-
+		FileToMatrix ftm ;
+		System.out.println(_input+"\n"+_input2);
 		String nameRes = String.valueOf(_resolution);
 		nameRes = nameRes.replace("000", "");
 		nameRes = nameRes+"kb";
@@ -127,12 +126,12 @@ public class SIPMeta {
 		String input2 = this._input2+nameRes+File.separator;
 		File a = new File(input);
 		File a2 = new File(input2);
-		if(simple && a.exists()==false) {
+		if(simple && !a.exists()) {
 			if(_gui)
 				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+input+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
 			System.out.println(this._resolution+" is not present in the dumped file: \"+input+\" run the program with the hic or cool option to dump the dataset !!!!\n");
 			return;
-		}else if(simple == false && (a.exists()==false || a2.exists()==false)){
+		}else if(!simple && (!a.exists() || !a2.exists())){
 			if(_gui)
 				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+input+" or "+input2+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
 			System.out.println(this._resolution+" is not present in the dumped file: \"+input+\" or \"+input2+\" run the program with the hic or cool option to dump the dataset !!!!\n");
@@ -142,19 +141,17 @@ public class SIPMeta {
 		System.out.println("Check existing images if not existing the program creating the image");
 
 		File[] listOfFile = a.listFiles();
-		for(int i = 0; i < listOfFile.length; ++i) {
-			if(listOfFile[i].isDirectory()) {
-				String [] b = listOfFile[i].toString().split(File.separator);
-				this._chr.add(b[b.length-1]);
+		for (File file : listOfFile) {
+			if (file.isDirectory()) {
+				String[] b = file.toString().split(File.separator);
+				this._chr.add(b[b.length - 1]);
 			}
 		}
-		System.out.println(input);
 		makeTif(input,threshold);
 		if (simple){
 			ftm = new FileToMatrix(input, this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
 			ftm.creatMatrix(this._step,this. _gui);
 		}else{
-			System.out.println(input2);
 			makeTif(input2,threshold);
 			ftm = new FileToMatrix(input,input2,this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
 			ftm.creatMatrixSubstarction(this._step, this._gui);
@@ -163,89 +160,20 @@ public class SIPMeta {
 		ftm.getAPA();
 		ftm.writeStrengthFile();
 		System.out.println("##### End of matrix (file: "+pathFileMatrix+") \n Start python script");
-		Script python = new Script(script, color, zscore, squarre, pathFileMatrix, output, min,max);
+		Script python = new Script(script, color, zscore, square, pathFileMatrix, output, min,max);
 		python.runPythonScript();
 		System.out.println("End of SIPMeta");
 	}
 
+
 	/**
-	 * run the metaSIP with the paramter in input
+	 * Create tif file
 	 *
-	 * @param script
-	 * @param squarre
-	 * @param simple
-	 * @param zscore
-	 * @param color
-	 * @param min
-	 * @param max
-	 * @param threshold
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @param imgDir: inoutDir with SIP file
+	 * @param threshold double threshold
+ 	 * @throws InterruptedException Exception
 	 */
-
-	public void runSubtraction(String script, boolean squarre, boolean simple, boolean zscore, String color, double min, double max, double threshold) throws IOException, InterruptedException{
-		String pathFileMatrix = "";
-		String[] tmpPath = this._loopsFile.split("\\/");
-		String output = this._loopsFile.replaceAll(tmpPath[tmpPath.length-1], this._prefix);
-		if(tmpPath[tmpPath.length-1].contains(".")){
-			String[] tmp = tmpPath[tmpPath.length-1].split("\\.");
-			pathFileMatrix = output+"_"+tmp[0]+"_matrix.tab";
-			output = output+"_"+tmp[0];
-		}else{
-			output = output+"_"+tmpPath[tmpPath.length-1];
-			pathFileMatrix = output+"_matrix.tab";
-		}
-		FileToMatrix ftm = new FileToMatrix();
-
-		String nameRes = String.valueOf(_resolution);
-		nameRes = nameRes.replace("000", "");
-		nameRes = nameRes+"kb";
-		String input = this._input+nameRes+File.separator;
-		File a = new File(input);
-		System.out.println(input);
-		String input2 = this._input2+nameRes+File.separator;
-		File a2 = new File(input2);
-		System.out.println(input2);
-		if(a.exists()==false || a2.exists()==false) {
-			if(_gui){
-				JOptionPane.showMessageDialog(null,this._resolution+" is not present in the dumped file: "+this._input+" run the program with the hic or cool option to dump the dataset" , "End of SIP program", JOptionPane.ERROR_MESSAGE);
-			}
-			System.out.println(this._resolution+" is not present in the dumped file: \"+this._input+\" run the program with the hic or cool option to dump the dataset !!!!\n");
-			return;
-		}
-		System.out.println("Check existing images if not existing the program creating the image");
-		File[] listOfFile = a.listFiles();
-		for(int i = 0; i < listOfFile.length; ++i) {
-			if(listOfFile[i].isDirectory()) {
-				String [] b = listOfFile[i].toString().split(File.separator);
-				this._chr.add(b[b.length-1]);
-			}
-		}
-		System.out.println(input);
-		makeTif(input,threshold);
-		System.out.println(input2);
-		makeTif(input2,threshold);
-
-		ftm = new FileToMatrix(input,input2,this._loopsFile,pathFileMatrix, this._resolution, this._metaSize);
-		ftm.creatMatrixSubstarction(this._step, this._gui);
-
-		System.out.println("##### End of creating the image\n Start matrix for metaplot");
-		ftm.getAPA();
-		ftm.writeStrengthFile();
-		System.out.println("##### End of matrix (file: "+pathFileMatrix+") \n Start python script");
-		Script python = new Script(script, color, zscore, squarre, pathFileMatrix, output, min,max);
-		python.runPythonScript();
-		System.out.println("End of SIPMeta");
-	}
-	
-	/**
-	 * 
-	 * @param imgDir
-	 * @param threshold
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	public void makeTif(String imgDir,double threshold) throws IOException, InterruptedException{
+	private void makeTif(String imgDir,double threshold) throws InterruptedException{
 		ProcessMakeImage process = new ProcessMakeImage();
 		process.go(imgDir, this._chr,this._cpu, this._gui, this._resolution, this._imageSize, threshold);
 	}
@@ -256,21 +184,19 @@ public class SIPMeta {
 	 * @return resolution detected in the loops file
 	 */
 	public int getResolution(){return this._resolution;}
-	/**
-	 * getter of step size
-	 * @return int step size
-	 */
-	public int getStep(){return this._step;}
-	
+
 	/**
 	 *	input setter to change the input if needed 
-	 * @param input
+	 * @param input  path of the input
 	 */
 	public void setInput(String input){this._input = input;}
 
+
+
 	/**
-	 *
-	 * @param input
+	 *setter of the prefix parameter
+	 * @param input String prefix for the output
 	 */
-	public void setPrefix(String input){this._prefix = input;}		
+	public void setPrefix(String input){this._prefix = input;}
+
 }

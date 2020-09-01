@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/../jar/Auto_Threshold-1.16.1.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../jar/ij-1.52b.jar!/" />
+     <conelement value="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
     </src_description>

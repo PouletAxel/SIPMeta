@@ -13,38 +13,38 @@ import java.io.IOException;
 public class RunnableDumpData extends Thread implements Runnable{
 
 	/**String: path where save the dump data  */
-	private String _outdir ="";
+	private String _outdir;
 	/**String: name of the chr*/
-	private String _chrName = "";
+	private String _chrName;
 	/**int: chr size */
-	private int _chrSize = 0;
+	private int _chrSize;
 	/** DumpData object run juicertoolbox.jar*/
 	private DumpData _dumpData;
 	/**int: bin resolution*/
-	private int _res = 0;
+	private int _resolution;
 	/**int: image Size */
-	private int _matrixSize = 0;
+	private int _imageSize;
 	/**int: size of the step to run a chr */
-	private int _step = 0;
+	private int _step;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param outdir
-	 * @param chrName
-	 * @param chrSize
-	 * @param dumpData
-	 * @param res
-	 * @param matrixSize
-	 * @param step
+	 * @param outdir String: path where save the dump data
+	 * @param chrName String: name of the chr
+	 * @param chrSize int: chr size
+	 * @param dumpData  DumpData object run juicertoolbox.jar
+	 * @param res int: bin resolution
+	 * @param matrixSize int: image Size
+	 * @param step int: size of the step to run a chr
 	 */
 	
 	public RunnableDumpData (String outdir, String chrName, int chrSize, DumpData dumpData,int res, int matrixSize, int step){
 		this._outdir = outdir;
 		this._chrName = chrName;
 		this._chrSize = chrSize;
-		this._res = res;
-		this._matrixSize = matrixSize;
+		this._resolution = res;
+		this._imageSize = matrixSize;
 		this._step = step;
 		this._dumpData = dumpData;
 	}
@@ -56,21 +56,23 @@ public class RunnableDumpData extends Thread implements Runnable{
 	public void run(){
 		boolean juicerTools;
 		String expected ="";
-		String nameRes = String.valueOf(_res);
+		String nameRes = String.valueOf(_resolution);
 		nameRes = nameRes.replace("000", "");
 		nameRes = nameRes+"kb"; 
 		String outdir = this._outdir+File.separator+nameRes+File.separator+this._chrName+File.separator;
 		File file = new File(outdir);
-		if (file.exists()==false) file.mkdirs();
-		int step = this._step*this._res;
-		int j = this._matrixSize*this._res;
+		if (!file.exists())
+			file.mkdirs();
+		int step = this._step*this._resolution;
+		int j = this._imageSize *this._resolution;
 		if (j > _chrSize) {j = _chrSize; }
 		String test = this._chrName+":0:"+j;
 		String name = outdir+this._chrName+"_0_"+j+".txt";
 		this._dumpData.getExpected(test,name);
-		String normOutput = this._outdir+File.separator+"normVector";
+		String normOutput = this._outdir+File.separator+nameRes+File.separator+"normVector";
 		file = new File(normOutput);
-		if (file.exists()==false){file.mkdir();}
+		if (!file.exists())
+			file.mkdir();
 		try {
 			this._dumpData.getNormVector(this._chrName,normOutput+File.separator+this._chrName+".norm");
 			System.out.println("start dump "+this._chrName+" size "+this._chrSize);
@@ -82,7 +84,7 @@ public class RunnableDumpData extends Thread implements Runnable{
 				System.out.println("start dump "+this._chrName+" size "+this._chrSize+" dump "+dump);
 				System.out.println(expected);
 				juicerTools = this._dumpData.dumpObservedMExpected(dump,name);
-				if (juicerTools == false){
+				if (!juicerTools){
 					System.out.print(dump+" "+"\n"+juicerTools+"\n");
 					System.exit(0);
 				}
@@ -93,7 +95,7 @@ public class RunnableDumpData extends Thread implements Runnable{
 					name = outdir+this._chrName+"_"+i+"_"+j+".txt";
 					System.out.println("start dump "+this._chrName+" size "+this._chrSize+" dump "+dump);
 					juicerTools = this._dumpData.dumpObservedMExpected(dump,name);
-					if (juicerTools == false){
+					if (!juicerTools){
 						System.out.print(dump+" "+"\n"+juicerTools+"\n");
 						System.exit(0);
 					}

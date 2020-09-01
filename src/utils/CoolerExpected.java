@@ -22,46 +22,49 @@ public class CoolerExpected {
 	private String _logError = "";
 	/** String for the log*/
 	private String _log = "";
-	/** path to the hic file or url link*/
+	/** path to the mcool file or url link*/
 	private String _coolFile = "";
-	/** List of doucle to stock the expected vector*/
-	private int _resolution = 0;
-	private int _imgSize = 0;
+	/** int image Size */
+	private int _imageSize;
+	/** path to expected file*/
 	private String _expected;
-	private String _coolTools = "";
+	/** cooltools path*/
+	private String _coolTools;
+	/** expected hashmap */
 	private HashMap<String, ArrayList<Double>> _hashExpected = new HashMap<String,ArrayList<Double>>();
+	/** int nb of cpu*/
 	private int _cpu;
 	
 	/**
-	 * 
-	 * @param cooltools
-	 * @param coolFile
-	 * @param resolution
-	 * @param imageSize
-	 * @param cpu
+	 * Constructor
+	 * @param cooltools cooltools path
+	 * @param coolFile String path to mcool file
+	 * @param resolution int resolution == size bins
+	 * @param imageSize int image Size
+	 * @param cpu int nb of cpu
 	 */
 	public CoolerExpected(String cooltools, String coolFile, int resolution, int imageSize, int cpu){
 		_coolTools = cooltools;
-		this._resolution = resolution;
-		this._imgSize = imageSize;
-		this._coolFile = coolFile+"::/resolutions/"+this._resolution;
+		this._imageSize = imageSize;
+		this._coolFile = coolFile+"::/resolutions/"+resolution;
 		_cpu = cpu;
 	}
 	
 	/**
-	 * 
-	 * @param expectedFile
-	 * @param imageSize
+	 * Constructor
+	 *
+	 * @param expectedFile String path to expected file
+	 * @param imageSize int image size
 	 */
 	public CoolerExpected(String expectedFile,  int imageSize){
-		this._imgSize = imageSize;
+		this._imageSize = imageSize;
 		this._expected = expectedFile;
 	}
+
 	/**
-	 * 
-	 * @param output
-	 * @param resolution
-	 * @return
+	 *	Dump expected value and save in the output give by the user
+	 * @param expected path where write the output
+	 * @return boolean
 	 */
 	public boolean dumpExpected(String expected){
 		int exitValue=1;
@@ -101,14 +104,17 @@ public class CoolerExpected {
 		}
 		return exitValue==0;
 	}
-	
-	
+
+	/**
+	 *
+	 *
+	 * @throws IOException exception
+	 */
 	public void parseExpectedFile() throws IOException {
 		BufferedReader br = Files.newBufferedReader(Paths.get(_expected), StandardCharsets.UTF_8);
-		String line = br.readLine();
-		for (line = null; (line = br.readLine()) != null;){
+		for (String line = null; (line = br.readLine()) != null;){
 			String [] tline = line.split("\t");
-			if(Integer.parseInt(tline[1]) < this._imgSize) {
+			if(Integer.parseInt(tline[1]) < this._imageSize) {
 				if(!tline[tline.length-1].equals("nan")){
 					if (_hashExpected.containsKey(tline[0])){
 						ArrayList<Double> lExpected =  _hashExpected.get(tline[0]);
@@ -135,33 +141,20 @@ public class CoolerExpected {
 		}
 		br.close();
 	}
-	
+
+
 	/**
-	 * getter of the expected matrix. 
-	 * 
-	 * @param chr: String name of the chromosme
-	 * @param output: path to the output
-	 * @throws IOException 
+	 *
+	 * getter of expected
+	 * @param chr String chr name
+	 * @return array of double with expected value by bins
+	 * @throws IOException exception
 	 */
 	public ArrayList<Double> getExpected(String chr) throws IOException{
 		return this._hashExpected.get(chr);
 		
 	}
-	
-	
-	
-	/**
-	 * getter of the logerror file if necessary
-	 * 
-	 * @return return the String with the error
-	 */
-	public String getLogError(){ return this._logError;}
-	
-	/**
-	 * getter of the log info if necessary 
-	 * @return return a String with the log info
-	 */
-	public String getLog(){	return this._log;}
+
 	/**
 	 * Class to run command line in java
 	 * @author axel poulet

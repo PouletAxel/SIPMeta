@@ -29,20 +29,21 @@ public class ProcessDumpData{
 	/**
 	 * run the processing on different cpu, if all cpu are running, take break else run a new one.
 	 * 
-	 * @param hicFile
-	 * @param outdir
-	 * @param chrSize
-	 * @param juiceBoxTools
-	 * @param normJuiceBox
-	 * @param nbCPU
-	 * @param resolution
-	 * @param sizeImage
-	 * @param gui
-	 * @throws InterruptedException
+	 * @param hicFile String path to the hic file
+	 * @param outdir	String path where dump the data set
+	 * @param chrSize	Hashmap chrname: size
+	 * @param juiceBoxTools	String path to juicer tools
+	 * @param normJuiceBox	String norm to use
+	 * @param nbCPU	int: nc of processors use
+	 * @param resolution int resolution of the bin
+	 * @param sizeImage int size of the image
+	 * @param gui boolean: is gui or not
+	 * @throws InterruptedException exception
 	 */
 	public void go(String hicFile, String outdir, HashMap<String,Integer> chrSize, String juiceBoxTools, String normJuiceBox,int nbCPU, int resolution, int sizeImage, boolean gui) throws InterruptedException{
 		File file = new File(outdir);
-		if (file.exists()==false) file.mkdir();
+		if (!file.exists())
+			file.mkdir();
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(nbCPU);
 		Iterator<String> chrName = chrSize.keySet().iterator();
 		while(chrName.hasNext()){
@@ -57,7 +58,7 @@ public class ProcessDumpData{
 		int nb = 0;
 		
 		if(gui){
-			_p = new Progress("Loop Detection step",chrSize.size()+1);
+			_p = new Progress("Dump data set from "+hicFile,chrSize.size()+1);
 			_p._bar.setValue(nb);
 		}
 		while (!executor.awaitTermination(30, TimeUnit.SECONDS)) {

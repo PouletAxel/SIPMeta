@@ -19,33 +19,32 @@ public class ProcessMakeImage {
 	private Progress _p;
 
 	/**
-	 * 
+	 * Constructor
 	 */
 	public ProcessMakeImage(){ }
 
 	/**
 	 * 
 	 * make the image for the chr directories, if those one are not present.
-	 * 
-	 * @param SIPDir
-	 * @param chr
-	 * @param nbCPU
-	 * @param gui
-	 * @param resolution
-	 * @param ratio
-	 * @param imageSize
-	 * @param threshold
-	 * @throws InterruptedException
+	 *
+	 *
+	 * @param SIPDir String path with SIP data set
+	 * @param chr  Hashmap chrname: size
+	 * @param nbCPU int: nb of processor
+	 * @param gui boolean: is gui or not
+	 * @param resolution int resolution of the bi
+	 * @param imageSize int size of the imag
+	 * @param threshold double threshold
+	 * @throws InterruptedException exception
 	 */
-
 	public void go(String SIPDir,ArrayList<String> chr, int nbCPU, boolean gui, int resolution, int imageSize,double threshold) throws InterruptedException{
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(nbCPU);
-		for(int i = 0; i < chr.size(); ++i){
-			File a = new File(SIPDir+chr.get(i));
+		for (String s : chr) {
+			File a = new File(SIPDir + s);
 			File[] listOfFile = a.listFiles();
-			if(testTiff(listOfFile,resolution) == false){
-				RunnableMakeImage task =  new  RunnableMakeImage(listOfFile, resolution, imageSize,threshold);
-				executor.execute(task);	
+			if (!testTiff(listOfFile, resolution)) {
+				RunnableMakeImage task = new RunnableMakeImage(listOfFile, resolution, imageSize, threshold);
+				executor.execute(task);
 			}
 		}
 		executor.shutdown();
@@ -68,14 +67,15 @@ public class ProcessMakeImage {
 	
 	/**
 	 * if tif with good name present in the directory return true else return false
-	 * @param listOfFile
-	 * @param min
-	 * @return
+	 *
+	 * @param listOfFile array of File
+	 * @param resolution int resolution
+	 * @return boolean
 	 */
 	private boolean testTiff(File[] listOfFile,int resolution){
 		boolean tif = false;
-		for(int j = 0; j < listOfFile.length; ++j){
-			if(listOfFile[j].toString().contains("_N.tif")){
+		for (File file : listOfFile) {
+			if (file.toString().contains("_N.tif")) {
 				tif = true;
 				return tif;
 			}

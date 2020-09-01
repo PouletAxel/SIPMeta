@@ -13,30 +13,36 @@ public class Script {
 	/** String log error => error */
 	private String _logError = "";
 	/** String path to the input matrix*/
-	private String _input ="";
+	private String _input;
 	/** Path where save the results*/
-	private String _output ="";
+	private String _output;
 	/** path to the bullseye.py*/
-	private String _scriptPath = "";
+	private String _scriptPath;
 	/** String color, define the color of the metaplot*/
-	private String _color = "";
+	private String _color ;
 	/** double min minimum value for the key*/
 	private double _min;
 	/** double max minimum value for the key*/
 	private double _max;
 	/** boolean if true compute the distance manhattan*/
-	private boolean _square = false;
+	private boolean _square;
 	/**boolean if true compute the zscore */
-	private boolean _zscore = false;
+	private boolean _zscore;
 	
 	
 	/**
-	 * Constructor of this class to iniatilise the different variables
+	 * Constructor of this class
 	 * 
-	 * @param juiceboxTools: String: path of juicertoolsBox
-	 * @param hicFile: String: path to the HiC file
-	 * @param norm: String: type of normalisation
-	 * @param resolution: int: resolution of the bins 
+	/**
+	 *
+	 * @param script String path to bulleye.py
+	 * @param color String color for the metaplot
+	 * @param zscore boolean to compute or not zscore
+	 * @param square boolean
+	 * @param input path to the input matrix
+	 * @param output path of the output
+	 * @param min int min
+	 * @param max int max
 	 */
 	public Script(String script, String color,boolean zscore, boolean square, String input, String output, double min, double max ){
 		this._input = input;
@@ -62,8 +68,8 @@ public class Script {
 	 *  You  can pass the matrix to -i in the python script.
 	 *  -o in the python script is the prefix for output png files. It appends “_bullseye.png” and “_normal.png” to the prefix.
 	 * bullseye.py [-h] -i INPUT_FILE -o OUTPUT_FILE [-c COLORSCHEME] [-z] [-s] [-l LOWER] [-u UPPER]
-	 * @return
-	 * @throws IOException
+	 * @return boolean
+	 * @throws IOException exception
 	 */
 	public boolean runPythonScript() throws IOException{
 		int exitValue=1;
@@ -85,8 +91,7 @@ public class Script {
 			new ReturnFlux(process.getErrorStream()).start();
 			exitValue=process.waitFor();
 		}
-		catch (IOException e) {	e.printStackTrace();}
-		catch (InterruptedException e) {e.printStackTrace();}
+		catch (IOException | InterruptedException e) {	e.printStackTrace();}
 		System.out.print(this._logError);
 		return exitValue==0;
 	}

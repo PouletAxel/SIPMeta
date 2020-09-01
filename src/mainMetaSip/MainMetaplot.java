@@ -32,66 +32,68 @@ import utils.SIPMeta;
  */
 public class MainMetaplot{
 	/** String: stock the loops file path */
-	static String _loopsFile = "";
+	static private String _loopsFile = "";
 	/** String: stock the input2 path (hic file or directory dependent of the SIP value)*/
-	static String _input2 ="";
+	static private String _input2 ="";
 	/** String: stock the input path (hic file or directory dependent of the SIP value)*/
-	static String _input ="";
+	static private String _input ="";
 	/** String: stock the output2 path if SIP false, path for the dump dat of the input2*/
-	static String _outDir2 ="";
+	static private String _outDir2 ="";
 	/** String: stock the output path if SIP false, path for the dump dat of the input*/
-	static String _outDir ="";
+	static private String _outDir ="";
 	/** String: stock the script file path have to be bullseye.py */
-	static String _script = "";
+	static private String _script = "";
 	/** String: stock the script file path have to be bullseye.py */
-	static String _logError = "";
+	static private String _logError = "";
 	/** int: image size of SIP */
-	static int _imageSize =2000;
+	static private int _imageSize =2000;
 	/** int: sixe step to run a chr */
-	static int _step = _imageSize/2;
+	static private int _step;
 	/** int: sixe of the metaplot*/
-	static int _metaSize = 21;
+	static private int _metaSize = 21;
 	/**int: loops res*/
-	static int _resolution = 5000;
+	static private int _resolution = 5000;
 	/** ratio between minRes and resolution*/
 	static int _ratio = 2;
 	/** int: nb cpu used*/
-	static int _nbCpu = 1;
+	static private int _nbCpu = 2;
 	/** double: min value for the key of the metaplot*/
-	static double _min = -1;
+	static private double _min = -1;
 	/** double: max value for the key of the metaplot*/
-	static double _max = -1;
+	static private double _max = -1;
 	/**boolean: if true compute the zscore in bullseye.py*/
-	static boolean _zScore = false;
+	static private boolean _zScore = false;
 	/**boolean: if true compute manhattan distance in bullseye.py*/
-	static boolean _square = false;
+	static private boolean _square = false;
 	/**boolean: if true run SIPMeta with the hic option if false input is SIP output*/
-	static boolean _isHic = false;
+	static private boolean _isHic;
 	/** */
-	static boolean _isCool = false;
-	static boolean _isSip = true;
+	static private boolean _isCool;
+	static boolean _isSip;
 	/** String: colors of the metaplot*/
-	static String _color = "Reds";
+	static private String _color = "Reds";
 	/**boolean: if true SIPMeta is run with a gui */
-	static boolean _gui = false;
+	static private boolean _gui = false;
 	/**boolean: if true run SIPMeta simple else run SIPMeta substraction */
-	static boolean _simple = true;
+	static private boolean _simple = true;
 	/** hash map stocking in key the name of the chr and in value the size*/
 	private static HashMap<String,Integer> _chrSize =  new HashMap<String,Integer>();
 	/**double: threshold value for the matrix computation */
 	private static double _threshold = -1;
 	/** Path to the jucier_tools_box to dump the data not necessary for Processed and dumped method */
-	private static String _juiceBoxTools = "";
-	private static String _cooler = "";
-	private static String _cooltools = "";
+	static private String _juiceBoxTools = "";
+	/** */
+	static private String _cooler = "";
+	/** */
+	static private String _cooltools = "";
 	/**Normalisation method to dump the the data with hic method (KR,NONE.VC,VC_SQRT)*/
-	private static String _juiceBoXNormalisation = "KR";
+	static private String _juiceBoXNormalisation = "KR";
 	/**String: prefix for metaplot output */
-	private static String _prefix = "SIPMeta";
+	static private String _prefix = "SIPMeta";
 	/**Array String: list of colors available for the metaplot*/
-	static String[] _colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
+	static private String[] _colors = new String[] {"Reds", "BuGn", "Greens", "Purples", "Blues", "coolwarm", "magma", "inferno", "spectral", "viridis"};
 	/** String: doc of SIPMeta*/
-	private static String _doc = ("SIPMeta run with java 8\n"
+	static private String _doc = ("SIPMeta run with java 8\n"
 			+ "Usage:\n"
 			+ "\twith SIP output\n"
 			+ "\t\tsimple  <loopsFile> <RawData> <script> <sMetaPlot> <sImg> [-min MIN] [-max MAX] [-res RES][-z] [-s] [-t T] [-prefix PREFIX] [-c COLORSCHEME]\n"
@@ -128,17 +130,18 @@ public class MainMetaplot{
 	 * Obtain the parameter from the gui or the command line.
 	 * and then run the program on function the paramters
 	 * 
-	 * @param args
-	 * @throws IOException
+	 * @param args args
+	 * @throws IOException exception
 	 */
 	public static void main(String[] args) throws IOException{
 		if((args.length >= 1 && args.length < 5)){
 			System.out.println("missing some arguments !!!!!!\n\n"+_doc);
 			System.exit(0);
-		}else if(args.length >= 5 ){ ////////////////////////////////////////////////////////////////////// Here command line parameters
-			/// if hic paramater
+		}else if(args.length >= 5 ){
 			if(args[0].equals("hic")){ 
 				_isHic = true;
+				_isCool = false;
+				_isSip = false;
 				_loopsFile = args[2];
 				_input = args[3];
 				if(args[1].equals("simple")){
@@ -167,6 +170,8 @@ public class MainMetaplot{
 				}
 			}else if(args[0].equals("cool")){ 
 				_isCool = true;
+				_isHic = false;
+				_isSip = false;
 				_loopsFile = args[2];
 				_input = args[3];
 				if(args[1].equals("simple")){
@@ -273,33 +278,33 @@ public class MainMetaplot{
 		////Test dir and file
 		
 		File f = new File(_loopsFile);
-		if(f.exists()==false){
+		if(!f.exists()){
 			System.out.println(_loopsFile+" doesn't existed !!! \n\n");
 			System.out.println(_doc);
 			return;
 		}
 		
-		if(_script.contains("bullseye.py")==false){
+		if(!_script.contains("bullseye.py")){
 			System.out.println("error bullseye option need bullseye.py script!!!!!!!\n\n"+_doc);
 			return;
 		}
 		f = new File(_script);
-		if(f.exists()==false){
+		if(!f.exists()){
 			System.out.println(_script+" doesn't existed !!! \n\n");
 			System.out.println(_doc);
 			return;
 		}
 		
 		f = new File(_input);
-		if(f.exists()==false && _input.startsWith("https")==false){
+		if(!f.exists() && !_input.startsWith("https")){
 				System.out.println(_input+" doesn't existed !!! \n\n");
 				System.out.println(_doc);
 				return;
 		}
 		
-		if(_simple == false){
+		if(!_simple){
 			f = new File(_input2);
-			if(f.exists()==false){
+			if(!f.exists()){
 					System.out.println(_input2+" doesn't existed !!! \n\n");
 					System.out.println(_doc);
 					return;
@@ -309,32 +314,32 @@ public class MainMetaplot{
 		///////////////////// SIPMeta process.
 		_step = _imageSize/2;
 		try {
-			if (_isCool == false && _isHic ==false)
-				if(_input.endsWith(File.separator) == false)
+			if (!_isCool && !_isHic)
+				if(!_input.endsWith(File.separator))
 					_input = _input+File.separator;
-			SIPMeta sip = new SIPMeta(_input,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
+			SIPMeta sipMeta = new SIPMeta(_input,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
 			if ((_metaSize % 2) == 0) {
 				System.out.println("Error: bullseye requires a central point in the matrix, therefore metaplot size must be odd\n");
 				return;
 			}
 			if(_isHic){
-				if(_outDir.endsWith(File.separator) == false) 
+				if(!_outDir.endsWith(File.separator))
 					_outDir = _outDir+File.separator;
 				System.out.println("start dump data "+_input);
 				ProcessDumpData processDumpData = new ProcessDumpData();
 				processDumpData.go(_input, _outDir, _chrSize, _juiceBoxTools, _juiceBoXNormalisation, _nbCpu, _resolution, _imageSize,_gui);
-				sip.setInput(_outDir);
+				sipMeta.setInput(_outDir);
 				System.out.println("######## End dump data "+_input);
-				if(_simple==false){
-					if(_outDir2.endsWith(File.separator) == false) 
+				if(!_simple){
+					if(!_outDir2.endsWith(File.separator))
 						_outDir2 = _outDir2+File.separator;
 					System.out.println("start dump data "+_input2);
 					processDumpData.go(_input2, _outDir2, _chrSize, _juiceBoxTools, _juiceBoXNormalisation, _nbCpu, _resolution, _imageSize, _gui);
-					sip = new SIPMeta(_outDir,_outDir2,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
+					sipMeta = new SIPMeta(_outDir,_outDir2,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
 					System.out.println("######## End dump data "+_input2);
 				}
 			}else if(_isCool) {
-				if( testTools(_cooltools,0,3,0) == false || testTools(_cooler,0,8,6) == false) {
+				if(!testTools(_cooltools, 0, 3, 0) || !testTools(_cooler, 0, 8, 6)) {
 					System.out.println( _cooltools +" or" + _cooler+" is not the good version for SIP (it needs cooltools version >= 0.3.0 and cooler version >= 0.8.6) !!! \n\n");
 					System.out.println(_doc);
 					if(_gui){
@@ -344,32 +349,33 @@ public class MainMetaplot{
 					return;
 				}
 				System.out.println("start dump data "+_input);
-				if(_outDir.endsWith(File.separator) == false) 
+				if(!_outDir.endsWith(File.separator))
 					_outDir = _outDir+File.separator;
 				ProcessCoolerDumpData dumpData = new ProcessCoolerDumpData();
 				dumpData.go(_input, _outDir, _chrSize, _cooltools,_cooler, _nbCpu, _resolution, _imageSize,_gui);
-				sip.setInput(_outDir);
+				sipMeta.setInput(_outDir);
 				System.out.println("######## End dump data "+_input);
-				if(_simple==false){
-					if(_outDir2.endsWith(File.separator) == false) 
+				if(!_simple){
+					if(!_outDir2.endsWith(File.separator))
 						_outDir2 = _outDir2+File.separator;
 					System.out.println("start dump data "+_input2);
 					dumpData.go(_input2, _outDir2, _chrSize, _cooltools,_cooler, _nbCpu, _resolution, _imageSize,_gui);
-					sip = new SIPMeta(_outDir,_outDir2,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
 					System.out.println("######## End dump data "+_input2);
+					System.out.println(_outDir+"\n"+_outDir2);
+					sipMeta = new SIPMeta(_outDir,_outDir2,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
+
 				}
 				
-			}else if(_isHic == false && _simple == false && _isCool == false){
-				if(_input2.endsWith(File.separator) == false)
+			}else if(!_isHic && !_simple && !_isCool){
+				if(!_input2.endsWith(File.separator))
 					_input2 = _input2+File.separator;
-
-				sip = new SIPMeta(_input,_input2,_loopsFile,_gui,_resolution,_nbCpu-1,_imageSize,_metaSize);
+				sipMeta = new SIPMeta(_input,_input2,_loopsFile,_gui,_resolution,_nbCpu,_imageSize,_metaSize);
 			}
-			sip.setPrefix(_prefix);
+			sipMeta.setPrefix(_prefix);
 			try {
-				System.out.println();
-				sip.run(_script,_square,_simple,_zScore,_color,_min,_max,_threshold);
-				System.out.println("simple"+_simple);
+				//System.out.println("Main\nsimple "+_simple+"\n"+sipMeta.getInput()+"\n"+sipMeta.getInput2());
+				sipMeta.run(_script,_square,_simple,_zScore,_color,_min,_max,_threshold);
+
 			} catch (NullPointerException w) {
 				System.out.println("\nError! This is usually because the chromosome names don't match up between the loops file and the raw data files."
 						+ " For example Chr1 (capitalized) vs chr1 (no caps) vs 1 (no chr).\n Change your loops file to stay consistent with the 2-D input data.");	}
@@ -412,9 +418,9 @@ public class MainMetaplot{
 					catch(NumberFormatException e){ returnError(args[i],args[i+1],"int");}
 					i--;
 				}else if(args[i].equals("-c")){
-					if(_colors.equals(args[i+1]) == false)
-						_color = args[i+1];
-					else{
+					if(_colors.equals(args[i+1]) == false) {
+						_color = args[i + 1];
+					} else{
 						System.out.println("color choose doesn't exist !!!!!!!\n\n"+_doc);
 						System.exit(0);
 					}
@@ -445,10 +451,11 @@ public class MainMetaplot{
 	}
 	
 	/**
-	 * 
-	 * @param param
-	 * @param value
-	 * @param type
+	 * print an error and kill the process
+	 *
+	 * @param param	String param name
+	 * @param value	String value parameter
+	 * @param type	type expected
 	 */
 	private static void returnError(String param, String value, String type){
 		System.out.println(param+" has to be an integer "+value+" can't be convert in "+type+"\n\n");
@@ -477,12 +484,21 @@ public class MainMetaplot{
 		}
 		br.close();
 	}
-	
-	public static boolean testTools(String pathTools, int first, int second, int third) {
+
+
+	/**
+	 * test cool version
+	 *
+	 * @param pathTools String: path to mcool or cooler tools
+	 * @param first int: first nb of the version
+	 * @param second int: second nb of the version
+	 * @param third int: third nb of the version
+	 * @return boolean true or false is the version s the expected one
+	 */
+	private static boolean testTools(String pathTools, int first, int second, int third) {
 		
 		Runtime runtime = Runtime.getRuntime();
 		String cmd = pathTools+" --version";
-		//System.out.println(cmd);
 		Process process;
 		try {
 			process = runtime.exec(cmd);
@@ -508,7 +524,10 @@ public class MainMetaplot{
 		}else
 			return false;
 	}
-	
+
+	/**
+	 *
+	 */
 	public static class ReturnFlux extends Thread {  
 
 		/**  Flux to redirect  */
@@ -519,7 +538,7 @@ public class MainMetaplot{
 		 * @param flux
 		 *  flux to redirect
 		 */
-		public ReturnFlux(InputStream flux){this._flux = flux; }
+		private ReturnFlux(InputStream flux){this._flux = flux; }
 		
 		/**
 		 * 
@@ -530,7 +549,7 @@ public class MainMetaplot{
 				BufferedReader br = new BufferedReader(reader);
 				String line=null;
 				while ( (line = br.readLine()) != null) {
-					if(line.contains("WARN")== false) _logError = _logError+line+"\n";
+					if(!line.contains("WARN")) _logError = _logError + line + "\n";
 				}
 			}
 			catch (IOException ioe){

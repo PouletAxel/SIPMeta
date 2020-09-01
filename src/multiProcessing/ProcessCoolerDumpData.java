@@ -24,31 +24,32 @@ public class ProcessCoolerDumpData {
 	private Progress _p;
 	
 	/**
-	 * 
+	 * Constructor
 	 */
 	public ProcessCoolerDumpData(){ }
 		
 
 	/**
-	 * 
-	 * @param coolFile
-	 * @param output
-	 * @param chrSize
-	 * @param coolTools
-	 * @param cooler
-	 * @param nbCPU
-	 * @param resolution
-	 * @param matrixSize
-	 * @param gui
-	 * @throws InterruptedException
+	 * methode running the multi processing to dump cool data set
+	 * @param coolFile String: path to cool File
+	 * @param output String: path where dump the data set
+	 * @param chrSize Hashmap chrname: size
+	 * @param coolTools String: path to coolTools
+	 * @param cooler String: path to cooler
+	 * @param nbCPU int: nb of processor
+	 * @param resolution int resolution of the bin
+	 * @param sizeImage int size of the image
+	 * @param gui boolean: is gui or not
+	 * @throws InterruptedException exception
 	 */
-	public void go( String coolFile, String output, HashMap<String,Integer> chrSize, String coolTools, String cooler,int nbCPU, int resolution, int matrixSize, boolean gui) throws InterruptedException {
+	public void go( String coolFile, String output, HashMap<String,Integer> chrSize, String coolTools, String cooler,int nbCPU, int resolution, int sizeImage, boolean gui) throws InterruptedException {
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(nbCPU);
 		Iterator<String> chrName = chrSize.keySet().iterator();
 		File outDir = new File(output);
-		if (outDir.exists()==false) outDir.mkdir();
+		if (!outDir.exists())
+			outDir.mkdir();
 			
-		CoolerExpected expected = new CoolerExpected(coolTools,coolFile, resolution, matrixSize, nbCPU);
+		CoolerExpected expected = new CoolerExpected(coolTools,coolFile, resolution, sizeImage, nbCPU);
 		String nameRes = String.valueOf(resolution);
 		nameRes = nameRes.replace("000", "");
 		nameRes = nameRes+"kb"; 
@@ -60,7 +61,7 @@ public class ProcessCoolerDumpData {
 		while(chrName.hasNext()){
 			String chr = chrName.next();
 			CoolerDumpData dumpData = new CoolerDumpData(cooler, coolFile);
-			RunnableDumpDataCooler task =  new RunnableDumpDataCooler(output, chr, chrSize.get(chr), dumpData, resolution, matrixSize,matrixSize/2);
+			RunnableDumpDataCooler task =  new RunnableDumpDataCooler(output, chr, chrSize.get(chr), dumpData, resolution, sizeImage,sizeImage/2);
 			executor.execute(task);	
 		}
 		executor.shutdown();
@@ -78,9 +79,10 @@ public class ProcessCoolerDumpData {
 		}
 		File folder = new File(output);
 		File[] listOfFiles = folder.listFiles();
-		for(int i = 0; i < listOfFiles.length;++i) {
-				String name = listOfFiles[i].toString();
-				if(name.contains(".expected"))  listOfFiles[i].delete();
+		for (File listOfFile : listOfFiles) {
+			String name = listOfFile.toString();
+			if (name.contains(".expected"))
+				listOfFile.delete();
 		}
 		if(gui)	_p.dispose();
 		

@@ -1,6 +1,7 @@
 package test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,11 +44,15 @@ public class TestMetaplot{
 	static HashMap<String,Integer> _chrSize = new HashMap<String,Integer>();
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String loopsFile =  "/home/plop/Desktop/GM12878_test/10kbLoops.txt";
+		String loopsFile =  "/home/plop/Desktop/restMm10/10kbLoops.txt";
 		//String input =  "/home/plop/Desktop/SIP/testCooler/GM12878_4DNFIXP4QG5B.mcool";
 		//String input =  "/home/plop/Desktop/SIP/testCooler/4DNFI1UEG1HD.hic";
-		String input =  "/home/plop/Desktop/GM12878_test/";
-		String input2 =  "/home/plop/Desktop/GM12878_test/";
+		String input =  "/home/plop/Desktop/GSM4626644_G5_BLCAPC-F123-triptolide_R01_MAPQ1.hic";
+		String input2 =  "/home/plop/Desktop/GSE110061_CAPC-G5_B06_MAPQ1.hic";
+
+		String outdir1 =  "/home/plop/Desktop/GSM4626644";
+		String outdir2=  "/home/plop/Desktop/GSE110061";
+
 		boolean z = true;		
 		boolean squarre = true;
 		boolean simple = false;
@@ -57,30 +62,29 @@ public class TestMetaplot{
 		int sizeMeta = 21;
 		double min = 0;
 		double max = 20;
-		String juicer = "/home/plop/Tools/juicer_tools_1.13.02.jar";
-		String cooler = "/home/plop/anaconda3/bin/cooler";
-		String cooltools = "/home/plop/anaconda3/bin/cooltools";
+		String juicer = "/home/plop/Tools/juicer_tools_1.19.02.jar";
+		//String cooler = "/home/plop/anaconda3/bin/cooler";
+		//String cooltools = "/home/plop/anaconda3/bin/cooltools";
 		int nbCpu = 3;
 		
 		String color = "inferno";
 		double threshold = -1;
-		String outdir =  "/home/plop/Desktop/GM12878_test/";
+		//String outdir =  "/home/plop/Desktop/GM12878_test/";
 		String prefix = "plop";
 		String pathFileMatrix = "";
 		String[] tmpPath = loopsFile.split("\\/");
-		String output = loopsFile.replaceAll(tmpPath[tmpPath.length-1], prefix);
-		System.out.println(output);
+		String outputLoops = loopsFile.replaceAll(tmpPath[tmpPath.length-1], prefix);
 		if(tmpPath[tmpPath.length-1].contains(".")){
 			String[] tmp = tmpPath[tmpPath.length-1].split("\\.");
-			pathFileMatrix = output+"_"+tmp[0]+"_matrix.tab";
-			output = output+"_"+tmp[0];
-		}else{		
-			output = output+"_"+tmpPath[tmpPath.length-1];
-			pathFileMatrix = output+"_matrix.tab";
+			pathFileMatrix = outputLoops+"_"+tmp[0]+"_matrix.tab";
+			outputLoops = outputLoops+"_"+tmp[0];
+		}else{
+			outputLoops = outputLoops+"_"+tmpPath[tmpPath.length-1];
+			pathFileMatrix = outputLoops+"_matrix.tab";
 		}
-			System.out.println(pathFileMatrix+" "+output);
+			System.out.println(pathFileMatrix+" "+outputLoops);
 		
-		//readChrSizeFile("/home/plop/Desktop/w_hg19.sizes");
+		readChrSizeFile("/home/plop/Desktop/SIP/mm10.size");
 		System.out.println("input "+input+"\n"
 				+ "loops file "+loopsFile+"\n"
 				+ "python "+python+"\n"
@@ -94,10 +98,21 @@ public class TestMetaplot{
 		
 		//ProcessDumpData processDumpData = new ProcessDumpData();
 		//processDumpData.go(input, outdir, _chrSize, juicer, "KR", nbCpu, res, matrixSize,false);
-				
 		//SIPMeta sip = new SIPMeta(input,loopsFile, true,res,nbCpu,matrixSize,sizeMeta);
-		SIPMeta sip = new SIPMeta(input,input2,loopsFile,false,res,2, matrixSize, sizeMeta);
-		sip.setInput(outdir);
+
+		ProcessDumpData processDumpData = new ProcessDumpData();
+		processDumpData.go(input, outdir1, _chrSize,juicer, "KR", 2, res, matrixSize, false);
+		//SIPMeta sip = new SIPMeta(input,input2,loopsFile,false,res,2, matrixSize, sizeMeta);
+
+
+		processDumpData.go(input2, outdir2, _chrSize, juicer, "KR", 2, res, matrixSize, false);
+		if(outdir2.endsWith(File.separator) == false)
+			outdir2 = outdir2+File.separator;
+
+		if(outdir1.endsWith(File.separator) == false)
+			outdir1 = outdir1+File.separator;
+		SIPMeta sip = new SIPMeta(outdir1,outdir2,loopsFile,false,res,2,matrixSize,sizeMeta);
+
 		sip.setPrefix(prefix);
 		sip.run(python,squarre,simple,z,color,min,max,threshold);
 	}

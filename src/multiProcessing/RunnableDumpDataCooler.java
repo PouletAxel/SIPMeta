@@ -12,40 +12,41 @@ import utils.CoolerExpected;
  * @author axel poulet
  *
  */
+
 public class RunnableDumpDataCooler extends Thread implements Runnable{
 	/**String: path where save the dump data  */
-	private String _outdir ="";
+	private String _outdir;
 	/**String: name of the chr*/
-	private String _chrName = "";
+	private String _chrName;
 	/**int: chr size */
-	private int _chrSize = 0;
-	/** DumpData object run juicertoolbox.jar*/
+	private int _chrSize;
+	/** CoolerDumpData object*/
 	private CoolerDumpData _coolerDumpData;
 	/**int: bin resolution*/
-	private int _res = 0;
+	private int _resolution;
 	/**int: image Size */
-	private int _matrixSize = 0;
+	private int _imageSize;
 	/**int: size of the step to run a chr */
-	private int _step = 0;
+	private int _step;
 	
 	
 	/**
 	 * Constructor, initialize the variables of interest
 	 *  
-	 * @param outdir
-	 * @param chrName
-	 * @param chrSize
-	 * @param dumpData
-	 * @param res
-	 * @param matrixSize
-	 * @param step
+	 * @param outdir String: path where save the dump data
+	 * @param chrName String: name of the ch
+	 * @param chrSize int: chr size
+	 * @param dumpData CoolerDumpData object
+	 * @param res int: bin resolution
+	 * @param matrixSize int: image Size
+	 * @param step int: size of the step to run a chr
 	 */
-	public RunnableDumpDataCooler (String outdir, String chrName, int chrSize, CoolerDumpData dumpData,int res, int matrixSize, int step){
+	RunnableDumpDataCooler(String outdir, String chrName, int chrSize, CoolerDumpData dumpData, int res, int matrixSize, int step){
 		this._outdir = outdir;
 		this._chrName = chrName;
 		this._chrSize = chrSize;
-		this._res = res;
-		this._matrixSize = matrixSize;
+		this._resolution = res;
+		this._imageSize = matrixSize;
 		this._step = step;
 		this._coolerDumpData = dumpData;
 	}
@@ -55,23 +56,25 @@ public class RunnableDumpDataCooler extends Thread implements Runnable{
 	 */
 	public void run(){
 		boolean coolerTools;
-		String nameRes = String.valueOf(_res);
+		String nameRes = String.valueOf(_resolution);
 		nameRes = nameRes.replace("000", "");
 		nameRes = nameRes+"kb"; 
 		String expectedFile = this._outdir+File.separator+nameRes+".expected";
 		System.out.println(expectedFile);
-		CoolerExpected expected = new CoolerExpected(expectedFile, _matrixSize);
+		CoolerExpected expected = new CoolerExpected(expectedFile, _imageSize);
 		try {
 			expected.parseExpectedFile();
 			ArrayList<Double> lExpected = expected.getExpected(_chrName);
 			_coolerDumpData.setExpected(lExpected);
 			String outdir = this._outdir+File.separator+nameRes+File.separator+this._chrName+File.separator;
 			File file = new File(outdir);
-			if (file.exists()==false) file.mkdirs();
-			int j = _matrixSize*_res;
-			int step = _step*_res;
+			if (!file.exists())
+				file.mkdirs();
+			int j = _imageSize * _resolution;
+			int step = _step* _resolution;
 			String name = outdir+this._chrName+"_0_"+j+".txt";
-			if (file.exists()==false) file.mkdir();
+			if (!file.exists())
+				file.mkdir();
 			System.out.println("start dump "+this._chrName+" size "+this._chrSize+" res "+ nameRes);
 			if(j > this._chrSize) j = this._chrSize;
 			for(int i = 0 ; j-1 <= this._chrSize; i+=step,j+=step){
@@ -79,8 +82,8 @@ public class RunnableDumpDataCooler extends Thread implements Runnable{
 				String dump = this._chrName+":"+i+"-"+end;
 				name = outdir+this._chrName+"_"+i+"_"+end+".txt";
 				System.out.println("start dump "+this._chrName+" size "+this._chrSize+" dump "+dump+" res "+ nameRes);
-				coolerTools = this._coolerDumpData.dumpObservedMExpected(dump,name,_res);
-				if (coolerTools == false){
+				coolerTools = this._coolerDumpData.dumpObservedMExpected(dump,name, _resolution);
+				if (!coolerTools){
 					System.out.print(dump+" "+"\n"+coolerTools+"\n");
 					System.exit(0);
 				}		
@@ -90,8 +93,8 @@ public class RunnableDumpDataCooler extends Thread implements Runnable{
 					dump = this._chrName+":"+i+"-"+j;
 					name = outdir+this._chrName+"_"+i+"_"+j+".txt";
 					System.out.println("start dump "+this._chrName+" size "+this._chrSize+" dump "+dump+" res "+ nameRes);
-					coolerTools = this._coolerDumpData.dumpObservedMExpected(dump,name,_res);
-					if (coolerTools == false){
+					coolerTools = this._coolerDumpData.dumpObservedMExpected(dump,name, _resolution);
+					if (!coolerTools){
 						System.out.print(dump+" "+"\n"+coolerTools+"\n");
 						System.exit(0);
 					}

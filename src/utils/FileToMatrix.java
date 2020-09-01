@@ -11,6 +11,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 
+
 /**
  * Create the metaplot matrix with the tif file
  * 
@@ -20,27 +21,25 @@ import ij.process.ImageProcessor;
 
 public class FileToMatrix {
 	/** int: resolution fot the image*/
-	private int _resolution = -1;
+	private int _resolution;
 	/** String: path for image directory */
-	private String _imgDir = "";
+	private String _imgDir;
 	/** String: path for image directory2 only for substraction */
-	private String _imgDir2 = "";
+	private String _imgDir2;
 	/** String: path the loops file*/
-	private String _loopsFile = "";
+	private String _loopsFile;
 	/** 2D array of flaot to stock metaplot matrix*/
-	float[][] _resu;
+	private float[][] _resu;
 	/** size of the matrix for the metaplot*/
 	private int _metaSize = -1;
 	/**boolean:  */
 	private boolean _test = false;
-	/** double: APA score */
-	private double _scoreAPA = 0;
 	/** String: stock the loops strength*/
 	private String _loopsStrength  = "id\tstrength\tdistance";
 	/** min for the metaplot key*/
-	private int _min = 1000000000;
+	private int _min;
 	/** max for the metaplot key*/
-	private int _max = -100000000;
+	private int _max;
 	/** progress bar if gui is used*/
 	private Progress _progress;	
 	/** path for the metaplot output*/
@@ -49,10 +48,12 @@ public class FileToMatrix {
 	/**
 	 * Constructor, initialized the parameters of interest used this of for simple analysis
 	 * 
-	 * @param imgDir
-	 * @param loopsFile
-	 * @param res
-	 * @param meta
+	 * @param imgDir path to the dir
+	 * @param loopsFile path to the loop file
+	 * @param res resolution of the loops
+	 * @param meta size of the metaplot
+	 * @param matrixPathFile path to the output matrix
+
 	 */
 	public FileToMatrix(String imgDir, String loopsFile, String matrixPathFile, int res, int meta){
 		this._resolution = res;
@@ -62,21 +63,20 @@ public class FileToMatrix {
 		this._resu = new float[meta][meta];
 		this._metaSize = meta ;
 		this._matrixPathFile = matrixPathFile;
+		_min = 1000000000;
+		_max = -100000000;
+		_imgDir2 ="";
 	}
 	
-	/**
-	 * 
-	 */
-	public FileToMatrix(){ }
 
 	/**
 	 * Constructor, initialized the parameters of interest used this of for substraction analysis 
-	 * @param imgDir1
-	 * @param imgDir2
-	 * @param loopsFile
-	 * @param matrixPathFile
-	 * @param res
-	 * @param meta
+	 * @param imgDir1 path to the dir of the first SIP data
+	 * @param imgDir2 path to the dir of the second SIP data
+	 * @param loopsFile path to the loops file
+	 * @param matrixPathFile path to the output matrix
+	 * @param res resolution of the loops
+	 * @param meta size of the metaplot
 	 */
 	public FileToMatrix(String imgDir1,String imgDir2, String loopsFile, String matrixPathFile, int res, int meta){
 		this._resolution = res;
@@ -87,18 +87,19 @@ public class FileToMatrix {
 		this._resu = new float[meta][meta];
 		this._metaSize = meta;
 		this._matrixPathFile = matrixPathFile;
+		_min = 1000000000;
+		_max = -100000000;
 	}
 	
 	
 	/**
 	 * Process the image and compute the final metaplot matrix for simple processing
 	 *
-	 * @param step
-	 * @param gui
-	 * @return
-	 * @throws IOException
+	 * @param step int step between 2 following images
+	 * @param gui	boolean is gui
+	 * @throws IOException exception
 	 */
-	public String creatMatrix(int step, boolean gui) throws IOException{
+	public void creatMatrix(int step, boolean gui) throws IOException{
 		int nbLine = 0; 
 		if(gui){
 			this._progress = new Progress("loops file processing",10000);
@@ -107,8 +108,7 @@ public class FileToMatrix {
 		BufferedReader br = new BufferedReader(new FileReader(this._loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
-		String resu = "";
-		
+
 		
 		while (line != null){
 			sb.append(line);
@@ -119,37 +119,36 @@ public class FileToMatrix {
 				String dir = this._imgDir+File.separator+chr;
 				File folder = new File(dir);
 				File[] listOfFiles = folder.listFiles();
-				for (int i = 0; i < listOfFiles.length; ++i){
-					if(listOfFiles[i].toString().contains("tif") && listOfFiles[i].toString().contains("_N.tif")){
-						String [] tTemp = listOfFiles[i].toString().split("/");
-						String coord = tTemp[tTemp.length-1].replaceAll("_N.tif", "");
-						String [] tcoord = coord.split("_");
+				for (File listOfFile : listOfFiles) {
+					if (listOfFile.toString().contains("tif") && listOfFile.toString().contains("_N.tif")) {
+						String[] tTemp = listOfFile.toString().split("/");
+						String coord = tTemp[tTemp.length - 1].replaceAll("_N.tif", "");
+						String[] tcoord = coord.split("_");
 						int a = Integer.parseInt(parts[1]);
 						int a_end = Integer.parseInt(parts[4]);
 						int b;
 						int b_end;
-						// if chr has composed name
-						if(chr.contains("_")){
+						if (chr.contains("_")) {
 							String[] testName = chr.split("_");
 							b = Integer.parseInt(tcoord[testName.length]);
-							b_end = Integer.parseInt(tcoord[testName.length+1]);
-						}else{
-							b= Integer.parseInt(tcoord[1]);
+							b_end = Integer.parseInt(tcoord[testName.length + 1]);
+						} else {
+							b = Integer.parseInt(tcoord[1]);
 							b_end = Integer.parseInt(tcoord[2]);
 						}
-							
-						if(a >= b && a_end <= b_end){
-							int numImage = b/(step*this._resolution);
-							int correction = numImage*step*this._resolution;
-							double j = (a - correction)/this._resolution; 
-							double k = (a_end - correction)/this._resolution;									
-							ImagePlus img = new ImagePlus();
-							img = IJ.openImage(listOfFiles[i].toString());
-							this._loopsStrength = this._loopsStrength+"\n"+nbLine+"\t"+line+"\t";
-							runImage((int)j,(int)k, img);
+
+						if (a >= b && a_end <= b_end) {
+							int numImage = b / (step * this._resolution);
+							int correction = numImage * step * this._resolution;
+							double j = (a - correction) / this._resolution;
+							double k = (a_end - correction) / this._resolution;
+							System.out.println(listOfFile.toString());
+							ImagePlus img = IJ.openImage(listOfFile.toString());
+							this._loopsStrength = this._loopsStrength + "\n" + nbLine + "\t" + line + "\t";
+							runImage((int) j, (int) k, img);
 							nbLine++;
 							img.close();
-							break;	
+							break;
 						}
 					}
 				}
@@ -162,22 +161,19 @@ public class FileToMatrix {
 		if(gui) this._progress.dispose();
 		this._test = true;
 		writeMatrix(nbLine);
-		return resu;
 	}
 	
 	/**
 	 * Process the image and compute the final metaplot matrix for substraction processing 
 	 *
-	 * @param step
-	 * @param gui
-	 * @return
-	 * @throws IOException
+	 * @param step int step
+	 * @param gui boolean gui
+	 * @throws IOException exception
 	 */
-	public String creatMatrixSubstarction(int step, boolean gui) throws IOException{
+	public void creatMatrixSubstarction(int step, boolean gui) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(this._loopsFile));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
-		String resu = "";
 		int nbLine = 0;
 		int cmp = 0;  
 		if(gui){
@@ -194,42 +190,38 @@ public class FileToMatrix {
 				File folder = new File(dir);
 				System.out.println(dir);
 				File[] listOfFiles = folder.listFiles();
-				for (int i = 0; i < listOfFiles.length; ++i){
-					if(listOfFiles[i].toString().contains("_N.tif")){
-						String[] testTable = listOfFiles[i].toString().split("/");
-						String fileName2 = dir2+File.separator+testTable[testTable.length-1];
-						String [] tTemp = listOfFiles[i].toString().split("/");
-						String coord = tTemp[tTemp.length-1].replaceAll("_N.tif", "");
-						String [] tcoord = coord.split("_");
+				for (File listOfFile : listOfFiles) {
+					if (listOfFile.toString().contains("_N.tif")) {
+						String[] testTable = listOfFile.toString().split("/");
+						String fileName2 = dir2 + File.separator + testTable[testTable.length - 1];
+						String[] tTemp = listOfFile.toString().split("/");
+						String coord = tTemp[tTemp.length - 1].replaceAll("_N.tif", "");
+						String[] tcoord = coord.split("_");
 						int a = Integer.parseInt(parts[1]);
 						int a_end = Integer.parseInt(parts[4]);
 						int b, b_end;
 						//if chr has composed name
-						if(chr.contains("_")){
+						if (chr.contains("_")) {
 							String[] testName = chr.split("_");
 							b = Integer.parseInt(tcoord[testName.length]);
-							b_end = Integer.parseInt(tcoord[testName.length+1]);
-						}else{
-							b= Integer.parseInt(tcoord[1]);
+							b_end = Integer.parseInt(tcoord[testName.length + 1]);
+						} else {
+							b = Integer.parseInt(tcoord[1]);
 							b_end = Integer.parseInt(tcoord[2]);
 						}
-						
-						if(a >= b && a_end <= b_end){
-							int numImage = b/(step*this._resolution);
-							int correction = numImage*step*this._resolution;
-							double j = (a - correction)/this._resolution; 
-							double k = (a_end - correction)/this._resolution;									
-							ImagePlus img = new ImagePlus();
-							ImagePlus img2 = new ImagePlus();
-								
-							img = IJ.openImage(listOfFiles[i].toString());
-							img2 = IJ.openImage(fileName2);
-							this._loopsStrength = this._loopsStrength+"\n"+nbLine+"\t"+line+"\t";
-							
-							runImage((int)j,(int)k, img, img2);
+						if (a >= b && a_end <= b_end) {
+							int numImage = b / (step * this._resolution);
+							int correction = numImage * step * this._resolution;
+							double j = (a - correction) / this._resolution;
+							double k = (a_end - correction) / this._resolution;
+							ImagePlus img = IJ.openImage(listOfFile.toString());
+							ImagePlus img2 = IJ.openImage(fileName2);
+							this._loopsStrength = this._loopsStrength + "\n" + nbLine + "\t" + line + "\t";
+
+							runImage((int) j, (int) k, img, img2);
 							nbLine++;
 							img.close();
-							break;	
+							break;
 						}
 					}
 				}
@@ -243,13 +235,12 @@ public class FileToMatrix {
 		this._test = true;
 		writeMatrix(nbLine);
 		if(gui)this._progress.dispose();
-		return resu;
 	}
 	
 	/**
-	 * 
-	 * @param nbLine
-	 * @throws IOException
+	 * write matrix in a file
+	 * @param nbLine int nb of loops in the loops file
+	 * @throws IOException exception
 	 */
 	private void writeMatrix(int nbLine) throws IOException{
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(this._matrixPathFile)));
@@ -270,11 +261,11 @@ public class FileToMatrix {
 	
 	
 	/**
-	 * 
-	 * @throws IOException
+	 * write strength file in the output
+	 * @throws IOException exception
 	 */
-	
-	public void writeStrengthFile( ) throws IOException{
+
+	void writeStrengthFile() throws IOException{
 		String pathFile = this._matrixPathFile;
 		pathFile = pathFile.replace("_matrix.tab", "_strength.tab");
 		System.out.println("strength file: "+pathFile);
@@ -287,8 +278,8 @@ public class FileToMatrix {
 	/**
 	 * Compute the APA score for the set of loops present in loops file, save the reuslt in a file
 	 * 
-	 * @return
-	 * @throws IOException
+	 * @return double APA score
+	 * @throws IOException exception
 	 */
 	public double getAPA() throws IOException{
 		double avg = (process3By3Square(1,1)+process3By3Square(1,this._metaSize-2)+process3By3Square(this._metaSize-2,1)+process3By3Square(this._metaSize-2,this._metaSize-2))/4; 
@@ -296,20 +287,21 @@ public class FileToMatrix {
 		String pathFile = this._matrixPathFile;
 		pathFile = pathFile.replace("_matrix.tab", "_APA.tab");
 		System.out.println("strength file: "+pathFile);
-		this._scoreAPA = val/avg;
-		String line = "valueCenter\tcorner avg\tAPA\n"+val+"\t"+avg+"\t"+_scoreAPA;
+		double scoreAPA = val / avg;
+		String line = "valueCenter\tcorner avg\tAPA\n"+val+"\t"+avg+"\t"+ scoreAPA +"\n";
 		System.out.println(line);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathFile)));
 		writer.write(line);
+		writer.write("\n");
 		writer.close();
-		return this._scoreAPA;
+		return scoreAPA;
 	}
 	
 	/**
 	 * compute the average a 3*3square 
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x coordinate of center pixel
+	 * @param y coordinate of center pixel
+	 * @return average of 3 by 3 square
 	 */
 	private double process3By3Square(int x, int y){
 		double sum = 0;
@@ -323,9 +315,9 @@ public class FileToMatrix {
 	/**
 	 * run the image and stock the sub matrix for the specific loops with a and b coordinate
 	 * used for simple analysis
-	 * @param a
-	 * @param b
-	 * @param img
+	 * @param a int x coordinate of the loop
+	 * @param b int y coordinate of the loop
+	 * @param img ImagePlus input image
 	 */
 	private void runImage (int a, int b, ImagePlus img){
 		ImageProcessor ip = img.getProcessor();
@@ -348,11 +340,11 @@ public class FileToMatrix {
 	
 	/**
 	 * run the image and stock the sub matrix for the specific loops with a and b coordinate
-	 * used for substraction analysis
-	 * @param a
-	 * @param b
-	 * @param img
-	 * @param img2
+	 * used for subtraction analysis
+	 * @param a int x coordinate of the loop
+	 * @param b int y coordinate of the loop
+	 * @param img ImagePlus input image
+	 * @param img2 ImagePlus input image 2
 	 */
 	private void runImage (int a, int b, ImagePlus img, ImagePlus img2){
 		ImageProcessor ip = img.getProcessor();
@@ -374,24 +366,5 @@ public class FileToMatrix {
 		}
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isTest(){return this._test;}
-	
-	/**
-	 * return the min of the matrix
-	 * @return
-	 */
-	public int getMinMatrix(){
-		if (this._min == 0)	return this._min;
-		else return this._min-1;
-	}
-	
-	/**
-	 * return the max of the matrix
-	 * @return
-	 */
-	public int getMaxMatrix(){ return this._max+1;}
+
 }
