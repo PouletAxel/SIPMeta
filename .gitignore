@@ -1,7 +1,7 @@
 /bin/
 /classes/
-/test/
-/utils/
+/main.java.plop.test/
+/main.java.plop.utils/
 .idea
 .project
 .setting

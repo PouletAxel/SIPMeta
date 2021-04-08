@@ -7,23 +7,63 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3186df52-5b53-4cb6-9b06-0b9765d6e146" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__sc_fiji_Auto_Threshold_1_17_2.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.project" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/MetaplotGUI$DataDirectoryListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/MetaplotGUI$FileListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/MetaplotGUI$InputDirectoryListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/MetaplotGUI$QuitListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/MetaplotGUI$RBHicListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/MetaplotGUI$StartListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/MetaplotGUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/gui/Progress.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/main/MainMetaplot$ReturnFlux.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/main/MainMetaplot.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/multiProcessing/ProcessCoolerDumpData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/multiProcessing/ProcessDumpData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/multiProcessing/ProcessMakeImage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/multiProcessing/RunnableDumpData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/multiProcessing/RunnableDumpDataCooler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/multiProcessing/RunnableMakeImage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/test/TestGui.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/test/TestMetaplot.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/CoolerDumpData$ReturnFlux.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/CoolerDumpData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/CoolerExpected$ReturnFlux.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/CoolerExpected.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/DumpData$ReturnFlux.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/DumpData.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/FileToMatrix.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/ProcessTuplesFile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/SIPMeta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/Script$ReturnFlux.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/utils/Script.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/metaplot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/metaplot.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mainMetaSip/MainMetaplot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mainMetaSip/MainMetaplot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/multiProcessing/ProcessCoolerDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/multiProcessing/ProcessCoolerDumpData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/multiProcessing/ProcessDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/multiProcessing/ProcessDumpData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/multiProcessing/ProcessMakeImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/multiProcessing/ProcessMakeImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/multiProcessing/RunnableDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/multiProcessing/RunnableDumpData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/multiProcessing/RunnableDumpDataCooler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/multiProcessing/RunnableDumpDataCooler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/multiProcessing/RunnableMakeImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/multiProcessing/RunnableMakeImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/TestMetaplot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/TestMetaplot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/CoolerDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/CoolerDumpData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/CoolerExpected.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/CoolerExpected.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/DumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/DumpData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/FileToMatrix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/FileToMatrix.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/ProcessTuplesFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/ProcessTuplesFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/SIPMeta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/SIPMeta.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/Script.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/Script.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/MetaplotGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/gui/MetaplotGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/Progress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/gui/Progress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mainMetaSip/MainMetaplot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/mainMetaSip/MainMetaplot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/multiProcessing/ProcessCoolerDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessCoolerDumpData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/multiProcessing/ProcessDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessDumpData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/multiProcessing/ProcessMakeImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessMakeImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/multiProcessing/RunnableDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableDumpData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/multiProcessing/RunnableDumpDataCooler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableDumpDataCooler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/multiProcessing/RunnableMakeImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableMakeImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/TestGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/test/TestGui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/TestMetaplot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/test/TestMetaplot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/CoolerDumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/utils/CoolerDumpData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/CoolerExpected.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/utils/CoolerExpected.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/DumpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/utils/DumpData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/FileToMatrix.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/utils/FileToMatrix.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/ProcessTuplesFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/utils/ProcessTuplesFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/SIPMeta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/utils/SIPMeta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/Script.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plop/utils/Script.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -40,10 +80,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/mainMetaSip/MainMetaplot.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/SIPMeta.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="437" column="53" lean-forward="true" selection-start-line="437" selection-start-column="53" selection-end-line="437" selection-end-column="53" />
+            <state>
+              <caret lean-forward="true" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -52,19 +92,31 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/SIPMeta.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessCoolerDumpData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="16" column="3" lean-forward="true" selection-start-line="16" selection-start-column="3" selection-end-line="16" selection-end-column="3" />
+            <state>
+              <caret column="8" selection-start-column="8" selection-end-column="8" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessMakeImage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="7" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/utils/FileToMatrix.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/test/TestGui.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="294" column="24" selection-start-line="294" selection-start-column="24" selection-end-line="294" selection-end-column="24" />
+            <state relative-caret-position="180">
+              <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -73,37 +125,73 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/ProcessTuplesFile.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/FileToMatrix.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="79" column="17" lean-forward="true" selection-start-line="79" selection-start-column="17" selection-end-line="79" selection-end-column="17" />
+            <state>
+              <caret lean-forward="true" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/Script.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/ProcessTuplesFile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="539">
-              <caret line="126" lean-forward="true" selection-start-line="126" selection-end-line="126" />
+            <state>
+              <caret column="8" selection-start-column="8" selection-end-column="8" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/CoolerDumpData.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/Script.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="539">
-              <caret line="141" lean-forward="true" selection-start-line="141" selection-end-line="141" />
+            <state relative-caret-position="150">
+              <caret line="10" column="2" lean-forward="true" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="2" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/DumpData.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/CoolerDumpData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="539">
-              <caret line="214" lean-forward="true" selection-start-line="214" selection-end-line="214" />
+            <state>
+              <caret lean-forward="true" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/CoolerExpected.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="8" selection-start-column="8" selection-end-column="8" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/DumpData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret lean-forward="true" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -128,7 +216,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/LICENSE" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/MainMetaplot.java" />
         <option value="$PROJECT_DIR$/metaplot.iml" />
         <option value="$PROJECT_DIR$/.gitignore" />
@@ -147,6 +234,28 @@
         <option value="$PROJECT_DIR$/src/utils/Script.java" />
         <option value="$PROJECT_DIR$/src/mainMetaSip/MainMetaplot.java" />
         <option value="$PROJECT_DIR$/src/utils/FileToMatrix.java" />
+        <option value="$PROJECT_DIR$/src/main/utils/FileToMatrix.java" />
+        <option value="$PROJECT_DIR$/src/main/java/utils/FileToMatrix.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/gui/MetaplotGUI.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/mainMetaSip/MainMetaplot.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/utils/SIPMeta.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/utils/FileToMatrix.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/utils/Script.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/utils/CoolerDumpData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/utils/DumpData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableDumpDataCooler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/gui/Progress.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessDumpData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableDumpData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableMakeImage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/test/TestMetaplot.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/utils/CoolerExpected.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/utils/ProcessTuplesFile.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessCoolerDumpData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessMakeImage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/plop/test/TestGui.java" />
       </list>
     </option>
   </component>
@@ -167,17 +276,16 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="866" />
-    <option name="y" value="11" />
-    <option name="width" value="1054" />
-    <option name="height" value="1080" />
+    <option name="x" value="-3" />
+    <option name="width" value="1926" />
+    <option name="height" value="1050" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -185,50 +293,11 @@
               <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
               <item name="metaplot" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="metaplot" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="metaplot" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="metaplot" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
-              <item name="metaplot_jar" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="metaplot" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="metaplot" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="metaplot" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="metaplot" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -258,11 +327,11 @@
   </component>
   <component name="RunManager" selected="Application.MainMetaplot">
     <configuration name="MainMetaplot" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="mainMetaSip.MainMetaplot" />
+      <option name="MAIN_CLASS_NAME" value="main.java.plop.mainMetaSip.MainMetaplot" />
       <module name="metaplot" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="mainMetaSip.*" />
+          <option name="PATTERN" value="main.java.plop.mainMetaSip.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -271,11 +340,11 @@
       </method>
     </configuration>
     <configuration name="TestGui" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test.TestGui" />
+      <option name="MAIN_CLASS_NAME" value="main.java.plop.test.TestGui" />
       <module name="metaplot" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="test.*" />
+          <option name="PATTERN" value="main.java.plop.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -284,11 +353,11 @@
       </method>
     </configuration>
     <configuration name="TestMetaplot" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test.TestMetaplot" />
+      <option name="MAIN_CLASS_NAME" value="main.java.plop.test.TestMetaplot" />
       <module name="metaplot" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="test.*" />
+          <option name="PATTERN" value="main.java.plop.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -328,30 +397,41 @@
       <option name="project" value="LOCAL" />
       <updated>1598741062421</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Correction of subtraction option&#10;and add comments in most of the class">
+      <created>1598987715574</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1598987715574</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-3" y="0" width="1926" height="1050" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13874066" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14010416" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="SOQL Query" />
+      <window_info anchor="bottom" id="Log Analyzer" />
+      <window_info anchor="bottom" id="Anonymous Apex" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49893278" weight="0.32792208" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4953125" weight="0.3273495" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49733192" weight="0.3517316" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4994664" weight="0.39935064" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5010672" side_tool="true" visible="true" weight="0.32792208" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.503125" side_tool="true" visible="true" weight="0.3284055" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.49893278" weight="0.32900432" />
+      <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.496875" weight="0.3284055" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -364,20 +444,14 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Correction of subtraction option" />
-    <option name="LAST_COMMIT_MESSAGE" value="Correction of subtraction option" />
+    <MESSAGE value="Correction of subtraction option&#10;and add comments in most of the class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Correction of subtraction option&#10;and add comments in most of the class" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/LICENSE">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="292">
           <caret line="656" column="41" selection-start-line="656" selection-start-column="41" selection-end-line="656" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/TestGui.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="13" selection-start-column="13" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -388,24 +462,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="517">
-          <caret line="37" column="10" lean-forward="true" selection-start-line="37" selection-start-column="10" selection-end-line="37" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/metaplot.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/META-INF/MANIFEST.MF">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>
@@ -418,120 +478,173 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/TestMetaplot.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="85" column="8" selection-start-line="85" selection-start-column="8" selection-end-line="85" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/multiProcessing/RunnableDumpDataCooler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="93" column="16" lean-forward="true" selection-start-line="93" selection-start-column="16" selection-end-line="93" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/multiProcessing/RunnableMakeImage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="29" column="10" selection-start-line="29" selection-start-column="10" selection-end-line="29" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/multiProcessing/ProcessDumpData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="52" column="51" lean-forward="true" selection-start-line="52" selection-start-column="51" selection-end-line="52" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/multiProcessing/RunnableDumpData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="41" column="11" selection-start-line="41" selection-start-column="11" selection-end-line="41" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/multiProcessing/ProcessMakeImage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="45" column="51" selection-start-line="45" selection-start-column="51" selection-end-line="45" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/multiProcessing/ProcessCoolerDumpData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="39" column="24" lean-forward="true" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/CoolerExpected.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="194" selection-start-line="194" selection-end-line="194" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/CoolerDumpData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="141" lean-forward="true" selection-start-line="141" selection-end-line="141" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/DumpData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="214" lean-forward="true" selection-start-line="214" selection-end-line="214" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/ProcessTuplesFile.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
-          <caret line="79" column="17" lean-forward="true" selection-start-line="79" selection-start-column="17" selection-end-line="79" selection-end-column="17" />
+          <caret line="1" column="41" selection-start-line="1" selection-start-column="41" selection-end-line="1" selection-end-column="41" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/Script.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="126" lean-forward="true" selection-start-line="126" selection-end-line="126" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/SIPMeta.java">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="16" column="3" lean-forward="true" selection-start-line="16" selection-start-column="3" selection-end-line="16" selection-end-column="3" />
+          <caret line="82" column="73" selection-start-line="82" selection-start-column="73" selection-end-line="82" selection-end-column="73" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/mainMetaSip/MainMetaplot.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/gui/MetaplotGUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="437" column="53" lean-forward="true" selection-start-line="437" selection-start-column="53" selection-end-line="437" selection-end-column="53" />
+        <state relative-caret-position="15">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/FileToMatrix.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/mainMetaSip/MainMetaplot.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="294" column="24" selection-start-line="294" selection-start-column="24" selection-end-line="294" selection-end-column="24" />
+        <state relative-caret-position="195">
+          <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/gui/Progress.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-start-column="8" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessDumpData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableDumpData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableDumpDataCooler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="44">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/RunnableMakeImage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="7" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/test/TestMetaplot.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="7" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/CoolerDumpData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/CoolerExpected.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-start-column="8" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/DumpData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/FileToMatrix.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/ProcessTuplesFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-start-column="8" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/Script.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="2" lean-forward="true" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="2" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/utils/SIPMeta.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessCoolerDumpData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-start-column="8" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/multiProcessing/ProcessMakeImage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="7" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/plop/test/TestGui.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
