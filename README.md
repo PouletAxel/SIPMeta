@@ -1,3 +1,5 @@
+WARNING: We just noticed that the newest version of Juicer Tools (v1.22) interacts with SIPMeta in weird ways. Please use Juicer Tools v1.13 instead.
+
 # SIPMeta
 
 <img src="https://github.com/PouletAxel/SIPImage/blob/master/meta.jpeg" width="1000">
